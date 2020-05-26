@@ -9,7 +9,8 @@
   "scripts": {
     "test": "nyc mocha -r ts-node/register test/index.ts",
     "clean": "rimraf lib",
-    "build": "npm run clean && tsc -p tsconfig.json"
+    "build": "npm run clean && tsc -p tsconfig.json",
+    "prepare": "npm run build"
   },
   "license": "MIT",
   "dependencies": {
