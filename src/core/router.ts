@@ -94,7 +94,14 @@ export default function appendControllers (
         }: { key: string, method: 'get'|'post'|'put'|'del'|'all', path: string }) => {
           if (typeof (controller as any)[key] === 'function') {
             router[method] && router[method](path, async (ctx, next) => {
-              await (controller as any)[key].call(controller, ctx, next)
+              const controllerReturn = await (controller as any)[key].call(controller, ctx, next)
+              if (
+                typeof controllerReturn !== 'undefined' &&
+                !ctx.res.writableEnded &&
+                !ctx.res.writableFinished
+              ) {
+                ctx.body = controllerReturn;
+              }
               // console.log('finish controller router', key);
               // console.log(ctx.res.finished);
               await next();

@@ -11,6 +11,8 @@ coverage.lcov
 coverage
 CODECOV_TOKEN
 
+_book
+
 *.log
 dist
 lib

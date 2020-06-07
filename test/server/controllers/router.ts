@@ -11,26 +11,26 @@ export class RouterTextController extends Controller {
 
   @router.GetRoute('/get')
   testGetRoute (ctx: ControllerContext) {
-    ctx.body = 'get';
+    return 'get';
   }
 
   @router.PostRoute('/post')
   testPostRoute (ctx: ControllerContext) {
-    ctx.body = 'post';
+    return 'post';
   }
 
   @router.PutRoute('/put')
   testPutRoute (ctx: ControllerContext) {
-    ctx.body = 'put';
+    return 'put';
   }
 
   @router.DelRoute('/del')
   testDelRoute (ctx: ControllerContext) {
-    ctx.body = 'del';
+    return 'del';
   }
 
   @router.AllRoute('/all')
   testAllRoute (ctx: ControllerContext) {
-    ctx.body = 'all:' + ctx.method;
+    return 'all:' + ctx.method;
   }
 }

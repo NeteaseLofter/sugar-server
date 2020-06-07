@@ -5,6 +5,8 @@ import url from 'url';
 import Controller from './controller';
 import appendControllers from './router';
 import Config from './config';
+import { SugarServerError } from './error';
+
 export function createApplication (
   middleware: Koa.Middleware[],
   controllers: { [propName: string]: Controller },
@@ -123,17 +125,28 @@ export function createApplyApplicationMiddleware (
 }
 
 export interface ExControllerContext {
-  routerPath: string
+  routerPath?: string
 }
 
 export type ControllerContext =  ExControllerContext & Koa.Context & {
   app: Application
 }
 
-export class Application extends Koa<ExControllerContext> {
+export class Application extends Koa<ControllerContext> {
   _applyRequest: any;
   config = new Config();
 
+  onError (e: SugarServerError, ctx: ControllerContext) {
+    if (
+      !ctx.res.writableEnded &&
+      !ctx.res.writableFinished
+    ) {
+      ctx.body = {
+        code: e.code || 0,
+        message: e.message
+      }
+    }
+  }
 
   constructor (
     middlewareArray: Koa.Middleware[],
@@ -144,22 +157,11 @@ export class Application extends Koa<ExControllerContext> {
 
     this.config.add(customConfigs);
 
-    this.use(async function errorHandle (ctx, next) {
+    this.use(async (ctx: ControllerContext, next) => {
       try {
         await next();
       } catch (e) {
-        if (
-          !ctx.res.writableEnded &&
-          !ctx.res.writableFinished
-        ) {
-          if (e.statusCode) {
-            ctx.statusCode = e.statusCode;
-          }
-          ctx.body = {
-            code: e.code || 0,
-            message: e.message
-          }
-        }
+        this.onError(e, ctx);
       }
     })
 

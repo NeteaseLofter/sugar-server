@@ -1,131 +1,20 @@
 # sugar-server
-node服务框架，基于`koa`但是略有不通
+node服务框架，基于`koa`但是略有不同。
 
+**sugar-server** 特点
+1. 基于装饰器的路由设置、请求参数获取、格式校验工具，不再入侵的你代码，配置和阅读代码更加容易；
+2. 简单易用的config配置，支持多环境分离配置内容；
+3. 支持 **async/await**；
+4. 允许无**ctx**创建**Controller**，函数处理更纯粹；
+5. **createServer** 下支持的多应用分离模式，monorepo的好伙伴；
 
-## 使用方法
+## 更多文档
+* [SugarServer介绍](README.md)
+* [快速开始](./docs/guide.md)
+* [~~路由~~Controller配置指南](./docs/controller.md)
+* [参数获取指南](./docs/parameter.md)
+* [自带参数校验](./docs/validator.md)
+* [应用创建指南](./docs/application.md)
+* [config配置指南](./docs/config.md)
+* [进阶-多应用模式](./docs/create-server.md)
 
-### 创建服务
-```typescript
-import {
-  createServer,
-  createApplication
-} from 'sugar-server';
-
-import * as controllers from './controllers';
-
-const server = createServer(
-  { server: { port: 9527 } },
-  [
-    {
-      application: createLofterAdminApplication()
-    }
-  ]
-);
-
-
-function createLofterAdminApplication () {
-  const lofterAdminApplication = createApplication(
-    [],
-    controllers,
-    {}
-  );
-
-  lofterAdminApplication.createApply();
-
-  return lofterAdminApplication;
-}
-```
-
-### Controllers
-```typescript
-import {
-  Controller,
-  router,
-  ControllerContext
-} from 'sugar-server';
-
-export class RouterTestController extends Controller {
-  static prefix = '/router-test';
-
-  @router.GetRoute('/get')
-  testGetRoute (ctx: ControllerContext) {
-    ctx.body = 'get';
-  }
-
-  @router.PostRoute('/post')
-  testPostRoute (ctx: ControllerContext) {
-    ctx.body = 'post';
-  }
-
-  @router.PutRoute('/put')
-  testPutRoute (ctx: ControllerContext) {
-    ctx.body = 'put';
-  }
-
-  @router.DelRoute('/del')
-  testDelRoute (ctx: ControllerContext) {
-    ctx.body = 'del';
-  }
-
-  @router.AllRoute('/all')
-  testAllRoute (ctx: ControllerContext) {
-    ctx.body = 'all:' + ctx.method;
-  }
-}
-```
-
-### 获取请求中的参数和校验
-```typescript
-import {
-  Controller,
-  router,
-  parameter,
-  validator,
-  ControllerContext
-} from 'sugar-server';
-
-export class TestController extends Controller {
-  static prefix = '/test';
-
-  @router.PostRoute('/post-parameter/:id')
-  @parameter.getter
-  testPostParameterRoute (
-    @parameter.params('id') id: string,
-    @parameter.query('q') q: string,
-    @parameter.header('x-custom') x: string,
-    ctx: ControllerContext
-  ) {
-    // console.log(ctx.request.body);
-    ctx.body = `id:${id};q:${q};x:${x}`;
-  }
-
-  @router.PostRoute('/post-parameter-body')
-  @parameter.getter
-  testPostParameterJSONBodyRoute (
-    @parameter.body() body: any,
-    ctx: ControllerContext
-  ) {
-    ctx.body = JSON.stringify(body.a);
-  }
-
-  @router.PostRoute('/post-parameter-form')
-  @parameter.getter
-  testPostParameterFormBodyRoute (
-    @parameter.body() body: any,
-    ctx: ControllerContext
-  ) {
-    ctx.body = `${body.f1};${body.f2}`;
-  }
-
-
-  @router.GetRoute('/post-validate')
-  @parameter.getter
-  @validator.validate
-  testPostValidateRoute (
-    @parameter.query('id') @validator.required id: string,
-    ctx: ControllerContext
-  ) {
-    ctx.body = id;
-  }
-}
-```

@@ -1,24 +1,25 @@
 import 'reflect-metadata';
 
 import createThunkAttributeDescriptor from '../shared/create-thunk-attribute-descriptor';
+import { SugarServerError } from './error';
 
 const parameterValidateMetadataKey = Symbol('paramterValidate');
 
 export const required = createParamterValidate((value, parameterIndex) => {
   if (!value) {
-    throw new Error(`param ${parameterIndex} ${value} is required`);
+    throw new SugarServerError(500, `param [${parameterIndex}] is required`);
   }
 })
 
 export const string = createParamterValidate((value, parameterIndex) => {
   if (typeof value !== 'string') {
-    throw new Error(`param ${parameterIndex} ${value} not string`);
+    throw new SugarServerError(500, `param [${parameterIndex}] ${value} not string`);
   }
 })
 
 export const number = createParamterValidate((value, parameterIndex) => {
   if (typeof value !== 'number') {
-    throw new Error(`param ${parameterIndex} ${value} not number`);
+    throw new SugarServerError(500, `param [${parameterIndex}] ${value} not number`);
   }
 })
 

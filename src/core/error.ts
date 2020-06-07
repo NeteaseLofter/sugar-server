@@ -1,5 +1,5 @@
-export class ServerError extends Error {
-  name = 'ServerError';
+export class SugarServerError extends Error {
+  name = 'SugarServerError';
   code: number;
 
   constructor (code: number, message: string) {

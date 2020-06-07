@@ -16,29 +16,26 @@ export class TestController extends Controller {
   testPostParameterRoute (
     @parameter.params('id') id: string,
     @parameter.query('q') q: string,
-    @parameter.header('x-custom') x: string,
-    ctx: ControllerContext
+    @parameter.header('x-custom') x: string
   ) {
     // console.log(ctx.request.body);
-    ctx.body = `id:${id};q:${q};x:${x}`;
+    return `id:${id};q:${q};x:${x}`;
   }
 
   @router.PostRoute('/post-parameter-body')
   @parameter.getter
   testPostParameterJSONBodyRoute (
-    @parameter.body() body: any,
-    ctx: ControllerContext
+    @parameter.body() body: any
   ) {
-    ctx.body = JSON.stringify(body.a);
+    return JSON.stringify(body.a);
   }
 
   @router.PostRoute('/post-parameter-form')
   @parameter.getter
   testPostParameterFormBodyRoute (
-    @parameter.body() body: any,
-    ctx: ControllerContext
+    @parameter.body() body: any
   ) {
-    ctx.body = `${body.f1};${body.f2}`;
+    return `${body.f1};${body.f2}`;
   }
 
 
@@ -46,9 +43,10 @@ export class TestController extends Controller {
   @parameter.getter
   @validator.validate
   testPostValidateRoute (
-    @parameter.query('id') @validator.required id: string,
-    ctx: ControllerContext
+    @parameter.query('id')
+    @validator.required
+    id: string
   ) {
-    ctx.body = id;
+    return id;
   }
 }

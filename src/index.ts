@@ -3,7 +3,7 @@ import * as router from './core/router';
 import * as parameter from './core/parameter';
 
 import * as validator from './core/validator';
-import { ServerError } from './core/error';
+import { SugarServerError } from './core/error';
 
 import Controller from './core/controller';
 import {
@@ -22,7 +22,7 @@ export {
   validator,
   Controller,
   ControllerContext,
-  ServerError
+  SugarServerError
 }
 
 

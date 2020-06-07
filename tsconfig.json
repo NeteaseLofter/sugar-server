@@ -8,7 +8,7 @@
     "emitDecoratorMetadata": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "baseUrl": ".",
     "skipLibCheck": true,
     "rootDir": "src",
