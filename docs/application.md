@@ -41,3 +41,6 @@ myApplication.onError = function (e: SugarServerError, ctx: ControllerContext) {
   }
 }
 ```
+
+### 应用设计思路
+![sugar-controller](./sugar-controller.png)

@@ -4,7 +4,7 @@ import createThunkAttributeDescriptor from '../shared/create-thunk-attribute-des
 
 import Controller from './controller';
 
-const ROUTES_KEY = '_routes';
+const ROUTES_KEY = Symbol('_sugar_routes');
 
 /**
  * @enum {RouteMethod}

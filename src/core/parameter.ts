@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import parse from 'co-body';
 
-const parameterGetterMetadataKey = Symbol('paramterGetter');
+const parameterGetterMetadataKey = Symbol('_paramterGetter');
 
 export function getter (target: any, propertyName: string, descriptor: TypedPropertyDescriptor<Function>) {
   let method = descriptor.value;
