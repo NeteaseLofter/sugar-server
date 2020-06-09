@@ -49,6 +49,21 @@ export function config (configKey: string|Object, propertyKey?: string | symbol,
   }
 }
 
+export const Response = createParamterGetter((ctx) => {
+  return ctx.response;
+})
+export const NodeResponse = createParamterGetter((ctx) => {
+  return ctx.res;
+})
+export const Request = createParamterGetter((ctx) => {
+  return ctx.request;
+})
+export const NodeRequest = createParamterGetter((ctx) => {
+  return ctx.req;
+})
+export const Context = createParamterGetter((ctx) => {
+  return ctx;
+})
 
 export const query = (key: string) => createParamterGetter((ctx) => {
   return ctx.query[key];

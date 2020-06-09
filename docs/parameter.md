@@ -62,3 +62,6 @@ home (
     }
     ```
 4. `body()`/`bodyJSON()`/`bodyFormData()`/`bodyText()` 获取请求体中的数据 `body()` 会根据 **content-type** 自动识别，`bodyJSON()`/`bodyFormData()`/`bodyText()`则是直接转化成指定的格式
+5. `config`/`config(configKey)` 获取**config**中的配置
+6. `Response`/`NodeResponse`/`Request`/`NodeRequest` 分别获取 koa的response, node的response，koa的request, node的request
+7. `Context` koa的context，一般不太需要使用
