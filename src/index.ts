@@ -12,6 +12,7 @@ import {
   ControllerContext
 } from './core/application'
 
+import Config from './core/config';
 
 export {
   createServer,
@@ -21,6 +22,7 @@ export {
   parameter,
   validator,
   Controller,
+  Config,
   ControllerContext,
   SugarServerError
 }

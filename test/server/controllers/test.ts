@@ -3,6 +3,7 @@ import {
   router,
   parameter,
   validator,
+  Config,
   ControllerContext
 } from '../../../src';
 
@@ -36,6 +37,17 @@ export class TestController extends Controller {
     @parameter.body() body: any
   ) {
     return `${body.f1};${body.f2}`;
+  }
+
+  @router.GetRoute('/get-parameter-config')
+  @parameter.getter
+  testGetParameterConfigRoute (
+    @parameter.config
+    config: Config,
+    @parameter.config('b.c')
+    bc: number
+  ) {
+    return `${config.get('a')};${bc}`;
   }
 
 

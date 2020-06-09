@@ -141,6 +141,9 @@ export class Application extends Koa<ControllerContext> {
       !ctx.res.writableEnded &&
       !ctx.res.writableFinished
     ) {
+      if (typeof e.statusCode === 'number') {
+        ctx.status = e.statusCode;
+      }
       ctx.body = {
         code: e.code || 0,
         message: e.message

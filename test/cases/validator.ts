@@ -10,8 +10,8 @@ export default function () {
         path: '/test/post-validate',
         method: 'GET'
       })
-      chai.expect(res.statusCode).to.equal(200);
-      chai.expect(body).to.equal('{"code":500,"message":"param [0] is required"}');
+      chai.expect(res.statusCode).to.equal(400);
+      chai.expect(body).to.equal('{"code":400,"message":"param [0] is required"}');
     })
 
     it ('should pass', async () => {

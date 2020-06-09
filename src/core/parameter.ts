@@ -1,9 +1,11 @@
 import 'reflect-metadata';
 import parse from 'co-body';
 
+import { ControllerContext } from './application'
+
 const parameterGetterMetadataKey = Symbol('_paramterGetter');
 
-export function getter (target: any, propertyName: string, descriptor: TypedPropertyDescriptor<Function>) {
+export function getter (target: any, propertyName: string, descriptor: TypedPropertyDescriptor<any>) {
   let method = descriptor.value;
   descriptor.value = async function (ctx: any, ...args) {
     let existingParameterGetters: ParameterGetter[] = Reflect.getOwnMetadata(parameterGetterMetadataKey, target, propertyName);
@@ -31,6 +33,22 @@ export function createParamterGetter (getterCallback: GetterCallback) {
     Reflect.defineMetadata(parameterGetterMetadataKey, existingParameterGetters, target, propertyKey);
   }
 }
+
+
+export function config (configKey: string): ((target: Object, propertyKey: string | symbol, parameterIndex: number) => void);
+export function config (configKey: Object, propertyKey: string | symbol, parameterIndex: number): void;
+export function config (configKey: string|Object, propertyKey?: string | symbol, parameterIndex?: number) {
+  if (typeof configKey === 'string') {
+    return createParamterGetter((ctx: ControllerContext) => {
+      return ctx.app.config.get(configKey)
+    })
+  } else if (typeof configKey === 'object') {
+    return createParamterGetter((ctx: ControllerContext) => {
+      return ctx.app.config
+    })(configKey, propertyKey, parameterIndex)
+  }
+}
+
 
 export const query = (key: string) => createParamterGetter((ctx) => {
   return ctx.query[key];
@@ -61,10 +79,10 @@ export const bodyText = () => createParamterGetter((ctx: any) => {
 })
 
 interface GetterCallback {
-  (ctx: any): any
+  (ctx: ControllerContext): any
 }
 
 interface ParameterGetter {
   index: number,
-  getter: GetterCallback
+  getter: GetterCallback,
 }

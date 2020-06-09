@@ -7,19 +7,37 @@ const parameterValidateMetadataKey = Symbol('paramterValidate');
 
 export const required = createParamterValidate((value, parameterIndex) => {
   if (!value) {
-    throw new SugarServerError(500, `param [${parameterIndex}] is required`);
+    throw new SugarServerError(
+      400,
+      `param [${parameterIndex}] is required`,
+      {
+        statusCode: 400
+      }
+    );
   }
 })
 
 export const string = createParamterValidate((value, parameterIndex) => {
   if (typeof value !== 'string') {
-    throw new SugarServerError(500, `param [${parameterIndex}] ${value} not string`);
+    throw new SugarServerError(
+      400,
+      `param [${parameterIndex}] ${value} not string`,
+      {
+        statusCode: 400
+      }
+    );
   }
 })
 
 export const number = createParamterValidate((value, parameterIndex) => {
   if (typeof value !== 'number') {
-    throw new SugarServerError(500, `param [${parameterIndex}] ${value} not number`);
+    throw new SugarServerError(
+      400,
+      `param [${parameterIndex}] ${value} not number`,
+      {
+        statusCode: 400
+      }
+    );
   }
 })
 

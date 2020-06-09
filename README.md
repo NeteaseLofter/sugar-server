@@ -1,4 +1,8 @@
 # sugar-server
+[![](https://img.shields.io/travis/huey-LS/sugar-server.svg)](https://travis-ci.org/huey-LS/sugar-server)
+[![npm version](https://img.shields.io/npm/v/sugar-server.svg?maxAge=3600)](https://www.npmjs.org/package/sugar-server)
+[![npm download](https://img.shields.io/npm/dm/sugar-server.svg?maxAge=3600)](https://www.npmjs.org/package/sugar-server)
+
 node服务框架，基于`koa`但是略有不同。
 
 **sugar-server** 特点

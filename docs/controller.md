@@ -3,6 +3,7 @@
 **SugarServer**中路由都是通过装饰的方式配置的。
 
 ### 例子
+
 ```typescript
 import {
   Controller,
@@ -14,6 +15,7 @@ export class HelloWorldController extends Controller {
   home () {
     return 'hello World!';
   }
+}
 ```
 
 
@@ -32,6 +34,7 @@ export class HelloWorldController extends Controller {
 
 
 ### 高阶使用
+#### 同时使用多个装饰
 装饰器的良好特性，可以支持一个函数上同时使用多个装饰
 ```typescript
 @router.GetRoute('/hello-word')
@@ -41,3 +44,25 @@ home () {
 }
 ```
 这样不管你访问 `/hello-word` 还是 `/hello-word-2`都能看到 `hello World!`
+
+#### 使用 SugarServerError 抛出错误，自动处理
+装饰器的良好特性，可以支持一个函数上同时使用多个装饰
+```typescript
+import {
+  ...
+  SugarServerError
+} from 'sugar-server'
+
+@router.GetRoute('/hello-word')
+home () {
+  throw new SugarServerError(
+    401,
+    '禁止访问',
+    {
+      statusCode: 401
+    }
+  )
+  return 'hello World!';
+}
+```
+你可以直接抛出错误，阻止继续执行代码，错误也会被自动捕获，然后返回一个自定义的错误信息[**参考Application**](./application.md)

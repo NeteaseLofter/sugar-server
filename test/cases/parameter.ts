@@ -49,5 +49,19 @@ export default function () {
       chai.expect(res.statusCode).to.equal(200);
       chai.expect(body).to.equal('abc;&&');
     })
+
+    it ('should get config', async () => {
+      const { res, body } = await request({
+        hostname: '127.0.0.1',
+        port: 9527,
+        path: '/test/get-parameter-config',
+        method: 'GET',
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded'
+        }
+      })
+      chai.expect(res.statusCode).to.equal(200);
+      chai.expect(body).to.equal('1;2');
+    })
   })
 }

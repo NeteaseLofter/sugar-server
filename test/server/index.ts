@@ -25,7 +25,12 @@ function createLofterAdminApplication () {
   const lofterAdminApplication = createApplication(
     [],
     controllers,
-    {}
+    {
+      a: 1,
+      b: {
+        c: 2
+      }
+    }
   );
 
   lofterAdminApplication.createApply();
