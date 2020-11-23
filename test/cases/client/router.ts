@@ -1,5 +1,5 @@
 import chai from 'chai';
-import { request } from '../helpers/request';
+import { request } from './helpers/request';
 
 export default function () {
   return describe('router', () => {

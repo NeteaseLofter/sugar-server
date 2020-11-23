@@ -9,12 +9,12 @@ import { SugarServerError } from './error';
 
 export function createApplication (
   middleware: Koa.Middleware[],
-  controllers: { [propName: string]: Controller },
+  Controllers: { [propName: string]: typeof Controller },
   customConfigs?: any
 ) {
   return new Application(
     middleware,
-    controllers,
+    Controllers,
     customConfigs
   )
 }
@@ -153,7 +153,7 @@ export class Application extends Koa<ControllerContext> {
 
   constructor (
     middlewareArray: Koa.Middleware[],
-    Controllers: { [propName: string]: Controller },
+    Controllers: { [propName: string]: typeof Controller },
     customConfigs?: any
   ) {
     super();
@@ -180,7 +180,10 @@ export class Application extends Koa<ControllerContext> {
       this.use(middleware)
     })
 
-    const routers = appendControllers(Controllers);
+    const routers = appendControllers(
+      Controllers,
+      this
+    );
 
     routers.forEach((router) => {
       this.use(router.routes());

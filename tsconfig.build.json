@@ -8,17 +8,21 @@
     "emitDecoratorMetadata": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "baseUrl": ".",
     "skipLibCheck": true,
+    "rootDir": "src",
+    "outDir": "lib",
     "declaration": true,
     "lib": [
       "ESNext",
       "DOM"
     ]
   },
+
   "exclude": [
     "node_modules",
-    "lib"
+    "lib",
+    "test"
   ]
 }

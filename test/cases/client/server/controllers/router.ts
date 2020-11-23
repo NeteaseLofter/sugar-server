@@ -2,11 +2,11 @@ import {
   Controller,
   router,
   ControllerContext
-} from '../../../src';
+} from '../../../../../src';
 
 
 
-export class RouterTextController extends Controller {
+export class RouterTestController extends Controller {
   static prefix = '/router-test';
 
   @router.GetRoute('/get')

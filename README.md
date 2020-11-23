@@ -3,7 +3,9 @@
 [![npm version](https://img.shields.io/npm/v/sugar-server.svg?maxAge=3600)](https://www.npmjs.org/package/sugar-server)
 [![npm download](https://img.shields.io/npm/dm/sugar-server.svg?maxAge=3600)](https://www.npmjs.org/package/sugar-server)
 
-node服务框架，基于`koa`但是略有不同。
+**用sugar吧，给你的代码加点甜度**
+
+node服务层框架，基于`koa`但是略有不同。
 
 **sugar-server** 特点
 1. 基于装饰器的路由设置、请求参数获取、格式校验工具，不再入侵的你代码，配置和阅读代码更加容易；

@@ -1,4 +1,5 @@
 import Router from 'koa-router';
+import { Application } from './application';
 
 import createThunkAttributeDescriptor from '../shared/create-thunk-attribute-descriptor';
 
@@ -72,13 +73,14 @@ export function AllRoute (path: string) {
 }
 
 export default function appendControllers (
-  controllers: any
+  Controllers: { [propName: string]: typeof Controller },
+  app: Application
 ) {
   const routers = [];
-  for (let controllerKey in controllers) {
-    let ControllerClass = controllers[controllerKey];
+  for (let controllerKey in Controllers) {
+    let ControllerClass = Controllers[controllerKey];
     if (Controller.isControllerClass(ControllerClass)) {
-      let controller = new ControllerClass();
+      let controller = new ControllerClass(app);
 
       let prefix = ControllerClass.prefix;
 

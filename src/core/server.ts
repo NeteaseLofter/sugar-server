@@ -1,4 +1,3 @@
-import Koa, { Middleware } from 'koa';
 import http, { IncomingMessage, ServerResponse, Server } from 'http';
 
 import {
@@ -11,9 +10,15 @@ import * as baseConfigs from '../configs';
 import Config from './config';
 
 
-class SugarApplication {
+class SugarServer {
   config = new Config();
-  server?: Server;
+  server: Server;
+
+  onHttpClose?: (
+    req: IncomingMessage,
+    res: ServerResponse
+  ) => void;
+
   _applyApplicationMiddleware?: (
     req: IncomingMessage,
     res: ServerResponse
@@ -35,6 +40,14 @@ class SugarApplication {
       if (this._applyApplicationMiddleware) {
         this._applyApplicationMiddleware(req, res);
       }
+      res.on('close', () => {
+        if (this.onHttpClose) {
+          this.onHttpClose(
+            req,
+            res
+          );
+        }
+      })
     }
   }
 }
@@ -43,25 +56,23 @@ export default function createServer (
   customConfigs: any,
   applicationRoutes: ApplicationMiddlewareConfig[]
 ) {
-  const app = new SugarApplication();
-  const config = app.config;
+  const sugarServer = new SugarServer();
+  const config = sugarServer.config;
 
-  app.config.add(baseConfigs);
-  app.config.add(customConfigs);
+  sugarServer.config.add(baseConfigs);
+  sugarServer.config.add(customConfigs);
 
-  // app.use(bodyParser());
-
-  app.useApplicationMiddleware(
+  sugarServer.useApplicationMiddleware(
     createApplyApplicationMiddleware(applicationRoutes)
   )
 
   const serverName = config.get('server.name');
   const httpPort = config.get('server.port');
   // app.listen(httpPort);
-  let server = http.createServer(app.callback());
+  let server = http.createServer(sugarServer.callback());
   server.listen(httpPort);
-  app.server = server;
+  sugarServer.server = server;
   console.info(`new ${serverName} server start listen at ${httpPort}`);
 
-  return app;
+  return sugarServer;
 }

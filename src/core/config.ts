@@ -6,7 +6,18 @@ export default class Config {
   }
 
   get (path: string) {
-    return this._configs[path];
+    let result = this._configs[path];
+    // if (!result) {
+    //   let objResult;
+    //   let configs = this._configs;
+    //   let childPath = path + '.';
+    //   Object.keys(this._configs).forEach((configKey) => {
+    //     if (configKey.indexOf(childPath) === 0) {
+
+    //     }
+    //   })
+    // }
+    return result;
   }
 
   add (json: any) {

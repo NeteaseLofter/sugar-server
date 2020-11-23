@@ -1,9 +1,9 @@
 import {
   createServer,
   createApplication
-} from '../../src';
+} from '../../../../src';
 
-import * as controllers from './controllers';
+import * as Controllers from './controllers';
 
 const server = createServer(
   { server: { port: 9527 } },
@@ -24,7 +24,7 @@ export { stop };
 function createLofterAdminApplication () {
   const lofterAdminApplication = createApplication(
     [],
-    controllers,
+    Controllers,
     {
       a: 1,
       b: {
@@ -37,4 +37,3 @@ function createLofterAdminApplication () {
 
   return lofterAdminApplication;
 }
-

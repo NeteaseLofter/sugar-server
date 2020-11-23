@@ -1,17 +1,16 @@
-import routerCase from './router';
-import parameterCase from './parameter';
-import validatorCase from './validator';
-import baseCase from './base';
+import { runClientCases } from './client';
+import { runServerCases } from './server';
 
-export function run (stop: () => void) {
+export function run () {
   describe('sugar-server', function () {
+    let stop;
     after(function () {
-      stop();
+      if (stop) {
+        stop();
+      }
     });
 
-    baseCase();
-    routerCase();
-    parameterCase();
-    validatorCase();
+    stop = runServerCases();
+    runClientCases();
   })
 }

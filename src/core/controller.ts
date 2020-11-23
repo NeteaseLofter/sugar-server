@@ -1,3 +1,5 @@
+import { Application } from './application';
+
 export default class Controller {
   static isController (obj: any): obj is Controller {
     return obj instanceof Controller;
@@ -10,6 +12,12 @@ export default class Controller {
   static __sugar_Controller = true;
 
   static prefix?: string;
+
+  app: Application;
+
+  constructor (app: Application) {
+    this.app = app;
+  }
 
   // static _routes = [];
 

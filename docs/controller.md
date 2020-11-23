@@ -1,5 +1,9 @@
 ## Controller配置指南
 
+### 属性
+1. `app` - **Controller** 实例化时挂载的 **application**
+
+### 添加路由
 **SugarServer**中路由都是通过装饰的方式配置的。
 
 ### 例子

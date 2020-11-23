@@ -3,9 +3,8 @@ import {
   router,
   parameter,
   validator,
-  Config,
-  ControllerContext
-} from '../../../src';
+  Config
+} from '../../../../../src';
 
 
 
