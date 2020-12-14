@@ -36,7 +36,7 @@ export interface ApplicationMiddlewareConfig {
     includes?: string[],
     excludes?: string[]
   },
-  path?: string,
+  path?: string|RegExp,
   rewrite?: (reqUrl: url.UrlWithStringQuery, req: IncomingMessage) => string;
 }
 
@@ -58,7 +58,9 @@ export function createApplyApplicationMiddleware (
         if (!reqUrl.pathname) {
           current = false;
         } else if (
-          reqUrl.pathname.indexOf(path) !== 0
+          typeof path === 'string'
+          ? (reqUrl.pathname.indexOf(path) !== 0)
+          : !path.test(reqUrl.pathname)
         ) {
           current = false;
         }
@@ -100,7 +102,12 @@ export function createApplyApplicationMiddleware (
       if (foundApplicationConfig.rewrite) {
         routerPath = foundApplicationConfig.rewrite(reqUrl, req);
       } else if (foundApplicationConfig.path && reqUrl.pathname) {
-        routerPath = reqUrl.pathname.slice(foundApplicationConfig.path.length);
+        const path = foundApplicationConfig.path;
+        if (typeof path === 'string') {
+          routerPath = reqUrl.pathname.slice(path.length);
+        } else {
+          routerPath = reqUrl.pathname.replace(path, '');
+        }
         if (routerPath.length === 0) {
           routerPath = '/';
         }

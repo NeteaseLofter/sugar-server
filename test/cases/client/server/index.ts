@@ -14,8 +14,27 @@ const server = createServer(
   ]
 );
 
+const serverWithPath = createServer(
+  { server: { port: 9528 } },
+  [
+    {
+      application: createLofterAdminApplication(),
+      path: '/path'
+    },
+    {
+      application: createLofterAdminApplication(),
+      path: /^\/reg-path/
+    },
+    {
+      application: createLofterAdminApplication(),
+      path: /^(?!:\/router-test)/
+    }
+  ]
+);
+
 const stop = () => {
   server.server.close();
+  serverWithPath.server.close();
 }
 
 export { stop };
