@@ -1,7 +1,17 @@
 {
   "name": "sugar-server",
   "version": "0.1.4",
-  "description": "",
+  "description": "web app framework",
+  "keywords": [
+    "server",
+    "framework",
+    "application",
+    "web",
+    "app",
+    "webapp",
+    "http",
+    "decorator style routing"
+  ],
   "main": "lib/index.js",
   "files": [
     "lib"
