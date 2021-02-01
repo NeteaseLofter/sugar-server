@@ -40,7 +40,7 @@ export default function () {
       const { res, body } = await request({
         hostname: '127.0.0.1',
         port: 9527,
-        path: '/test/post-parameter-json',
+        path: '/test/post-parameter-json-path',
         method: 'POST',
         headers: {
           'Content-type': 'application/json'
@@ -62,6 +62,20 @@ export default function () {
       }, 'f1=abc&f2=' + encodeURIComponent('&&'))
       chai.expect(res.statusCode).to.equal(200);
       chai.expect(body).to.equal('abc;&&');
+    })
+
+    it ('should get formData with path', async () => {
+      const { res, body } = await request({
+        hostname: '127.0.0.1',
+        port: 9527,
+        path: '/test/post-parameter-form-path',
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded'
+        }
+      }, 'id=123&name=Tim');
+      chai.expect(res.statusCode).to.equal(200);
+      chai.expect(body).to.equal('string 123 string Tim');
     })
 
     it ('should get config', async () => {

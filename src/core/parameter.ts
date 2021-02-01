@@ -89,28 +89,41 @@ export const bodyJSON = (path?: string) => createParamterGetter(async (ctx: any)
     parsedBodyJSON = await parse.json(ctx.req)
     ctx._parsedBodyJSON = parsedBodyJSON;
   }
-  let result = parsedBodyJSON;
-  const pathArr = path.split('.');
-  for (let i = 0;i < pathArr.length; i++) {
-    result = result[pathArr[i]];
-    if (
-      typeof result === 'undefined'
-      || result === null
-    ) {
-      break;
-    }
-  }
-
-  return result;
+  return findDataByPath(parsedBodyJSON, path);
 })
 
-export const bodyFormData = () => createParamterGetter((ctx: any) => {
-  return parse.form(ctx.req)
+export const bodyFormData = (path?: string) => createParamterGetter(async (ctx: any) => {
+  let parsedBodyJSON;
+  if (ctx._parsedBodyJSON) {
+    parsedBodyJSON = ctx._parsedBodyJSON;
+  } else {
+    parsedBodyJSON = await parse.form(ctx.req)
+    ctx._parsedBodyJSON = parsedBodyJSON;
+  }
+
+  return findDataByPath(parsedBodyJSON, path);
 })
 
 export const bodyText = () => createParamterGetter((ctx: any) => {
   return parse.text(ctx.req)
 })
+
+function findDataByPath (data: any, path?: string) {
+  let result = data;
+  if (typeof path === 'string') {
+    const pathArr = path.split('.');
+    for (let i = 0;i < pathArr.length; i++) {
+      result = result[pathArr[i]];
+      if (
+        typeof result === 'undefined'
+        || result === null
+      ) {
+        break;
+      }
+    }
+  }
+  return result;
+}
 
 interface GetterCallback {
   (ctx: ControllerContext): any
