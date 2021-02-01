@@ -36,6 +36,20 @@ export default function () {
       chai.expect(body).to.equal(JSON.stringify({ b: 1 }));
     })
 
+    it ('should get json body by path', async () => {
+      const { res, body } = await request({
+        hostname: '127.0.0.1',
+        port: 9527,
+        path: '/test/post-parameter-json',
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        }
+      }, JSON.stringify({ id: 123 }))
+      chai.expect(res.statusCode).to.equal(200);
+      chai.expect(body).to.equal('number 123');
+    })
+
     it ('should get formData body', async () => {
       const { res, body } = await request({
         hostname: '127.0.0.1',

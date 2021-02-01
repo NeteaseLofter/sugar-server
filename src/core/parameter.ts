@@ -81,8 +81,24 @@ export const body = () => createParamterGetter((ctx: any) => {
   return parse(ctx.req);
 })
 
-export const bodyJSON = () => createParamterGetter((ctx: any) => {
-  return parse.json(ctx.req)
+export const bodyJSON = (path?: string) => createParamterGetter((ctx: any) => {
+  const jsonPromise = parse.json(ctx.req);
+  if (path) {
+    return jsonPromise.then((result) => {
+      const pathArr = path.split('.');
+      for (let i = 0;i < pathArr.length; i++) {
+        result = result[pathArr[i]];
+        if (
+          typeof result === 'undefined'
+          || result === null
+        ) {
+          break;
+        }
+      }
+      return result;
+    })
+  }
+  return jsonPromise;
 })
 
 export const bodyFormData = () => createParamterGetter((ctx: any) => {

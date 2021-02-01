@@ -42,7 +42,7 @@ export const number = createParamterValidate((value, parameterIndex) => {
 })
 
 
-export function validate (target: any, propertyName: string, descriptor: TypedPropertyDescriptor<Function>) {
+export function validate (target: any, propertyName: string, descriptor: TypedPropertyDescriptor<any>) {
   let method = descriptor.value;
   descriptor.value = function () {
     let existingParameterValidator: ParameterValidator[] = Reflect.getOwnMetadata(parameterValidateMetadataKey, target, propertyName);

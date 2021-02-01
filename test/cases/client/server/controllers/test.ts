@@ -38,6 +38,16 @@ export class TestController extends Controller {
     return `${body.f1};${body.f2}`;
   }
 
+  @router.PostRoute('/post-parameter-json')
+  @parameter.getter
+  @validator.validate
+  testPostParameterFormJSONRoute (
+    @parameter.bodyJSON('id')
+    id: number
+  ) {
+    return `${typeof id} ${id}`;
+  }
+
   @router.GetRoute('/get-parameter-config')
   @parameter.getter
   testGetParameterConfigRoute (
