@@ -61,7 +61,13 @@ home (
       // 这样就能输出 小明 了
     }
     ```
-4. `body()`/`bodyJSON()`/`bodyFormData()`/`bodyText()` 获取请求体中的数据 `body()` 会根据 **content-type** 自动识别，`bodyJSON()`/`bodyFormData()`/`bodyText()`则是直接转化成指定的格式
-5. `config`/`config(configKey)` 获取**config**中的配置
-6. `Response`/`NodeResponse`/`Request`/`NodeRequest` 分别获取 koa的response, node的response，koa的request, node的request
-7. `Context` koa的context，一般不太需要使用
+4. `body()` 获取请求体中的数据 `body()` 会根据 **content-type** 自动识别;
+5. `bodyJSON(path)` 获取JSON格式的请求体的内容，带path同上
+   1. 比如请求body 为 `{ "id": 123 }` 的JSON;
+   2. 不是用 path 参数， 则返回 `{ "id": 123 }`，完整的数据；
+   3. 传入参数 `bodyJSON('id')`， 则返回 `123`，id属性的内容；
+6. `bodyFormData(path)` 获取formData的请求体的内容, 带path同上
+7. `bodyText()` 获取字符串格式的请求体的内容
+8. `config`/`config(configKey)` 获取**config**中的配置
+9.  `Response`/`NodeResponse`/`Request`/`NodeRequest` 分别获取 koa的response, node的response，koa的request, node的request
+10. `Context` koa的context，一般不太需要使用
