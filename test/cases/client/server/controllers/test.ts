@@ -43,9 +43,11 @@ export class TestController extends Controller {
   @validator.validate
   testPostParameterFormJSONRoute (
     @parameter.bodyJSON('id')
-    id: number
+    id: number,
+    @parameter.bodyJSON('name')
+    name: string
   ) {
-    return `${typeof id} ${id}`;
+    return `${typeof id} ${id} ${typeof name} ${name}`;
   }
 
   @router.GetRoute('/get-parameter-config')

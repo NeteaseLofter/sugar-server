@@ -45,9 +45,9 @@ export default function () {
         headers: {
           'Content-type': 'application/json'
         }
-      }, JSON.stringify({ id: 123 }))
+      }, JSON.stringify({ id: 123, name: 'Tim' }))
       chai.expect(res.statusCode).to.equal(200);
-      chai.expect(body).to.equal('number 123');
+      chai.expect(body).to.equal('number 123 string Tim');
     })
 
     it ('should get formData body', async () => {
