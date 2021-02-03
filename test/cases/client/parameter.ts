@@ -36,6 +36,34 @@ export default function () {
       chai.expect(body).to.equal(JSON.stringify({ b: 1 }));
     })
 
+    it ('should get body by path with json', async () => {
+      const { res, body } = await request({
+        hostname: '127.0.0.1',
+        port: 9527,
+        path: '/test/post-parameter-body-path',
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        }
+      }, JSON.stringify({ id: 123, name: 'Tim' }))
+      chai.expect(res.statusCode).to.equal(200);
+      chai.expect(body).to.equal('number 123 string Tim');
+    })
+
+    it ('should get body by path with form', async () => {
+      const { res, body } = await request({
+        hostname: '127.0.0.1',
+        port: 9527,
+        path: '/test/post-parameter-body-path',
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded'
+        }
+      }, 'id=123&name=Tim')
+      chai.expect(res.statusCode).to.equal(200);
+      chai.expect(body).to.equal('string 123 string Tim');
+    })
+
     it ('should get json body by path', async () => {
       const { res, body } = await request({
         hostname: '127.0.0.1',

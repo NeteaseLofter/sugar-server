@@ -77,30 +77,27 @@ export const params = (key: string) => createParamterGetter((ctx) => {
   return ctx.params[key];
 })
 
-export const body = () => createParamterGetter((ctx: any) => {
-  return parse(ctx.req);
+export const body = (path?: string) => createParamterGetter(async (ctx: any) => {
+  const parsedBodyJSON = await getParsedBody(
+    ctx,
+    () => (parse(ctx.req))
+  );
+  return findDataByPath(parsedBodyJSON, path);
 })
 
 export const bodyJSON = (path?: string) => createParamterGetter(async (ctx: any) => {
-  let parsedBodyJSON;
-  if (ctx._parsedBodyJSON) {
-    parsedBodyJSON = ctx._parsedBodyJSON;
-  } else {
-    parsedBodyJSON = await parse.json(ctx.req)
-    ctx._parsedBodyJSON = parsedBodyJSON;
-  }
+  const parsedBodyJSON = await getParsedBody(
+    ctx,
+    () => (parse.json(ctx.req))
+  );
   return findDataByPath(parsedBodyJSON, path);
 })
 
 export const bodyFormData = (path?: string) => createParamterGetter(async (ctx: any) => {
-  let parsedBodyJSON;
-  if (ctx._parsedBodyJSON) {
-    parsedBodyJSON = ctx._parsedBodyJSON;
-  } else {
-    parsedBodyJSON = await parse.form(ctx.req)
-    ctx._parsedBodyJSON = parsedBodyJSON;
-  }
-
+  const parsedBodyJSON = await getParsedBody(
+    ctx,
+    () => (parse.form(ctx.req))
+  );
   return findDataByPath(parsedBodyJSON, path);
 })
 
@@ -124,6 +121,18 @@ function findDataByPath (data: any, path?: string) {
   }
   return result;
 }
+
+async function getParsedBody (ctx: any, parseFn: any) {
+  let parsedBodyJSON;
+  if (ctx._parsedBodyJSON) {
+    parsedBodyJSON = ctx._parsedBodyJSON;
+  } else {
+    parsedBodyJSON = await parseFn();
+    ctx._parsedBodyJSON = parsedBodyJSON;
+  }
+  return parsedBodyJSON;
+}
+
 
 interface GetterCallback {
   (ctx: ControllerContext): any
