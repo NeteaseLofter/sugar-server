@@ -61,11 +61,11 @@ home (
       // 这样就能输出 小明 了
     }
     ```
-4. `body()` 获取请求体中的数据 `body()` 会根据 **content-type** 自动识别;
-5. `bodyJSON(path)` 获取JSON格式的请求体的内容，带path同上
+4. `body(path)` 获取请求体中的数据 `body()` 会根据 **content-type** 自动识别; path 为可选参数，使用方法如下：
    1. 比如请求body 为 `{ "id": 123 }` 的JSON;
    2. 不是用 path 参数， 则返回 `{ "id": 123 }`，完整的数据；
-   3. 传入参数 `bodyJSON('id')`， 则返回 `123`，id属性的内容；
+   3. 传入参数 `body('id')`， 则返回 `123`，id属性的内容；
+5. `bodyJSON(path)` 获取JSON格式的请求体的内容，带path同上;
 6. `bodyFormData(path)` 获取formData的请求体的内容, 带path同上
 7. `bodyText()` 获取字符串格式的请求体的内容
 8. `config`/`config(configKey)` 获取**config**中的配置
