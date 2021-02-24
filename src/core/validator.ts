@@ -130,15 +130,15 @@ export function createParameterValidate (validateCallback: ValidateCallback) {
   return parameterValidate;
 }
 
-interface ParameterValidate {
+export interface ParameterValidate {
   (target: Object, propertyKey: string | symbol, parameterIndex: number): void;
   validateCallback: ValidateCallback
 }
-interface ValidateCallback {
+export interface ValidateCallback {
   (value: any, parameterIndex: number|string, ctx: ControllerContext): void
 }
 
-interface ParameterValidator {
+export interface ParameterValidator {
   index: number,
   validator: ValidateCallback
 }

@@ -134,11 +134,11 @@ async function getParsedBody (ctx: any, parseFn: any) {
 }
 
 
-interface GetterCallback {
+export interface GetterCallback {
   (ctx: ControllerContext): any
 }
 
-interface ParameterGetter {
+export interface ParameterGetter {
   index: number,
   getter: GetterCallback,
 }
