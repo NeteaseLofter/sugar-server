@@ -3,10 +3,25 @@ import {
   router,
   parameter,
   validator,
-  Config
+  Config,
+  SugarServerError
 } from '../../../../../src';
 
-
+const asyncValidator = validator.createParamterValidate((value, index, ctx) => {
+  return new Promise((resolve, reject) => {
+    if (value !== 'success') {
+      throw new SugarServerError(
+        400,
+        `name must be success`,
+        {
+          statusCode: 400
+        }
+      );
+    };
+    ctx.name = value;
+    return resolve(true);
+  })
+})
 
 export class TestController extends Controller {
   static prefix = '/test';
@@ -86,14 +101,50 @@ export class TestController extends Controller {
   }
 
 
-  @router.GetRoute('/post-validate')
+  @router.GetRoute('/query-validate')
   @parameter.getter
   @validator.validate
-  testPostValidateRoute (
+  testQueryValidateRoute (
     @parameter.query('id')
     @validator.required
     id: string
   ) {
     return id;
+  }
+
+  @router.PostRoute('/post-validate')
+  @parameter.getter
+  @validator.validate
+  testPostValidateRoute (
+    @parameter.body('id')
+    @validator.required
+    @validator.number
+    id: number,
+
+    @parameter.body('name')
+    @validator.string
+    name: string,
+
+    @parameter.body('tags')
+    @validator.array(
+      validator.string
+    )
+    tags: string[]
+  ) {
+    return `${id} ${name} ${tags.join(',')}`;
+  }
+
+  @router.PostRoute('/async-validate')
+  @parameter.getter
+  @validator.validate
+  testAsyncValidateRoute (
+    @parameter.body('name')
+    @asyncValidator
+    name: string,
+
+    @parameter.Context
+    ctx: any
+  ) {
+    return `${name} ${ctx.name === name}`;
   }
 }

@@ -9,7 +9,7 @@ const server = createServer(
   { server: { port: 9527 } },
   [
     {
-      application: createLofterAdminApplication()
+      application: createTestApplication()
     }
   ]
 );
@@ -18,15 +18,15 @@ const serverWithPath = createServer(
   { server: { port: 9528 } },
   [
     {
-      application: createLofterAdminApplication(),
+      application: createTestApplication(),
       path: '/path'
     },
     {
-      application: createLofterAdminApplication(),
+      application: createTestApplication(),
       path: /^\/reg-path/
     },
     {
-      application: createLofterAdminApplication(),
+      application: createTestApplication(),
       path: /^(?!:\/router-test)/
     }
   ]
@@ -40,8 +40,8 @@ const stop = () => {
 export { stop };
 
 
-function createLofterAdminApplication () {
-  const lofterAdminApplication = createApplication(
+function createTestApplication () {
+  const testApplication = createApplication(
     [],
     Controllers,
     {
@@ -52,7 +52,19 @@ function createLofterAdminApplication () {
     }
   );
 
-  lofterAdminApplication.createApply();
+  testApplication.createApply();
 
-  return lofterAdminApplication;
+  testApplication.controllerMiddleware = async (ctx, next) => {
+    const controllerResult = await next();
+    if (
+      controllerResult
+      && controllerResult.custom
+    ) {
+      return controllerResult.custom
+    } else {
+      return controllerResult;
+    }
+  }
+
+  return testApplication;
 }

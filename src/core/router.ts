@@ -1,9 +1,9 @@
 import Router from 'koa-router';
 import { Application } from './application';
+import type { ControllerContext } from './application'
+import Controller from './controller';
 
 import createThunkAttributeDescriptor from '../shared/create-thunk-attribute-descriptor';
-
-import Controller from './controller';
 
 const ROUTES_KEY = Symbol('_sugar_routes');
 
@@ -93,10 +93,16 @@ export default function appendControllers (
           key,
           method,
           path
-        }: { key: string, method: 'get'|'post'|'put'|'del'|'all', path: string }) => {
+        }: {
+          key: string,
+          method: 'get'|'post'|'put'|'del'|'all',
+          path: string
+        }) => {
           if (typeof (controller as any)[key] === 'function') {
-            router[method] && router[method](path, async (ctx, next) => {
-              const controllerReturn = await (controller as any)[key].call(controller, ctx, next)
+            router[method] && router[method](path, async (ctx: ControllerContext, next) => {
+              const controllerReturn = await app.controllerMiddleware(ctx, () => {
+                return (controller as any)[key].call(controller, ctx, next)
+              })
               if (
                 typeof controllerReturn !== 'undefined' &&
                 !ctx.res.writableEnded &&
@@ -104,8 +110,6 @@ export default function appendControllers (
               ) {
                 ctx.body = controllerReturn;
               }
-              // console.log('finish controller router', key);
-              // console.log(ctx.res.finished);
               await next();
             });
           }

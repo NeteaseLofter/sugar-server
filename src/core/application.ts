@@ -1,6 +1,7 @@
-import Koa from 'koa';
 import { IncomingMessage, ServerResponse } from 'http';
 import url from 'url';
+import Koa from 'koa';
+import type Router from 'koa-router';
 
 import Controller from './controller';
 import appendControllers from './router';
@@ -135,9 +136,12 @@ export interface ExControllerContext {
   routerPath?: string
 }
 
-export type ControllerContext =  ExControllerContext & Koa.Context & {
-  app: Application
-}
+export type ControllerContext = ExControllerContext
+  & Koa.Context
+  & Router.RouterContext
+  & {
+    app: Application
+  }
 
 export class Application extends Koa<ControllerContext> {
   _applyRequest: any;
@@ -156,6 +160,10 @@ export class Application extends Koa<ControllerContext> {
         message: e.message
       }
     }
+  }
+
+  async controllerMiddleware (ctx: ControllerContext, next: () => Promise<any>) {
+    return await next();
   }
 
   constructor (
