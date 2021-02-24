@@ -4,9 +4,9 @@ import { ControllerContext } from './application';
 import createThunkAttributeDescriptor from '../shared/create-thunk-attribute-descriptor';
 import { SugarServerError } from './error';
 
-const parameterValidateMetadataKey = Symbol('paramterValidate');
+const parameterValidateMetadataKey = Symbol('parameterValidate');
 
-export const required = createParamterValidate((value, parameterIndex) => {
+export const required = createParameterValidate((value, parameterIndex) => {
   if (!value) {
     throw new SugarServerError(
       400,
@@ -18,7 +18,7 @@ export const required = createParamterValidate((value, parameterIndex) => {
   }
 })
 
-export const string = createParamterValidate((value, parameterIndex) => {
+export const string = createParameterValidate((value, parameterIndex) => {
   if (typeof value !== 'string') {
     throw new SugarServerError(
       400,
@@ -30,7 +30,7 @@ export const string = createParamterValidate((value, parameterIndex) => {
   }
 })
 
-export const number = createParamterValidate((value, parameterIndex) => {
+export const number = createParameterValidate((value, parameterIndex) => {
   if (typeof value !== 'number') {
     throw new SugarServerError(
       400,
@@ -43,8 +43,8 @@ export const number = createParamterValidate((value, parameterIndex) => {
 })
 
 export const array = (
-  itemExtraCheck: ValidateCallback|ParamterValidate
-) => createParamterValidate(async (value, parameterIndex, ctx) => {
+  itemExtraCheck: ValidateCallback|ParameterValidate
+) => createParameterValidate(async (value, parameterIndex, ctx) => {
   if (!Array.isArray(value)) {
     throw new SugarServerError(
       400,
@@ -57,7 +57,7 @@ export const array = (
   if (itemExtraCheck) {
     let itemValidateCallback: ValidateCallback;
     if (
-      isParamterValidate(itemExtraCheck)
+      isParameterValidate(itemExtraCheck)
     ) {
       itemValidateCallback = itemExtraCheck.validateCallback;
     } else {
@@ -70,15 +70,15 @@ export const array = (
   }
 })
 
-function isParamterValidate (obj: ValidateCallback|ParamterValidate): obj is ParamterValidate {
-  return !!(obj as ParamterValidate).validateCallback;
+function isParameterValidate (obj: ValidateCallback|ParameterValidate): obj is ParameterValidate {
+  return !!(obj as ParameterValidate).validateCallback;
 }
 
 
 export function validate (target: any, propertyName: string, descriptor: TypedPropertyDescriptor<any>) {
   let method = descriptor.value;
   descriptor.value = async function () {
-    // 通过paramterGetter处理后，最后2个参数是 ctx、next
+    // 通过parameterGetter处理后，最后2个参数是 ctx、next
     const ctx = arguments[arguments.length - 2];
     let existingParameterValidator: ParameterValidator[] = Reflect.getOwnMetadata(parameterValidateMetadataKey, target, propertyName);
     if (existingParameterValidator) {
@@ -95,7 +95,7 @@ export function validate (target: any, propertyName: string, descriptor: TypedPr
   }
 }
 
-export const validated = createThunkAttributeDescriptor<ParamterValidate[]>((
+export const validated = createThunkAttributeDescriptor<ParameterValidate[]>((
   validators,
   target,
   key,
@@ -117,8 +117,8 @@ export const validated = createThunkAttributeDescriptor<ParamterValidate[]>((
   }
 })
 
-export function createParamterValidate (validateCallback: ValidateCallback) {
-  function paramterValidate (target: Object, propertyKey: string | symbol, parameterIndex: number) {
+export function createParameterValidate (validateCallback: ValidateCallback) {
+  function parameterValidate (target: Object, propertyKey: string | symbol, parameterIndex: number) {
     let existingParameterValidator: ParameterValidator[] = Reflect.getOwnMetadata(parameterValidateMetadataKey, target, propertyKey) || [];
     existingParameterValidator.push({
       index: parameterIndex,
@@ -126,11 +126,11 @@ export function createParamterValidate (validateCallback: ValidateCallback) {
     })
     Reflect.defineMetadata(parameterValidateMetadataKey, existingParameterValidator, target, propertyKey);
   }
-  paramterValidate.validateCallback = validateCallback;
-  return paramterValidate;
+  parameterValidate.validateCallback = validateCallback;
+  return parameterValidate;
 }
 
-interface ParamterValidate {
+interface ParameterValidate {
   (target: Object, propertyKey: string | symbol, parameterIndex: number): void;
   validateCallback: ValidateCallback
 }

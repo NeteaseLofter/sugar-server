@@ -3,7 +3,7 @@ import parse from 'co-body';
 
 import { ControllerContext } from './application';
 
-const parameterGetterMetadataKey = Symbol('_paramterGetter');
+const parameterGetterMetadataKey = Symbol('_parameterGetter');
 
 export function getter (target: any, propertyName: string, descriptor: TypedPropertyDescriptor<any>) {
   let method = descriptor.value;
@@ -22,8 +22,8 @@ export function getter (target: any, propertyName: string, descriptor: TypedProp
   }
 }
 
-export function createParamterGetter (getterCallback: GetterCallback) {
-  return function paramterValidate (target: Object, propertyKey: string | symbol, parameterIndex: number) {
+export function createParameterGetter (getterCallback: GetterCallback) {
+  return function parameterValidate (target: Object, propertyKey: string | symbol, parameterIndex: number) {
     let existingParameterGetters: ParameterGetter[] = Reflect.getOwnMetadata(parameterGetterMetadataKey, target, propertyKey) || [];
     existingParameterGetters.push({
       index: parameterIndex,
@@ -39,45 +39,45 @@ export function config (configKey: string): ((target: Object, propertyKey: strin
 export function config (configKey: Object, propertyKey: string | symbol, parameterIndex: number): void;
 export function config (configKey: string|Object, propertyKey?: string | symbol, parameterIndex?: number) {
   if (typeof configKey === 'string') {
-    return createParamterGetter((ctx: ControllerContext) => {
+    return createParameterGetter((ctx: ControllerContext) => {
       return ctx.app.config.get(configKey)
     })
   } else if (typeof configKey === 'object') {
-    return createParamterGetter((ctx: ControllerContext) => {
+    return createParameterGetter((ctx: ControllerContext) => {
       return ctx.app.config
     })(configKey, propertyKey, parameterIndex)
   }
 }
 
-export const Response = createParamterGetter((ctx) => {
+export const Response = createParameterGetter((ctx) => {
   return ctx.response;
 })
-export const NodeResponse = createParamterGetter((ctx) => {
+export const NodeResponse = createParameterGetter((ctx) => {
   return ctx.res;
 })
-export const Request = createParamterGetter((ctx) => {
+export const Request = createParameterGetter((ctx) => {
   return ctx.request;
 })
-export const NodeRequest = createParamterGetter((ctx) => {
+export const NodeRequest = createParameterGetter((ctx) => {
   return ctx.req;
 })
-export const Context = createParamterGetter((ctx) => {
+export const Context = createParameterGetter((ctx) => {
   return ctx;
 })
 
-export const query = (key: string) => createParamterGetter((ctx) => {
+export const query = (key: string) => createParameterGetter((ctx) => {
   return ctx.query[key];
 })
 
-export const header = (key: string) => createParamterGetter((ctx) => {
+export const header = (key: string) => createParameterGetter((ctx) => {
   return ctx.headers[key];
 })
 
-export const params = (key: string) => createParamterGetter((ctx) => {
+export const params = (key: string) => createParameterGetter((ctx) => {
   return ctx.params[key];
 })
 
-export const body = (path?: string) => createParamterGetter(async (ctx: any) => {
+export const body = (path?: string) => createParameterGetter(async (ctx: any) => {
   const parsedBodyJSON = await getParsedBody(
     ctx,
     () => (parse(ctx.req))
@@ -85,7 +85,7 @@ export const body = (path?: string) => createParamterGetter(async (ctx: any) => 
   return findDataByPath(parsedBodyJSON, path);
 })
 
-export const bodyJSON = (path?: string) => createParamterGetter(async (ctx: any) => {
+export const bodyJSON = (path?: string) => createParameterGetter(async (ctx: any) => {
   const parsedBodyJSON = await getParsedBody(
     ctx,
     () => (parse.json(ctx.req))
@@ -93,7 +93,7 @@ export const bodyJSON = (path?: string) => createParamterGetter(async (ctx: any)
   return findDataByPath(parsedBodyJSON, path);
 })
 
-export const bodyFormData = (path?: string) => createParamterGetter(async (ctx: any) => {
+export const bodyFormData = (path?: string) => createParameterGetter(async (ctx: any) => {
   const parsedBodyJSON = await getParsedBody(
     ctx,
     () => (parse.form(ctx.req))
@@ -101,7 +101,7 @@ export const bodyFormData = (path?: string) => createParamterGetter(async (ctx: 
   return findDataByPath(parsedBodyJSON, path);
 })
 
-export const bodyText = () => createParamterGetter((ctx: any) => {
+export const bodyText = () => createParameterGetter((ctx: any) => {
   return parse.text(ctx.req)
 })
 

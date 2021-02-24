@@ -7,7 +7,7 @@ import {
   SugarServerError
 } from '../../../../../src';
 
-const asyncValidator = validator.createParamterValidate((value, index, ctx) => {
+const asyncValidator = validator.createParameterValidate((value, index, ctx) => {
   return new Promise((resolve, reject) => {
     if (value !== 'success') {
       throw new SugarServerError(
