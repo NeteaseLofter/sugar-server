@@ -100,6 +100,21 @@ export class TestController extends Controller {
     return `${config.get('a')};${bc}`;
   }
 
+  @router.GetRoute('/get-parameter-cookie')
+  @parameter.getter
+  testGetParameterCookieRoute (
+    @parameter.cookie('cookie1')
+    cookie1?: string,
+
+    @parameter.cookie('cookie2')
+    cookie2?: string,
+
+    @parameter.cookie('cookie3')
+    cookie3?: string
+  ) {
+    return `cookie2 ${cookie2}; cookie1 ${cookie1}; cookie3 ${cookie3};`;
+  }
+
 
   @router.GetRoute('/query-validate')
   @parameter.getter

@@ -77,7 +77,7 @@ export const params = (key: string) => createParameterGetter((ctx) => {
   return ctx.params[key];
 })
 
-export const body = (path?: string) => createParameterGetter(async (ctx: any) => {
+export const body = (path?: string) => createParameterGetter(async (ctx) => {
   const parsedBodyJSON = await getParsedBody(
     ctx,
     () => (parse(ctx.req))
@@ -85,7 +85,7 @@ export const body = (path?: string) => createParameterGetter(async (ctx: any) =>
   return findDataByPath(parsedBodyJSON, path);
 })
 
-export const bodyJSON = (path?: string) => createParameterGetter(async (ctx: any) => {
+export const bodyJSON = (path?: string) => createParameterGetter(async (ctx) => {
   const parsedBodyJSON = await getParsedBody(
     ctx,
     () => (parse.json(ctx.req))
@@ -93,7 +93,7 @@ export const bodyJSON = (path?: string) => createParameterGetter(async (ctx: any
   return findDataByPath(parsedBodyJSON, path);
 })
 
-export const bodyFormData = (path?: string) => createParameterGetter(async (ctx: any) => {
+export const bodyFormData = (path?: string) => createParameterGetter(async (ctx) => {
   const parsedBodyJSON = await getParsedBody(
     ctx,
     () => (parse.form(ctx.req))
@@ -101,7 +101,7 @@ export const bodyFormData = (path?: string) => createParameterGetter(async (ctx:
   return findDataByPath(parsedBodyJSON, path);
 })
 
-export const bodyText = () => createParameterGetter((ctx: any) => {
+export const bodyText = () => createParameterGetter((ctx) => {
   return parse.text(ctx.req)
 })
 
@@ -122,7 +122,7 @@ function findDataByPath (data: any, path?: string) {
   return result;
 }
 
-async function getParsedBody (ctx: any, parseFn: any) {
+async function getParsedBody (ctx: ControllerContext, parseFn: any) {
   let parsedBodyJSON;
   if (ctx._parsedBodyJSON) {
     parsedBodyJSON = ctx._parsedBodyJSON;
@@ -133,6 +133,11 @@ async function getParsedBody (ctx: any, parseFn: any) {
   return parsedBodyJSON;
 }
 
+export const cookie = (
+  ...args: Parameters<ControllerContext['cookies']['get']>
+) => createParameterGetter((ctx) => {
+  return ctx.cookies.get(...args)
+})
 
 export interface GetterCallback {
   (ctx: ControllerContext): any

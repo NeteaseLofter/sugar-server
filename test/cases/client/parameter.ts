@@ -119,5 +119,20 @@ export default function () {
       chai.expect(res.statusCode).to.equal(200);
       chai.expect(body).to.equal('1;2');
     })
+
+    it ('should get cookie', async () => {
+      const { res, body } = await request({
+        hostname: '127.0.0.1',
+        port: 9527,
+        path: '/test/get-parameter-cookie',
+        method: 'GET',
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded',
+          'Cookie': 'cookie1=1; cookie2=abc;'
+        }
+      })
+      chai.expect(res.statusCode).to.equal(200);
+      chai.expect(body).to.equal('cookie2 abc; cookie1 1; cookie3 undefined;');
+    })
   })
 }
