@@ -7,7 +7,7 @@ const parameterGetterMetadataKey = Symbol('_parameterGetter');
 
 export function getter (target: any, propertyName: string, descriptor: TypedPropertyDescriptor<any>) {
   let method = descriptor.value;
-  descriptor.value = async function (ctx: any, ...args) {
+  descriptor.value = async function (ctx: any, ...args: any[]) {
     let existingParameterGetters: ParameterGetter[] = Reflect.getOwnMetadata(parameterGetterMetadataKey, target, propertyName);
     let gotValues = [];
     if (existingParameterGetters) {
@@ -42,10 +42,10 @@ export function config (configKey: string|Object, propertyKey?: string | symbol,
     return createParameterGetter((ctx: ControllerContext) => {
       return ctx.app.config.get(configKey)
     })
-  } else if (typeof configKey === 'object') {
+  } else if (typeof configKey === 'object' && propertyKey) {
     return createParameterGetter((ctx: ControllerContext) => {
       return ctx.app.config
-    })(configKey, propertyKey, parameterIndex)
+    })(configKey, propertyKey, parameterIndex as number)
   }
 }
 
@@ -133,7 +133,11 @@ async function getParsedBody (ctx: ControllerContext, parseFn: any) {
   return parsedBodyJSON;
 }
 
-export const cookie = (
+export const cookie: (
+  (
+    ...args: Parameters<ControllerContext['cookies']['get']>
+  ) => (target: Object, propertyKey: string | symbol, parameterIndex: number) => void
+) = (
   ...args: Parameters<ControllerContext['cookies']['get']>
 ) => createParameterGetter((ctx) => {
   return ctx.cookies.get(...args)

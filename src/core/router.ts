@@ -1,4 +1,4 @@
-import Router from 'koa-router';
+import * as Router from 'koa-router';
 import { Application } from './application';
 import type { ControllerContext } from './application'
 import Controller from './controller';
@@ -81,6 +81,7 @@ export default function appendControllers (
     let ControllerClass = Controllers[controllerKey];
     if (Controller.isControllerClass(ControllerClass)) {
       let controller = new ControllerClass(app);
+      app.controllers.push(controller);
 
       let prefix = ControllerClass.prefix;
 
@@ -99,7 +100,7 @@ export default function appendControllers (
           path: string
         }) => {
           if (typeof (controller as any)[key] === 'function') {
-            router[method] && router[method](path, async (ctx: ControllerContext, next) => {
+            router[method] && router[method](path, async (ctx: any, next) => {
               const controllerReturn = await app.controllerMiddleware(ctx, () => {
                 return (controller as any)[key].call(controller, ctx, next)
               })

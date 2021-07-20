@@ -12,7 +12,7 @@ import Config from './config';
 
 class SugarServer {
   config = new Config();
-  server: Server;
+  server?: Server;
 
   onHttpClose?: (
     req: IncomingMessage,

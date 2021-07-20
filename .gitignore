@@ -5,6 +5,7 @@
 node_modules
 .vscode
 package-lock.json
+pnpm-lock.yaml
 
 .nyc_output
 coverage.lcov

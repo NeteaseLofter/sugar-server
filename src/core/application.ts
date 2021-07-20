@@ -146,6 +146,7 @@ export type ControllerContext = ExControllerContext
 export class Application extends Koa<ControllerContext> {
   _applyRequest: any;
   config = new Config();
+  controllers: Controller[] = [];
 
   onError (e: SugarServerError, ctx: ControllerContext) {
     if (
