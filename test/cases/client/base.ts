@@ -17,7 +17,7 @@ export default function () {
       const errorListener = (err, ctx, app) => {
         serverCatchErr = err;
       };
-      server.on('onSugarError', errorListener)
+      server.on('appError', errorListener)
       const { res, body } = await request('http://127.0.0.1:9527/server-error')
       chai.expect(res.statusCode).to.equal(500);
       chai.expect(body).to.equal(JSON.stringify({
@@ -27,7 +27,7 @@ export default function () {
       chai.expect(serverCatchErr.statusCode).to.equal(500);
       chai.expect(serverCatchErr.name).to.equal('SugarServerError');
       chai.expect(serverCatchErr.message).to.equal('Server Error');
-      server.off('onSugarError', errorListener)
+      server.off('appError', errorListener)
     })
 
     it ('should custom-controller-middleware', async () => {

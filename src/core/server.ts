@@ -41,7 +41,7 @@ class SugarServer extends Emitter {
     applicationRoutes.forEach((applicationRoute) => {
       const { application } = applicationRoute;
       application.on(
-        'onSugarError',
+        'appError',
         (err: SugarServerError, ctx: ControllerContext) => {
           this.onError(
             err,
@@ -54,7 +54,7 @@ class SugarServer extends Emitter {
   }
 
   onError (err: SugarServerError, ctx: ControllerContext, app: Application) {
-    this.emit('onSugarError', err, ctx, app);
+    this.emit('appError', err, ctx, app);
   }
 
   callback () {

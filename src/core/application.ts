@@ -158,7 +158,7 @@ export class Application extends Koa<ControllerContext> {
         statusCode = err.statusCode;
       }
 
-      this.emit('onSugarError', err, ctx)
+      this.emit('appError', err, ctx)
       ctx.status = statusCode;
       ctx.body = {
         code: err.code || 0,
