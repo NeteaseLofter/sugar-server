@@ -5,7 +5,7 @@ import {
 
 import * as Controllers from './controllers';
 
-const server = createServer(
+const server: any = createServer(
   { server: { port: 9527 } },
   [
     {
@@ -14,7 +14,7 @@ const server = createServer(
   ]
 );
 
-const serverWithPath = createServer(
+const serverWithPath: any = createServer(
   { server: { port: 9528 } },
   [
     {
@@ -37,7 +37,7 @@ const stop = () => {
   serverWithPath.server.close();
 }
 
-export { stop };
+export { stop, server, serverWithPath };
 
 
 function createTestApplication () {

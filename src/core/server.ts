@@ -1,16 +1,20 @@
 import http, { IncomingMessage, ServerResponse, Server } from 'http';
+import Emitter from 'events';
 
 import {
   createApplyApplicationMiddleware,
-  ApplicationMiddlewareConfig
+  ApplicationMiddlewareConfig,
+  Application,
+  ControllerContext
 } from './application';
+import { SugarServerError } from './error';
 
 import * as baseConfigs from '../configs';
 
 import Config from './config';
 
 
-class SugarServer {
+class SugarServer extends Emitter {
   config = new Config();
   server?: Server;
 
@@ -19,17 +23,38 @@ class SugarServer {
     res: ServerResponse
   ) => void;
 
-  _applyApplicationMiddleware?: (
+  private _applyApplicationMiddleware?: (
     req: IncomingMessage,
     res: ServerResponse
   ) => void;
+
+  applicationRoutes: ApplicationMiddlewareConfig[] = [];
+
   useApplicationMiddleware (
-    applyApplicationMiddleware: (
-      req: IncomingMessage,
-      res: ServerResponse
-    ) => void
+    applicationRoutes: ApplicationMiddlewareConfig[]
   ) {
-    this._applyApplicationMiddleware = applyApplicationMiddleware;
+    this._applyApplicationMiddleware = createApplyApplicationMiddleware(
+      applicationRoutes
+    );
+
+    this.applicationRoutes = applicationRoutes;
+    applicationRoutes.forEach((applicationRoute) => {
+      const { application } = applicationRoute;
+      application.on(
+        'onSugarError',
+        (err: SugarServerError, ctx: ControllerContext) => {
+          this.onError(
+            err,
+            ctx,
+            application
+          )
+        }
+      )
+    })
+  }
+
+  onError (err: SugarServerError, ctx: ControllerContext, app: Application) {
+    this.emit('onSugarError', err, ctx, app);
   }
 
   callback () {
@@ -63,7 +88,7 @@ export default function createServer (
   sugarServer.config.add(customConfigs);
 
   sugarServer.useApplicationMiddleware(
-    createApplyApplicationMiddleware(applicationRoutes)
+    applicationRoutes
   )
 
   const serverName = config.get('server.name');

@@ -148,17 +148,21 @@ export class Application extends Koa<ControllerContext> {
   config = new Config();
   controllers: Controller[] = [];
 
-  onError (e: SugarServerError, ctx: ControllerContext) {
+  onError (err: SugarServerError, ctx: ControllerContext) {
     if (
       !ctx.res.writableEnded &&
       !ctx.res.writableFinished
     ) {
-      if (typeof e.statusCode === 'number') {
-        ctx.status = e.statusCode;
+      let statusCode = 500;
+      if (typeof err.statusCode === 'number') {
+        statusCode = err.statusCode;
       }
+
+      this.emit('onSugarError', err, ctx)
+      ctx.status = statusCode;
       ctx.body = {
-        code: e.code || 0,
-        message: e.message
+        code: err.code || 0,
+        message: err.message
       }
     }
   }

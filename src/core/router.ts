@@ -1,6 +1,5 @@
-import * as Router from 'koa-router';
+import Router from 'koa-router';
 import { Application } from './application';
-import type { ControllerContext } from './application'
 import Controller from './controller';
 
 import createThunkAttributeDescriptor from '../shared/create-thunk-attribute-descriptor';
