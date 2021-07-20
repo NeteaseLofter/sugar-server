@@ -12,7 +12,7 @@
     "http",
     "decorator style routing"
   ],
-  "main": "lib/index.ts",
+  "main": "lib/index.js",
   "files": [
     "lib"
   ],
