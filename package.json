@@ -17,13 +17,16 @@
     "lib"
   ],
   "scripts": {
-    "test": "nyc mocha -r ts-node/register  test/index.ts",
+    "test": "nyc mocha -r ts-node/register test/index.ts",
     "clean": "rimraf lib",
     "build": "npm run clean && tsc -p tsconfig.build.json",
     "prepare": "npm run build"
   },
   "license": "MIT",
   "dependencies": {
+    "@types/co-body": "^5.1.1",
+    "@types/koa": "^2.11.0",
+    "@types/koa-router": "^7.0.42",
     "co-body": "^6.0.0",
     "koa": "^2.11.0",
     "koa-router": "^7.4.0",
@@ -31,10 +34,6 @@
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
-    "@types/co-body": "^5.1.1",
-    "@types/koa": "^2.11.0",
-    "@types/koa-router": "^7.0.42",
-    "@types/koa-send": "^4.1.2",
     "@types/mocha": "^7.0.2",
     "chai": "^4.2.0",
     "cross-env": "^6.0.3",
