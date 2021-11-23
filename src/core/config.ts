@@ -29,10 +29,14 @@ export default class Config {
     return Object.keys(json).reduce((flattened, key) => {
       let data = json[key];
       let childPath = path ? `${path}.${key}` : key;
-      if (typeof data === 'string' || typeof data === 'number' || Array.isArray(data)) {
-        flattened[childPath] = data;
-      } else {
+      if (
+        typeof data === 'object'
+        && !Array.isArray(data)
+        && data !== null
+      ) {
         Object.assign(flattened, this.flat(data, childPath))
+      } else  {
+        flattened[childPath] = data;
       }
       return flattened;
     }, {} as any)
