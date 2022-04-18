@@ -40,6 +40,9 @@ class SugarServer extends Emitter {
     this.applicationRoutes = applicationRoutes;
     applicationRoutes.forEach((applicationRoute) => {
       const { application } = applicationRoute;
+      application.config.add(
+        { sugarServer: this.config._configs }
+      )
       application.on(
         'appError',
         (err: SugarServerError, ctx: ControllerContext) => {

@@ -2,6 +2,7 @@ import chai from 'chai';
 
 import {
   createApplication,
+  createServer,
   Controller
 } from '../../../src';
 
@@ -27,6 +28,28 @@ export function runServerCases () {
       );
       chai.expect(appParam).to.equal(testApp);
       chai.expect(thisApp).to.equal(testApp);
+    })
+
+    it('should server config can got in app', () => {
+      const testApp = createApplication(
+        [],
+        {}
+      );
+
+      const server = createServer(
+        { server: { port: 10010 }, abc: 1 },
+        [
+          {
+            application: testApp
+          }
+        ]
+      );
+
+      chai.expect(
+        testApp.config.get('sugarServer.abc')
+      ).to.equal(1);
+
+      server.server.close();
     })
   })
 }
