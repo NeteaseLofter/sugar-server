@@ -1,6 +1,6 @@
 {
   "name": "sugar-server",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "web app framework",
   "keywords": [
     "server",
