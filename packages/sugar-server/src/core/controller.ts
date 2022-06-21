@@ -15,7 +15,11 @@ export default class Controller {
 
   app: Application;
 
-  constructor (app: Application) {
+  constructor ({
+    app
+  }: {
+    app: Application
+  }) {
     this.app = app;
   }
 

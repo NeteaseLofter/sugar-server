@@ -1,22 +1,23 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "esnext",
-    "strict": true,
-    "allowJs": false,
-    "declaration": true,
-    "jsx": "preserve",
+    "module": "commonjs",
+    "esModuleInterop": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "skipLibCheck": true,
+    "declaration": true,
     "lib": [
       "ESNext",
       "DOM"
-    ],
-    "sourceMap": true,
-    "baseUrl": ".",
-    "rootDir": "."
-  }
+    ]
+  },
+  "exclude": [
+    "lib"
+  ]
 }

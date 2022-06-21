@@ -1,4 +1,3 @@
-import createServer from './core/server';
 import * as router from './core/router';
 import * as parameter from './core/parameter';
 
@@ -7,7 +6,6 @@ import { SugarServerError } from './core/error';
 
 import Controller from './core/controller';
 import {
-  createApplication,
   Application,
   ControllerContext
 } from './core/application'
@@ -15,8 +13,6 @@ import {
 import Config from './core/config';
 
 export {
-  createServer,
-  createApplication,
   Application,
   router,
   parameter,
@@ -26,12 +22,3 @@ export {
   ControllerContext,
   SugarServerError
 }
-
-
-// server();
-
-// function server () {
-//   var router = new Router();
-//   appendRoutes(router);
-//   app.use(router.routes());
-// }

@@ -1,0 +1,10 @@
+.DS_Store
+.eslintrc
+.idea
+
+node_modules
+.vscode
+
+*.log
+lib
+.cache

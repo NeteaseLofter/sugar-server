@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "esnext",
+    "module": "CommonJS",
     "strict": true,
     "allowJs": false,
+    "jsx": "react",
     "declaration": true,
-    "jsx": "preserve",
+    "esModuleInterop": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -15,8 +16,13 @@
       "ESNext",
       "DOM"
     ],
+    "skipLibCheck": true,
     "sourceMap": true,
+    "outDir": "lib",
     "baseUrl": ".",
-    "rootDir": "."
-  }
+    "rootDir": "src",
+  },
+  "include": [
+    "./package.json"
+  ]
 }
