@@ -1,16 +1,13 @@
 import path from 'path';
 import webpack from 'webpack';
 import WebpackChainConfig from 'webpack-chain';
-import glob from 'glob';
 
 import { BuildConfig } from '../custom-config.type';
-import { babelConfig } from '../configs/babel.static.config';
 import {
   loadAllDllModulesManifest
 } from './load-manifest';
 import {
-  dllManifestDirPath,
-  baseManifestDirPath
+  getCacheDirPath
 } from '../core/cache';
 import {
   DllDependenciesManifestPlugin
@@ -20,7 +17,7 @@ import type {
   CustomWebpackConfig
 } from '../custom-config.type';
 import {
-  SUGAR_BUILD_CONFIG_FILENAME
+  SUGAR_PACKAGE_CONFIG_FILENAME
 } from '../constants'
 
 // const mode = process.env.NODE_ENV === 'development' ? 'development' : 'production';
@@ -38,15 +35,16 @@ export {
 export async function createCommonChainConfig (
   config: WebpackConfig
 ): Promise<WebpackChainConfig> {
-  const chainConfig = new WebpackChainConfig();
+  let chainConfig = new WebpackChainConfig();
 
   const configEntry = config.entry;
 
   const normalizeEntry = (entryPath: string) => {
-    if (!entryPath.startsWith('.')) {
-      return entryPath;
-    }
-    return glob.sync(entryPath, { root: config.root });
+    return path.resolve(config.root, entryPath);
+    // if (!entryPath.startsWith('.')) {
+    //   return entryPath;
+    // }
+    // return glob.sync(entryPath, { root: config.root });
   }
   const entry = Object.keys(configEntry)
     .reduce((currentEntry, entryKey) => {
@@ -80,23 +78,29 @@ export async function createCommonChainConfig (
       moduleIds: 'named',
       chunkIds: 'named'
     },
-    stats: {
-      errorDetails: true
-    },
+    stats: true,
     module: {
       rule: {
         script: {
           test: /\.(ts|tsx|js|jsx)$/,
           use: {
-            'babel': {
-              loader: 'babel-loader',
-              options: babelConfig
+            'ts-loader': {
+              loader: 'ts-loader',
+              options: {
+                transpileOnly: true
+              }
+              // options: babelConfig
             }
           }
         }
       },
     },
-    plugin: []
+    plugin: {
+      'ProgressPlugin': {
+        plugin: webpack.ProgressPlugin,
+        args: []
+      }
+    }
   })
 
   return chainConfig;
@@ -112,7 +116,7 @@ export async function loadCustomConfig (
     custom = require(
       path.resolve(
         config.root,
-        config.webpackConfig || SUGAR_BUILD_CONFIG_FILENAME
+        SUGAR_PACKAGE_CONFIG_FILENAME
       )
     )[customFnName];
   } catch(e) {}
@@ -122,11 +126,12 @@ export async function loadCustomConfig (
 }
 
 
-export async function createDllReferences (
+export async function mergeDllReferences (
+  chainConfig: WebpackChainConfig,
   config: WebpackConfig
 ) {
   const dllModules = await loadAllDllModulesManifest(
-    dllManifestDirPath,
+    getCacheDirPath(),
     config.rootHash
   );
 
@@ -137,40 +142,35 @@ export async function createDllReferences (
     [dllName: string]: string[];
   })
 
-  return {
-    ...(
-      dllModules.reduce((
-        dllPlugins,
-        module
-      ) => {
-        dllPlugins[module.moduleName] = {
-          plugin: webpack.DllReferencePlugin,
-          args: [{
-            context: module.context,
-            manifest: module.manifest
-          }]
-        };
-        return dllPlugins;
-      }, {} as any)
-    ),
-    'DllDependenciesManifestPlugin': {
-      plugin: DllDependenciesManifestPlugin,
-      args: [
-        {
-          dllAssets,
-          fileName: path.resolve(
-            baseManifestDirPath,
-            config.rootHash,
-            './manifest.json'
-          ),
-          generate: (entries: any) => {
-            return {
-              context: config.root,
-              entries
-            };
-          }
+  dllModules.forEach((
+    module
+  ) => {
+    chainConfig.plugin(module.moduleName)
+      .use(
+        webpack.DllReferencePlugin,
+        [{
+          context: module.context,
+          manifest: module.manifest
+        }]
+      );
+  })
+
+  chainConfig.plugin('DllDependenciesManifestPlugin')
+    .use(
+      DllDependenciesManifestPlugin,
+      [{
+        dllAssets,
+        fileName: path.resolve(
+          getCacheDirPath(),
+          config.rootHash,
+          './manifest.json'
+        ),
+        generate: (entries: any) => {
+          return {
+            context: config.root,
+            entries
+          };
         }
-      ]
-    }
-  }
+      }]
+    );
 }

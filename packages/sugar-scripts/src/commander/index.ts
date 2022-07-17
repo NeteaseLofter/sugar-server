@@ -1,9 +1,12 @@
 import path from 'path';
-
+import chalk from 'chalk';
 import { Command } from 'commander';
 
 import packageInfo from '../../package.json';
 
+import {
+  initRunningProject
+} from '../core/init-running-project';
 import {
   build
 } from '../core/build';
@@ -13,6 +16,9 @@ import {
 import {
   clean as cacheClean
 } from '../core/cache';
+import {
+  runApplication
+} from '../core/run-application';
 import {
   findPackage
 } from '../shared/file-helpers';
@@ -43,11 +49,12 @@ program
   .action(async (source, options, command) => {
     const cwd = process.cwd();
     const dir = options.dir ? path.resolve(cwd, options.dir) : cwd
+
     const {
       root,
       packageJson,
       packageConfig
-    } = await findPackage(dir);
+    } = await initRunningProject(dir);
     const stats = await build(
       {
         root,
@@ -55,8 +62,8 @@ program
         ...packageConfig
       }
     )
-    console.log(stats);
-    console.log('构建成功');
+    // console.log(stats);
+    console.log(`✅ ${chalk.bold.green('构建成功')}`);
     // process.exit();
   })
 
@@ -69,18 +76,35 @@ cacheCommand
 cacheCommand
   .command('clean')
   .description('清理构建缓存')
-  .action(async () => {
+  .option('--dir <dir>', '自定义运行的目录')
+  .action(async (source, options, command) => {
+    const cwd = process.cwd();
+    const dir = options.dir ? path.resolve(cwd, options.dir) : cwd;
+    await initRunningProject(dir)
     await cacheClean();
-    console.log('清理构建缓存成功');
+    console.log(`✅ ${chalk.bold.green('清理构建缓存成功')}`);
   })
 
 program.addCommand(cacheCommand)
 
 program
-  .command('dev')
+  .command('start')
   .description('启动开发服务')
+  .argument('<source>', '导出Application的文件')
+  .option('--port <port>', '指定运行的端口')
   .action(async (source, options, command) => {
-    // process.exit();
+    const cwd = process.cwd();
+    const port = +options.port;
+
+    const App = require(
+      path.resolve(cwd, source)
+    ).default;
+
+    runApplication(
+      App,
+      port
+    );
+    console.log(`✅ ${chalk.bold.green(`启动服务成功，端口:${port}`)}`);
   })
 
 program.parse(process.argv);

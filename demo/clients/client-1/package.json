@@ -1,0 +1,19 @@
+{
+  "name": "@clients/client-1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server/index.ts",
+  "sugar-scripts-main": "dist/main.js",
+  "scripts": {
+    "build": "sugar-scripts build",
+    "start": "sugar-scripts start ./dist/main.js --port 10010"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@features/account": "^1.0.0",
+    "sugar-scripts": "*",
+    "sugar-server": "^0.1.14",
+    "typescript": "^4.3.5"
+  }
+}

@@ -19,7 +19,7 @@ import {
   createBuildConfig,
 } from '../webpack/helpers';
 import {
-  getEntriesFromControllers
+  getEntriesFromApplicationClass
 } from './entry';
 
 
@@ -55,7 +55,7 @@ export const buildServer = async (config: BuildConfigForServer) => {
         reject(err || stats?.toString())
         return;
       }
-      console.log(stats?.toString())
+      console.log(stats?.toString(webpackConfig.stats))
       resolve(stats)
     })
   })
@@ -63,15 +63,15 @@ export const buildServer = async (config: BuildConfigForServer) => {
 
 export const buildBrowser = async (config: BuildConfigForBrowser) => {
   if (config.browser.input) {
-    const controllers = require(
+    const App = require(
       path.resolve(
         config.root,
         config.browser.input
       )
-    );
+    ).default;
 
-    const entry = getEntriesFromControllers(
-      controllers,
+    const entry = getEntriesFromApplicationClass(
+      App,
       config.root
     );
 

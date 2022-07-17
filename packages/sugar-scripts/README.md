@@ -42,7 +42,7 @@ export const serverWebpackConfig: types.CustomWebpackConfig;
 
 ### start
 ```bash
-sugar-scripts start xxx.ts
+sugar-scripts start xxx.ts --port 9000
 ```
 
 ### info

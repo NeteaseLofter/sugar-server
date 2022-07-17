@@ -4,7 +4,9 @@ import * as parameter from './core/parameter';
 import * as validator from './core/validator';
 import { SugarServerError } from './core/error';
 
-import Controller from './core/controller';
+import {
+  Controller
+} from './core/controller';
 import {
   Application,
   ControllerContext

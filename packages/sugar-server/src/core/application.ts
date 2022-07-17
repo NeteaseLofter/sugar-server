@@ -3,7 +3,9 @@ import url from 'url';
 import Koa from 'koa';
 import type Router from 'koa-router';
 
-import Controller from './controller';
+import {
+  Controller
+ } from './controller';
 import {
   appendControllerToRouter,
   appendApplication
@@ -58,7 +60,7 @@ export class Application extends Koa<ControllerContext> {
       app
     }: {
       app?: Application
-    }
+    } = {}
   ) {
     super();
     if (app) {
@@ -91,25 +93,40 @@ export class Application extends Koa<ControllerContext> {
   }
 
   useApplication (
-    application: Application
+    ApplicationClass: typeof Application
   ) {
-    this.use(
-      appendApplication(
-        application
-      )
+    console.log(ApplicationClass);
+    const {
+      application,
+      routerMiddleware
+    } = appendApplication(
+      ApplicationClass
     )
+    this.use(routerMiddleware);
   }
 
   useController (
-    controller: Controller
+    ControllerClass: typeof Controller
   ) {
-    const router = appendControllerToRouter(
-      controller
+    const {
+      controller,
+      router
+     } = appendControllerToRouter(
+      ControllerClass
     );
     if (router) {
       this.use(router.routes());
     }
     this.controllers.push(controller);
+  }
+
+  createContext (
+    req: IncomingMessage,
+    res: ServerResponse
+  ): any {
+    const ctx = super.createContext.call(this, req, res)
+    ctx.routerPath = (req as any).routerPath;
+    return ctx;
   }
 
   createApply () {
@@ -120,6 +137,6 @@ export class Application extends Koa<ControllerContext> {
     req: IncomingMessage,
     res: ServerResponse
   ) {
-    this._applyRequest(req, res);
+    return this._applyRequest(req, res);
   }
 }

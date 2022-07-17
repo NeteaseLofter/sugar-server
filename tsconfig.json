@@ -6,6 +6,7 @@
     "allowJs": false,
     "declaration": true,
     "jsx": "preserve",
+    "esModuleInterop": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,

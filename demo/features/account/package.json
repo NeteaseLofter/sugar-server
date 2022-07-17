@@ -1,0 +1,14 @@
+{
+  "name": "@features/account",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "sugar-scripts build"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "sugar-scripts": "1.0.0"
+  }
+}

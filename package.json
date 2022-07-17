@@ -10,6 +10,8 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@changesets/cli": "^2.22.0"
+    "@changesets/cli": "^2.22.0",
+    "@types/node": "^18.0.0",
+    "ts-loader": "^9.3.0"
   }
 }

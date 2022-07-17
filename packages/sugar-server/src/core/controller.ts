@@ -1,6 +1,18 @@
 import { Application } from './application';
 
-export default class Controller {
+export const ROUTES_KEY = Symbol('_sugar_routes');
+
+
+export type RouteMethod = 'get'|'post'|'put'|'del'|'all';
+
+export interface RouteConfig {
+  key: string,
+  method: RouteMethod,
+  path: string
+}
+
+
+export class Controller {
   static isController (obj: any): obj is Controller {
     return obj instanceof Controller;
   }
@@ -13,19 +25,5 @@ export default class Controller {
 
   static prefix?: string;
 
-  app: Application;
-
-  constructor ({
-    app
-  }: {
-    app: Application
-  }) {
-    this.app = app;
-  }
-
-  // static _routes = [];
-
-  // __sugar_controller = true;
-
-  // _routes!: { key: string, method: 'get'|'post'|'put'|'del'|'all', path: string }[];
+  private [ROUTES_KEY]!: RouteConfig[];
 }

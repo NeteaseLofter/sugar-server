@@ -3,19 +3,20 @@ import send from 'koa-send';
 import {
   router,
   parameter,
-  Controller,
-  createApplication
+  Controller
 } from 'sugar-server';
 
 const { GetRoute } = router;
 
-export function createStaticApplication ({
-  staticResourcesPath
+export function createStaticController ({
+  staticResourcesPath,
+  prefix = '/'
 }: {
-  staticResourcesPath: string
-}) {
+  staticResourcesPath: string,
+  prefix?: string;
+}): typeof Controller {
   class StaticController extends Controller {
-    static prefix = '/';
+    static prefix = prefix;
 
     @GetRoute('*')
     @parameter.getter
@@ -23,7 +24,7 @@ export function createStaticApplication ({
       @parameter.Context ctx: any
     ) {
       const routerPath = ctx.routerPath || ctx.path;
-      const filePath = routerPath.substr(1);
+      const filePath = routerPath.substr(prefix.length);
 
       if (filePath) {
         await send(
@@ -37,14 +38,5 @@ export function createStaticApplication ({
     }
   }
 
-  const staticApplication = createApplication(
-    [],
-    {
-      StaticController
-    }
-  );
-
-  staticApplication.createApply();
-
-  return staticApplication;
+  return StaticController;
 }

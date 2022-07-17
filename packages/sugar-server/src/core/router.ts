@@ -3,21 +3,19 @@ import url from 'url';
 import Router from 'koa-router';
 
 import { Application, ControllerContext } from './application';
-import Controller from './controller';
+import {
+  Controller,
+  ROUTES_KEY,
+  RouteMethod
+} from './controller';
 
 import createThunkAttributeDescriptor from '../shared/create-thunk-attribute-descriptor';
 
-export const ROUTES_KEY = Symbol('_sugar_routes');
-
 /**
  * create routes
- * @param {Object} options
- * @param {'get'|'post'|'put'|'del'|'all'} options.method
- * @param {string} options.path
- * @returns {Function} descriptor
  */
 export const create = createThunkAttributeDescriptor<{
-  method: 'get'|'post'|'put'|'del'|'all',
+  method: RouteMethod,
   path: string
 }>((
   options,
@@ -35,7 +33,7 @@ export const create = createThunkAttributeDescriptor<{
       })
     }
 
-    (target as any)[ROUTES_KEY].push({
+    target[ROUTES_KEY].push({
       key: key,
       method: options.method,
       path: options.path
@@ -81,9 +79,17 @@ export interface ApplicationMiddlewareConfig {
 
 
 export function appendApplication (
-  application: Application
+  ApplicationClass: typeof Application
 ) {
-  return async (
+  const application = new ApplicationClass();
+  application.createApply();
+  const {
+    path,
+    host,
+    rewrite
+  } = ApplicationClass;
+
+  const routerMiddleware =  async (
     ctx: ControllerContext,
     next: () => void
   ) => {
@@ -95,24 +101,20 @@ export function appendApplication (
     let reqHost = req.headers.host;
 
     let current = true;
-    const applicationClass = application.constructor as typeof Application;
-    const {
-      path,
-      host,
-      rewrite
-    } = applicationClass;
 
     if (!reqUrl.pathname) {
       current = false;
+    } else if (!path) {
+      current = false;
     } else if (
       typeof path === 'string'
-      ? (reqUrl.pathname.indexOf(path) !== 0)
-      : !path.test(reqUrl.pathname)
+        ? (reqUrl.pathname.indexOf(path) !== 0)
+        : !path.test(reqUrl.pathname)
     ) {
       current = false;
     }
 
-    if (host) {
+    if (current && host) {
       if (!reqHost) {
         current = false;
       } else {
@@ -143,16 +145,15 @@ export function appendApplication (
         routerPath = rewrite(reqUrl, req);
       } else if (path) {
         if (typeof path === 'string') {
-          routerPath = reqUrl.pathname.slice(path.length);
+          routerPath = reqUrl.pathname!.slice(path.length);
         } else {
-          routerPath = reqUrl.pathname.replace(path, '');
+          routerPath = reqUrl.pathname!.replace(path, '');
         }
         if (routerPath.length === 0) {
           routerPath = '/';
         }
       }
 
-      // console.log(routerPath);
       if (routerPath) {
         (req as any).routerPath = routerPath;
       } else {
@@ -166,98 +167,61 @@ export function appendApplication (
     }
     await next();
   }
+
+  return {
+    application,
+    routerMiddleware
+  }
 }
 
 export function appendControllerToRouter (
-  controller: Controller
+  ControllerClass: typeof Controller
 ) {
+  const controller = new ControllerClass();
+  let router = new Router();
   if (Controller.isController(controller)) {
     let ControllerClass = controller.constructor as typeof Controller;
 
     let prefix = ControllerClass.prefix;
 
-    if ((controller as any)[ROUTES_KEY]) {
-      let router = new Router();
+    if (controller[ROUTES_KEY]) {
       if (prefix) {
         router.prefix(prefix);
       }
-      (controller as any)[ROUTES_KEY].forEach(({
+      controller[ROUTES_KEY].forEach(({
         key,
         method,
         path
-      }: {
-        key: string,
-        method: 'get'|'post'|'put'|'del'|'all',
-        path: string
       }) => {
         if (typeof (controller as any)[key] === 'function') {
-          router[method] && router[method](path, async (ctx: any, next) => {
-            const controllerReturn = await (controller as any)[key].call(controller, ctx, next);
-            if (
-              typeof controllerReturn !== 'undefined' &&
-              !ctx.res.writableEnded &&
-              !ctx.res.writableFinished
-            ) {
-              ctx.body = controllerReturn;
-            }
-            await next();
-          });
+          const methodRegister = router[method] && router[method];
+          if (methodRegister) {
+            (methodRegister as any).call(
+              router,
+              path,
+              async (
+                ctx: ControllerContext,
+                next: any
+              ) => {
+                const controllerReturn = await (controller as any)[key].call(controller, ctx, next);
+                if (
+                  typeof controllerReturn !== 'undefined' &&
+                  !ctx.res.writableEnded &&
+                  !ctx.res.writableFinished
+                ) {
+                  ctx.body = controllerReturn;
+                }
+                await next();
+              }
+            )
+          }
         }
       });
-      return router;
-    }
-  }
-}
-
-export function appendControllers (
-  Controllers: {
-    [propName: string]: typeof Controller
-  },
-  app: Application
-) {
-  const routers = [];
-  for (let key in Controllers) {
-    let ControllerClass = Controllers[key];
-
-    if (Controller.isControllerClass(ControllerClass)) {
-      let controller = new ControllerClass({ app });
-      app.controllers.push(controller);
-
-      let prefix = ControllerClass.prefix;
-
-      if ((controller as any)[ROUTES_KEY]) {
-        let router = new Router();
-        if (prefix) {
-          router.prefix(prefix);
-        }
-        (controller as any)[ROUTES_KEY].forEach(({
-          key,
-          method,
-          path
-        }: {
-          key: string,
-          method: 'get'|'post'|'put'|'del'|'all',
-          path: string
-        }) => {
-          if (typeof (controller as any)[key] === 'function') {
-            router[method] && router[method](path, async (ctx: any, next) => {
-              const controllerReturn = await (controller as any)[key].call(controller, ctx, next);
-
-              if (
-                typeof controllerReturn !== 'undefined' &&
-                !ctx.res.writableEnded &&
-                !ctx.res.writableFinished
-              ) {
-                ctx.body = controllerReturn;
-              }
-              await next();
-            });
-          }
-        });
-        routers.push(router);
-      }
     }
   }
 
-  return routers;
+  return {
+    router,
+    controller
+  }
 }

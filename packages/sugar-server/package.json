@@ -12,7 +12,7 @@
     "http",
     "decorator style routing"
   ],
-  "main": "lib/index.js",
+  "main": "src/index.ts",
   "files": [
     "lib"
   ],
@@ -21,6 +21,9 @@
     "clean": "rimraf lib",
     "build": "npm run clean && tsc -p tsconfig.build.json",
     "prepublish": "npm run build"
+  },
+  "publishConfig": {
+    "main": "lib/index.js"
   },
   "license": "MIT",
   "dependencies": {

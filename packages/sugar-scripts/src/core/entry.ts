@@ -32,9 +32,11 @@ const render: CustomRender = (
   ...args
 ) => {
   let currentRender = defaultRender;
+  console.log('SUGAR_PROJECT_RENDER', process.env.SUGAR_PROJECT_RENDER)
   if (process.env.SUGAR_PROJECT_RENDER) {
     try {
       currentRender = require(process.env.SUGAR_PROJECT_RENDER).default;
+      console.log('load custom render success');
     } catch (e) {}
   }
   return currentRender(
@@ -80,26 +82,40 @@ export function register (
       ctx: ControllerContext,
       ...args: any
     ) {
+      // ctx.app
       let oldResult;
       if (oldValue) {
         oldResult = await oldValue.call(this, ...args);
       }
-      const appEntries: {
-        [entryKey: string]: string[]
-      } = (ctx.app as any).entries || {};
-      let entries: string[] | {[key: string]: string[]};
+
+      let envEntries = ENV_ENTRIES;
+      if (
+        (ctx.app.constructor as any).ENTRIES
+      ) {
+        envEntries = (ctx.app.constructor as any).ENTRIES;
+      }
+      console.log('envEntries', envEntries, ENV_ENTRIES )
+
+      let entries: string[] | {[key: string]: string[]} = [];
       if (typeof filePath === 'string') {
-        entries = appEntries[filePath];
+        entries = envEntries[filePath] || [];
       } else {
         entries = Object.keys(filePath).reduce((
           currentEntries,
           filePathKey
           ) => {
             const oneFilePath = filePath[filePathKey];
-            currentEntries[filePathKey] = appEntries[oneFilePath];
+            currentEntries[filePathKey] = envEntries[oneFilePath];
             return currentEntries;
           }, {} as {[key: string]: string[]})
       }
+
+      console.log(
+        'will search file',
+        envEntries,
+        filePath,
+        entries
+      )
 
       return render(
         ctx,
@@ -142,15 +158,13 @@ export function getEntriesFromController (
 }
 
 export function getEntriesFromControllers (
-  controllers: {
-    [key: string]: Controller
-  },
+  controllers: Controller[],
   root: string
 ) {
   const entries: {
     [key: string]: string
   } = {};
-  Object.values(controllers).forEach(
+  controllers.forEach(
     (controller) => {
       getEntriesFromController(controller).forEach(({ filePath }) => {
         entries[filePath] = path.join(
@@ -163,9 +177,13 @@ export function getEntriesFromControllers (
   return entries;
 }
 
-
-// export function getEntriesFromControllerClass (
-//   ControllerClass: typeof Controller
-// ) {
-//   new Application([], [])
-// }
+export function getEntriesFromApplicationClass (
+  ApplicationClass: typeof Application,
+  root: string
+) {
+  const app = new ApplicationClass();
+  return getEntriesFromControllers(
+    app.controllers,
+    root
+  )
+}

@@ -2,10 +2,11 @@ import fs from 'fs';
 import path from 'path';
 
 import {
-  SUGAR_PACKAGE_CONFIG_FILENAME
+  SUGAR_PACKAGE_CONFIG_FILENAME,
+  SUGAR_PROJECT_CONFIG_FILENAME
 } from '../constants';
 import {
-  PackageConfig
+  SugarScriptsProject
 } from '../custom-config.type';
 // nodejs v10 支持
 // nodejs v14 才开始支持require('fs/promises')
@@ -85,7 +86,9 @@ export const loadJSON = async (filePath: string) => {
     const content = contentBuffer.toString();
 
     return JSON.parse(content);
-  } catch (e) {}
+  } catch (e) {
+    return {};
+  }
 }
 
 export const writeFileSync = (
@@ -103,7 +106,7 @@ export const writeFileSync = (
 export const findPackage = async (dir: string): Promise<{
   root: string;
   packageJson: any;
-  packageConfig: PackageConfig | null;
+  packageConfig: SugarScriptsProject.PackageConfig | null;
 }> => {
   const packagePath = path.resolve(dir, 'package.json');
 
@@ -118,7 +121,7 @@ export const findPackage = async (dir: string): Promise<{
   try {
     packageConfig = require(
       path.resolve(dir, SUGAR_PACKAGE_CONFIG_FILENAME)
-    )
+    ).packageConfig;
   } catch (e) {}
 
   if (existed) {
@@ -136,6 +139,33 @@ export const findPackage = async (dir: string): Promise<{
   }
 
   return findPackage(
+    path.resolve(dir, '../')
+  )
+}
+
+export const findProject = async (dir: string): Promise<{
+  projectRoot: string,
+  projectConfig: SugarScriptsProject.ProjectConfig
+}> => {
+  const projectPath = path.resolve(dir, SUGAR_PROJECT_CONFIG_FILENAME);
+
+  let projectConfig = null;
+  try {
+    projectConfig = require(projectPath).projectConfig;
+  } catch (e) {}
+
+  if (dir === '/') {
+    throw new Error('not found sugar.project');
+  }
+
+  if (projectConfig) {
+    return {
+      projectRoot: dir,
+      projectConfig
+    };
+  }
+
+  return findProject(
     path.resolve(dir, '../')
   )
 }
