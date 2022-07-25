@@ -1,64 +1,107 @@
 import path from 'path';
 import webpack from 'webpack';
+import WebpackChainConfig from 'webpack-chain';
 
 import {
-  BuildConfigForBrowserEntry
-} from '../custom-config.type';
+  SugarScriptsContext
+} from '../core/running-context';
 import {
-  getCacheDirPath
-} from '../core/cache';
+  getEntriesFromApplicationClass
+} from '../core/entry';
+
 import {
-  loadCustomConfig,
-  createCommonChainConfig,
-  mergeDllReferences
+  loadCustomConfig
 } from './webpack.common';
 import {
   SUGAR_BUILD_EXPORT_BROWSER
 } from '../constants'
 
 
-export async function createBrowserConfig (
-  config: BuildConfigForBrowserEntry
-): Promise<webpack.Configuration> {
-  const webpackConfig = {
-    root: config.root,
-    entry: config.browser.entry,
-    output: config.browser.output,
-    rootHash: config.rootHash
-  };
-  const chainConfig = await createCommonChainConfig(webpackConfig);
+export async function mergeBrowserEntryFromServer(
+  context: SugarScriptsContext,
+  chainConfig: WebpackChainConfig
+) {
+  if (!context.packageConfig.browser) return;
+  const browserConfig = context.packageConfig.browser;
 
-  await mergeDllReferences(
-    chainConfig,
-    webpackConfig
-  );
+  if (browserConfig.input) {
+    const App = require(
+      path.resolve(
+        context.root,
+        browserConfig.input
+      )
+    ).default;
 
-  if (config.browser.dll) {
+    const configEntry = getEntriesFromApplicationClass(
+      App,
+      context.root
+    );
+
+    const normalizeEntry = (entryPath: string) => {
+      return path.resolve(context.root, entryPath);
+    }
+    Object.keys(configEntry)
+      .forEach((entryKey) => {
+        const entryPath = configEntry[entryKey];
+        if (typeof entryPath === 'string') {
+          chainConfig.entry(entryKey)
+            .add(normalizeEntry(entryPath))
+        }
+      });
+  }
+  if (browserConfig.entry) {
+    const entry = browserConfig.entry;
+    Object.keys(entry)
+      .forEach((entryKey) => {
+        const entryPath = entry[entryKey];
+        if (Array.isArray(entryPath)) {
+          chainConfig.entry(entryKey)
+            .merge(entryPath)
+        } else {
+          chainConfig.entry(entryKey)
+            .add(entryPath)
+        }
+      });
+  }
+}
+
+
+export async function mergeBuildDllConfig (
+  context: SugarScriptsContext,
+  chainConfig: WebpackChainConfig
+) {
+  if (!context.packageConfig.browser) return;
+  const browserConfig = context.packageConfig.browser;
+
+  if (browserConfig.dll) {
     chainConfig.output
-      .library(`${config.rootHash}_[name]`)
+      .library(`${context.rootHash}_sn_[name]`)
       .libraryTarget('umd');
 
     chainConfig.plugin('DllPlugin')
       .use(
         webpack.DllPlugin,
         [{
-          context: config.root,
-          name: `${config.rootHash}_[name]`,
+          context: context.root,
+          name: `${context.rootHash}_sn_[name]`,
           path: path.resolve(
-            getCacheDirPath(),
-            config.rootHash,
+            context.getCacheDir(),
+            context.rootHash,
             './[name]/dll.modules.manifest.json'
           ),
           format: true
         }]
       );
   }
+}
 
+export async function mergeBrowserCustomConfig  (
+  context: SugarScriptsContext,
+  chainConfig: WebpackChainConfig
+) {
   await loadCustomConfig(
+    context,
     chainConfig,
-    config,
     SUGAR_BUILD_EXPORT_BROWSER
-  );
-
-  return chainConfig.toConfig();
+  )
 }

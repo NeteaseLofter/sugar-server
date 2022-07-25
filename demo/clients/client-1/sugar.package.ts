@@ -6,7 +6,7 @@ import {
 export const packageConfig: SugarScriptsProject.PackageConfig = {
   browser: {
     input: './server/index.ts',
-    output: '../../resources/client-1'
+    output: '../../resources/clients/client-1'
   },
   server: {
     dll: true,

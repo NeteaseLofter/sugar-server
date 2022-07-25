@@ -2,11 +2,9 @@ import path from 'path';
 import chalk from 'chalk';
 import { Command } from 'commander';
 
-import packageInfo from '../../package.json';
-
 import {
-  initRunningProject
-} from '../core/init-running-project';
+  initRunningContext
+} from '../core/init-running-context';
 import {
   build
 } from '../core/build';
@@ -19,26 +17,18 @@ import {
 import {
   runApplication
 } from '../core/run-application';
-import {
-  findPackage
-} from '../shared/file-helpers';
 
 const program = new Command();
 program
-  .version(packageInfo.version);
+  .version('1.0.0');
 
 program
   .command('info')
   .description('工程信息')
   .option('--dir <dir>', '自定义运行的目录')
-  .action(async (source, options, command) => {
+  .action(async (options, command) => {
     const cwd = process.cwd();
     const dir = options.dir ? path.resolve(cwd, options.dir) : cwd
-    const {
-      root,
-      packageJson
-    } = await findPackage(dir);
-
     // process.exit();
   })
 
@@ -46,25 +36,15 @@ program
   .command('build')
   .description('构建服务')
   .option('--dir <dir>', '自定义运行的目录')
-  .action(async (source, options, command) => {
+  .action(async (options, command) => {
     const cwd = process.cwd();
     const dir = options.dir ? path.resolve(cwd, options.dir) : cwd
 
-    const {
-      root,
-      packageJson,
-      packageConfig
-    } = await initRunningProject(dir);
-    const stats = await build(
-      {
-        root,
-        packageName: packageJson.name,
-        ...packageConfig
-      }
-    )
-    // console.log(stats);
+    const context = await initRunningContext(dir);
+    await build(
+      context
+    );
     console.log(`✅ ${chalk.bold.green('构建成功')}`);
-    // process.exit();
   })
 
 
@@ -77,11 +57,11 @@ cacheCommand
   .command('clean')
   .description('清理构建缓存')
   .option('--dir <dir>', '自定义运行的目录')
-  .action(async (source, options, command) => {
+  .action(async (options, command) => {
     const cwd = process.cwd();
     const dir = options.dir ? path.resolve(cwd, options.dir) : cwd;
-    await initRunningProject(dir)
-    await cacheClean();
+    const context = await initRunningContext(dir);
+    await cacheClean(context);
     console.log(`✅ ${chalk.bold.green('清理构建缓存成功')}`);
   })
 
@@ -90,14 +70,19 @@ program.addCommand(cacheCommand)
 program
   .command('start')
   .description('启动开发服务')
-  .argument('<source>', '导出Application的文件')
+  .option('--dir <dir>', '自定义运行的目录')
   .option('--port <port>', '指定运行的端口')
-  .action(async (source, options, command) => {
+  .action(async (options, command) => {
     const cwd = process.cwd();
+    const dir = options.dir ? path.resolve(cwd, options.dir) : cwd
     const port = +options.port;
 
+    const context = await initRunningContext(dir);
+    const appFilePath = context.getStartFilePath()
+
+    if (!appFilePath) return;
     const App = require(
-      path.resolve(cwd, source)
+      appFilePath
     ).default;
 
     runApplication(

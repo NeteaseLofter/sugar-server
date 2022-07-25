@@ -36,7 +36,7 @@ export async function loadAllDllModulesManifest (
       }
       const moduleConfig = await loadJSON(moduleConfigFilePath);
       const module = await loadJSON(moduleFilePath);
-      const name = module.name.split('_').slice(1).join('_');
+      const name = module.name.split('_sn_').slice(1).join('_sn_');
       return {
         context: moduleConfig.context,
         manifest: module,

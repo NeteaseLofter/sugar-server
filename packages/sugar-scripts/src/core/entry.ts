@@ -167,7 +167,7 @@ export function getEntriesFromControllers (
   controllers.forEach(
     (controller) => {
       getEntriesFromController(controller).forEach(({ filePath }) => {
-        entries[filePath] = path.join(
+        entries[filePath] = path.resolve(
           root,
           filePath
         )

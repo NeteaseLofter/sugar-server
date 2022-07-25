@@ -1,103 +1,98 @@
 import path from 'path';
-import webpack from 'webpack';
 import * as tsNode from 'ts-node';
 
 import {
-  BuildOptions,
-  BuildConfig,
-  BuildConfigForBrowser,
-  BuildConfigForServer,
-  BuildConfigForBrowserEntry
-} from '../custom-config.type';
+  SugarScriptsContext
+} from './running-context';
+
 import {
-  createBrowserConfig
+  mergeBrowserEntryFromServer,
+  mergeBuildDllConfig,
+  mergeBrowserCustomConfig
 } from '../webpack/webpack.browser';
 import {
-  createServerConfig
+  mergeServerEntry,
+  mergeServerCustomConfig
 } from '../webpack/webpack.server';
 import {
-  createBuildConfig,
-} from '../webpack/helpers';
+  createCommonChainConfig,
+  mergeDllReferences
+} from '../webpack/webpack.common';
 import {
-  getEntriesFromApplicationClass
-} from './entry';
+  runWebpack
+} from '../webpack/run-webpack';
 
 
-export const build = async (options: BuildOptions) => {
-  const config = createBuildConfig(options);
+export const build = async (
+  context: SugarScriptsContext
+) => {
   tsNode.register({
-    cwd: config.root,
-    projectSearchDir: config.root,
-    project: path.resolve(config.root, './tsconfig.json'),
+    cwd: context.root,
+    projectSearchDir: context.root,
+    project: path.resolve(context.root, './tsconfig.json'),
     transpileOnly: true
   })
 
-  if (config.browser) {
-    await buildBrowser(config as BuildConfigForBrowser)
-  }
+  await buildBrowser(
+    context
+  )
 
-  if (config.server) {
-    await buildServer(config as BuildConfigForServer)
-  }
+  await buildServer(
+    context
+  )
+}
+
+const buildBrowser = async (context: SugarScriptsContext) => {
+  if (!context.packageConfig.browser) return;
+  const browserConfig = context.packageConfig.browser;
+
+  const chainConfig = await createCommonChainConfig(
+    context,
+    browserConfig.output
+  );
+
+  await mergeBrowserEntryFromServer(
+    context,
+    chainConfig
+  )
+
+  // 合并其他已经构建好的dll
+  await mergeDllReferences(
+    context,
+    chainConfig,
+  )
+
+  // 如果是dll
+  await mergeBuildDllConfig(
+    context,
+    chainConfig
+  )
+
+  await mergeBrowserCustomConfig(
+    context,
+    chainConfig
+  )
+
+  await runWebpack(chainConfig);
 }
 
 
-export const buildServer = async (config: BuildConfigForServer) => {
-  const webpackConfig = await createServerConfig(config);
+const buildServer = async (context: SugarScriptsContext) => {
+  if (!context.packageConfig.server) return;
+  const serverConfig = context.packageConfig.server;
 
-  const compiler = webpack(
-    webpackConfig
+  const chainConfig = await createCommonChainConfig(
+    context,
+    serverConfig.output
   );
 
-  return new Promise((resolve, reject) => {
-    compiler.run((err, stats) => {
-      if (err || stats && stats.hasErrors()) {
-        reject(err || stats?.toString())
-        return;
-      }
-      console.log(stats?.toString(webpackConfig.stats))
-      resolve(stats)
-    })
-  })
-}
-
-export const buildBrowser = async (config: BuildConfigForBrowser) => {
-  if (config.browser.input) {
-    const App = require(
-      path.resolve(
-        config.root,
-        config.browser.input
-      )
-    ).default;
-
-    const entry = getEntriesFromApplicationClass(
-      App,
-      config.root
-    );
-
-    config.browser.entry = entry;
-  }
-
-  if (!config.browser.entry) {
-    throw new Error('not found browser entry');
-  }
-
-  const webpackConfig = await createBrowserConfig(
-    config as BuildConfigForBrowserEntry
+  await mergeServerEntry(
+    context,
+    chainConfig
   );
-
-  const compiler = webpack(
-    webpackConfig
+  await mergeServerCustomConfig(
+    context,
+    chainConfig
   );
-
-  return new Promise((resolve, reject) => {
-    compiler.run((err, stats) => {
-      if (err || stats && stats.hasErrors()) {
-        reject(err || stats?.toString())
-        return;
-      }
-      console.log(stats?.toString())
-      resolve(stats)
-    })
-  })
+  await runWebpack(chainConfig);
 }

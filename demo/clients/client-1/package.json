@@ -6,7 +6,7 @@
   "sugar-scripts-main": "dist/main.js",
   "scripts": {
     "build": "sugar-scripts build",
-    "start": "sugar-scripts start ./dist/main.js --port 10010"
+    "start": "sugar-scripts start --port 10010"
   },
   "author": "",
   "license": "ISC",
