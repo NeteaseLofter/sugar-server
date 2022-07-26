@@ -1,0 +1,15 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "@clients/client-1": "1.0.0",
+    "@clients/client-2": "1.0.0",
+    "@features/account": "1.0.0",
+    "sugar-scripts": "1.0.0",
+    "sugar-server": "0.1.15"
+  },
+  "changesets": [
+    "ninety-rocks-think",
+    "tame-elephants-marry"
+  ]
+}

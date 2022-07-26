@@ -1,6 +1,7 @@
 {
   "name": "@features/account",
-  "version": "1.0.0",
+  "private": true,
+  "version": "1.1.0-beta.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,6 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "sugar-scripts": "1.0.0"
+    "sugar-scripts": "0.2.0-beta.0"
   }
 }
