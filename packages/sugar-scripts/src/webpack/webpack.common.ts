@@ -11,9 +11,6 @@ import {
 import {
   DllDependenciesManifestPlugin
 } from './dll-dependencies-manifest-plugin'
-import {
-  SUGAR_PACKAGE_CONFIG_FILENAME
-} from '../constants'
 
 // const mode = process.env.NODE_ENV === 'development' ? 'development' : 'production';
 const mode = 'development';
@@ -49,7 +46,9 @@ export async function createCommonChainConfig (
       moduleIds: 'named',
       chunkIds: 'named'
     },
-    stats: true,
+    stats: {
+      errorDetails: true
+    },
     module: {
       rule: {
         script: {
@@ -75,26 +74,6 @@ export async function createCommonChainConfig (
 
   return chainConfig;
 }
-
-export async function loadCustomConfig (
-  context: SugarScriptsContext,
-  chainConfig: WebpackChainConfig,
-  customFnName: string
-) {
-  let custom: any;
-  try {
-    custom = require(
-      path.resolve(
-        context.root,
-        SUGAR_PACKAGE_CONFIG_FILENAME
-      )
-    )[customFnName];
-  } catch(e) {}
-  if (custom) {
-    await custom(chainConfig, context);
-  }
-}
-
 
 export async function mergeDllReferences (
   context: SugarScriptsContext,

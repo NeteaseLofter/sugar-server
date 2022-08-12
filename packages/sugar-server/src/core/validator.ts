@@ -1,7 +1,9 @@
 import 'reflect-metadata';
 
-import { ControllerContext } from './application';
-import createThunkAttributeDescriptor from '../shared/create-thunk-attribute-descriptor';
+import type { ControllerContext } from './controller';
+import {
+  createThunkAttributeDecorator
+} from '../shared/create-thunk-descriptor';
 import { SugarServerError } from './error';
 
 const parameterValidateMetadataKey = Symbol('parameterValidate');
@@ -95,7 +97,7 @@ export function validate (target: any, propertyName: string, descriptor: TypedPr
   }
 }
 
-export const validated = createThunkAttributeDescriptor<ParameterValidate[]>((
+export const validated = createThunkAttributeDecorator<ParameterValidate[]>((
   validators,
   target,
   key,

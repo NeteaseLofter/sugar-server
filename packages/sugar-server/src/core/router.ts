@@ -2,19 +2,22 @@ import { IncomingMessage, ServerResponse } from 'http';
 import url from 'url';
 import Router from 'koa-router';
 
-import { Application, ControllerContext } from './application';
+import type { Application } from './application';
+import type { ControllerContext} from './controller';
 import {
   Controller,
   ROUTES_KEY,
   RouteMethod
 } from './controller';
 
-import createThunkAttributeDescriptor from '../shared/create-thunk-attribute-descriptor';
+import {
+  createThunkAttributeDecorator
+} from '../shared/create-thunk-descriptor';
 
 /**
  * create routes
  */
-export const create = createThunkAttributeDescriptor<{
+export const create = createThunkAttributeDecorator<{
   method: RouteMethod,
   path: string
 }>((
@@ -177,51 +180,48 @@ export function appendApplication (
 export function appendControllerToRouter (
   ControllerClass: typeof Controller
 ) {
-  const controller = new ControllerClass();
   let router = new Router();
-  if (Controller.isController(controller)) {
-    let ControllerClass = controller.constructor as typeof Controller;
+  let prefix = ControllerClass.prefix;
 
-    let prefix = ControllerClass.prefix;
-
-    if (controller[ROUTES_KEY]) {
-      if (prefix) {
-        router.prefix(prefix);
-      }
-      controller[ROUTES_KEY].forEach(({
-        key,
-        method,
-        path
-      }) => {
-        if (typeof (controller as any)[key] === 'function') {
-          const methodRegister = router[method] && router[method];
-          if (methodRegister) {
-            (methodRegister as any).call(
-              router,
-              path,
-              async (
-                ctx: ControllerContext,
-                next: any
-              ) => {
-                const controllerReturn = await (controller as any)[key].call(controller, ctx, next);
-                if (
-                  typeof controllerReturn !== 'undefined' &&
-                  !ctx.res.writableEnded &&
-                  !ctx.res.writableFinished
-                ) {
-                  ctx.body = controllerReturn;
-                }
-                await next();
-              }
-            )
-          }
-        }
-      });
+  const routes = ControllerClass.prototype[ROUTES_KEY];
+  if (routes) {
+    if (prefix) {
+      router.prefix(prefix);
     }
+    routes.forEach(({
+      key,
+      method,
+      path
+    }) => {
+      const methodRegister = router[method] && router[method];
+      if (methodRegister) {
+        (methodRegister as any).call(
+          router,
+          path,
+          async (
+            ctx: ControllerContext,
+            next: any
+          ) => {
+            const controller = new ControllerClass();
+            if (typeof (controller as any)[key] === 'function') {
+              controller.context = ctx;
+              const controllerReturn = await (controller as any)[key].call(controller, ctx, next);
+              if (
+                typeof controllerReturn !== 'undefined' &&
+                !ctx.res.writableEnded &&
+                !ctx.res.writableFinished
+              ) {
+                ctx.body = controllerReturn;
+              }
+            }
+            await next();
+          }
+        )
+      }
+    });
   }
 
   return {
-    router,
-    controller
+    router
   }
 }

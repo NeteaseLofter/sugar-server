@@ -1,16 +1,16 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import url from 'url';
 import Koa from 'koa';
-import type Router from 'koa-router';
 
-import {
-  Controller
+import type {
+  Controller,
+  ControllerContext
  } from './controller';
 import {
   appendControllerToRouter,
   appendApplication
 } from './router';
-import Config from './config';
+import { Config } from './config';
 import { SugarServerError } from './error';
 
 export function applyApplication (
@@ -24,19 +24,8 @@ export function applyApplication (
   );
 }
 
-export interface ExControllerContext {
-  routerPath?: string
-}
-
-export type ControllerContext = ExControllerContext
-  & Koa.Context
-  & Router.RouterContext
-  & {
-    app: Application
-  }
-
 export class Application extends Koa<ControllerContext> {
-  static isApplication (obj: any): obj is Controller {
+  static isApplication (obj: any): obj is Application {
     return obj instanceof Application;
   }
 
@@ -55,6 +44,16 @@ export class Application extends Koa<ControllerContext> {
   static path?: string | RegExp;
   static rewrite?: (reqUrl: url.UrlWithStringQuery, req: IncomingMessage) => string;
 
+  static Controllers: (typeof Controller)[] = [];
+  static Applications: (typeof Application)[] = [];
+  static defaultConfig?: any;
+
+
+  _applyRequest: any;
+  config: Config;
+  Controllers: (typeof Controller)[] = [];
+  parentApp?: Application;
+
   constructor (
     {
       app
@@ -66,12 +65,28 @@ export class Application extends Koa<ControllerContext> {
     if (app) {
       this.parentApp = app;
     }
-  }
 
-  _applyRequest: any;
-  config = new Config();
-  controllers: Controller[] = [];
-  parentApp?: Application;
+    const thisConstructor = this.constructor as typeof Application;
+
+    thisConstructor.Controllers.forEach((
+      Controller
+    ) => {
+      this.useController(Controller);
+    })
+
+    thisConstructor.Applications.forEach((
+      Application
+    ) => {
+      this.useApplication(Application);
+    })
+
+    this.config = new Config();
+    if (thisConstructor.defaultConfig) {
+      this.config.add(
+        thisConstructor.defaultConfig
+      )
+    }
+  }
 
   onError (err: SugarServerError, ctx: ControllerContext) {
     if (
@@ -95,7 +110,6 @@ export class Application extends Koa<ControllerContext> {
   useApplication (
     ApplicationClass: typeof Application
   ) {
-    console.log(ApplicationClass);
     const {
       application,
       routerMiddleware
@@ -109,7 +123,6 @@ export class Application extends Koa<ControllerContext> {
     ControllerClass: typeof Controller
   ) {
     const {
-      controller,
       router
      } = appendControllerToRouter(
       ControllerClass
@@ -117,7 +130,7 @@ export class Application extends Koa<ControllerContext> {
     if (router) {
       this.use(router.routes());
     }
-    this.controllers.push(controller);
+    this.Controllers.push(ControllerClass);
   }
 
   createContext (

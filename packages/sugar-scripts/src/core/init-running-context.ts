@@ -11,17 +11,20 @@ export const initRunningContext = async (dir: string) => {
   const {
     root,
     packageJson,
-    packageConfig
+    packageConfigs
   } = await findPackage(dir);
-  const { projectRoot, projectConfig } = await findProject(root);
-  if (!packageConfig || !projectConfig) {
+  const {
+    projectRoot,
+    projectConfigs
+  } = await findProject(root);
+  if (!packageConfigs || !projectConfigs) {
     throw new Error('')
   }
   return new SugarScriptsContext({
     root,
     packageName: packageJson.name,
-    packageConfig,
+    packageConfigs,
     projectRoot,
-    projectConfig
+    projectConfigs
   })
 }

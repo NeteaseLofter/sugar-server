@@ -1,77 +1,53 @@
-import { createHash } from 'crypto';
 import path from 'path';
 
-type BuildEntry = { [key: string]: string|string[] };
-
-interface PackageConfig {
-  browser?: {
-    /**
-     * 是否构建dll用的输出
-     */
-    dll?: boolean;
-    /**
-     * 输出目录
-     */
-    output: string;
-    /**
-     * controller/index
-     */
-    input?: string;
-    entry?: BuildEntry
-  };
-
-  server?: {
-    dll?: boolean;
-    output: string;
-    entry: string;
-    render?: string;
-  };
-}
-
-interface ProjectConfig {
-  cacheDir: string;
-}
-
-export function getHashFromRoot (
-  root: string
-) {
-  const hash = createHash('md5');
-  hash.update(root);
-  return `s_${hash.digest('hex')}`;
-}
+import type {
+  SugarScriptsProject
+} from '../custom-config.type';
+import {
+  getHashFromRoot,
+  asyncGetDirHash
+} from '../shared/file-helpers';
 
 export class SugarScriptsContext {
   root: string;
   rootHash: string;
   packageName: string;
-  packageConfig: PackageConfig;
   projectRoot: string;
-  projectConfig: ProjectConfig;
+  packageConfigs: SugarScriptsProject.SugarPackageConfigs;
+  projectConfigs: SugarScriptsProject.SugarProjectConfigs;
 
   constructor (
     {
       root,
       packageName,
-      packageConfig,
+      packageConfigs,
       projectRoot,
-      projectConfig
+      projectConfigs
     }: {
       root: string;
       packageName: string;
-      packageConfig: PackageConfig;
+      packageConfigs: SugarScriptsProject.SugarPackageConfigs;
       projectRoot: string;
-      projectConfig: ProjectConfig;
+      projectConfigs: SugarScriptsProject.SugarProjectConfigs;
     }
   ) {
     this.root = root;
     this.packageName = packageName;
-    this.packageConfig = packageConfig;
     this.projectRoot = projectRoot;
-    this.projectConfig = projectConfig;
+    this.packageConfigs = packageConfigs;
+    this.projectConfigs = projectConfigs;
     this.rootHash = getHashFromRoot(root);
   }
 
   serverEntryName = 'main';
+
+  get packageConfig () {
+    return this.packageConfigs.packageConfig;
+  }
+
+  get projectConfig () {
+    return this.projectConfigs.projectConfig;
+  }
 
   getStartFilePath () {
     if (this.packageConfig.server) {
@@ -88,5 +64,9 @@ export class SugarScriptsContext {
       this.projectRoot,
       this.projectConfig.cacheDir
     )
+  }
+
+  async getDirHash () {
+    return await asyncGetDirHash(this.root);
   }
 }

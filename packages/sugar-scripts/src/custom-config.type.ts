@@ -41,6 +41,18 @@ export namespace SugarScriptsProject {
     cacheDir: string;
   }
 
+  export type SugarPackageConfigs = {
+    packageConfig: PackageConfig;
+    browserWebpackConfig?: BrowserWebpackConfig;
+    serverWebpackConfig?: ServerWebpackConfig;
+  }
+
+  export type SugarProjectConfigs = {
+    projectConfig: ProjectConfig;
+    browserWebpackConfig?: BrowserWebpackConfig;
+    serverWebpackConfig?: ServerWebpackConfig;
+  }
+
 
   export interface CustomRender<C = any> {
     (

@@ -152,21 +152,22 @@ export function getEntries (
 }
 
 export function getEntriesFromController (
-  controller: Controller
+  ControllerClass: typeof Controller
 ) {
-  return (controller as EntriesController)[ENTRIES_KEY] || [];
+  return (ControllerClass.prototype as EntriesController)[ENTRIES_KEY] || [];
+  // return (controller as EntriesController)[ENTRIES_KEY] || [];
 }
 
 export function getEntriesFromControllers (
-  controllers: Controller[],
+  Controllers: (typeof Controller)[],
   root: string
 ) {
   const entries: {
     [key: string]: string
   } = {};
-  controllers.forEach(
-    (controller) => {
-      getEntriesFromController(controller).forEach(({ filePath }) => {
+  Controllers.forEach(
+    (ControllerClass) => {
+      getEntriesFromController(ControllerClass).forEach(({ filePath }) => {
         entries[filePath] = path.resolve(
           root,
           filePath
@@ -183,7 +184,7 @@ export function getEntriesFromApplicationClass (
 ) {
   const app = new ApplicationClass();
   return getEntriesFromControllers(
-    app.controllers,
+    app.Controllers,
     root
   )
 }

@@ -1,4 +1,4 @@
-export default function createThunkAttributeDecorator<
+export function createThunkAttributeDecorator<
   OptionsType
 > (
   callback: ThunkAttributeDecorator<OptionsType>
@@ -13,6 +13,24 @@ export default function createThunkAttributeDecorator<
     ): any {
       return mixinDescriptor<OptionsType>(
         callback, options, target, key, descriptor
+      );
+    }
+  }
+}
+
+export function createThunkClassDecorator<
+  OptionsType
+> (
+  callback: ThunkClassDecorator<OptionsType>
+) {
+  return function (
+    options: OptionsType
+  ) {
+    return function (
+      target: any
+    ): any {
+      return callback(
+        options, target
       );
     }
   }
@@ -51,5 +69,12 @@ interface ThunkAttributeDecorator<OptionsType> {
     target: any,
     key: string,
     descriptor: PropertyDescriptor
+  ): void;
+}
+
+interface ThunkClassDecorator<OptionsType> {
+  (
+    options: OptionsType,
+    target: any
   ): void;
 }

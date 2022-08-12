@@ -1,6 +1,7 @@
 import path from 'path';
 import webpack from 'webpack';
 import WebpackChainConfig from 'webpack-chain';
+import { glob } from 'glob';
 
 import {
   SugarScriptsContext
@@ -9,12 +10,17 @@ import {
   getEntriesFromApplicationClass
 } from '../core/entry';
 
-import {
-  loadCustomConfig
-} from './webpack.common';
-import {
-  SUGAR_BUILD_EXPORT_BROWSER
-} from '../constants'
+function normalEntryPath (
+  entryPath: string,
+  root: string
+) {
+  if (entryPath.startsWith('.')) {
+    return glob.sync(
+      path.join(root, entryPath)
+    )
+  }
+  return [entryPath];
+}
 
 
 export async function mergeBrowserEntryFromServer(
@@ -37,15 +43,14 @@ export async function mergeBrowserEntryFromServer(
       context.root
     );
 
-    const normalizeEntry = (entryPath: string) => {
-      return path.resolve(context.root, entryPath);
-    }
     Object.keys(configEntry)
       .forEach((entryKey) => {
         const entryPath = configEntry[entryKey];
         if (typeof entryPath === 'string') {
           chainConfig.entry(entryKey)
-            .add(normalizeEntry(entryPath))
+            .add(
+              path.join(context.root, entryPath)
+            )
         }
       });
   }
@@ -56,10 +61,23 @@ export async function mergeBrowserEntryFromServer(
         const entryPath = entry[entryKey];
         if (Array.isArray(entryPath)) {
           chainConfig.entry(entryKey)
-            .merge(entryPath)
+            .merge(
+              entryPath.reduce((entryPaths, globPath) => {
+                return [
+                  ...entryPaths,
+                  ...normalEntryPath(
+                    globPath,
+                    context.root,
+                  )
+                ]
+              }, [] as string[])
+            )
         } else {
           chainConfig.entry(entryKey)
-            .add(entryPath)
+            .merge(normalEntryPath(
+              entryPath,
+              context.root,
+            ))
         }
       });
   }
@@ -92,6 +110,15 @@ export async function mergeBuildDllConfig (
           format: true
         }]
       );
+    // chainConfig.externals(
+    //   function ({ context, request }: any, callback: any) {
+    //     if (/^[^./]{1}/.test(request)) {
+    //       // Externalize to a commonjs module using the request path
+    //       return callback(null, request, 'commonjs');
+    //     }
+    //     callback();
+    //   }
+    // )
   }
 }
 
@@ -99,9 +126,17 @@ export async function mergeBrowserCustomConfig  (
   context: SugarScriptsContext,
   chainConfig: WebpackChainConfig
 ) {
-  await loadCustomConfig(
-    context,
-    chainConfig,
-    SUGAR_BUILD_EXPORT_BROWSER
-  )
+  if (context.projectConfigs.browserWebpackConfig) {
+    await context.projectConfigs.browserWebpackConfig(
+      chainConfig,
+      context
+    )
+  }
+
+  if (context.packageConfigs.browserWebpackConfig) {
+    await context.packageConfigs.browserWebpackConfig(
+      chainConfig,
+      context
+    )
+  }
 }

@@ -1,7 +1,9 @@
-import { Application } from './application';
+import Koa from 'koa';
+import type Router from 'koa-router';
+
+import type { Application  } from './application';
 
 export const ROUTES_KEY = Symbol('_sugar_routes');
-
 
 export type RouteMethod = 'get'|'post'|'put'|'del'|'all';
 
@@ -10,6 +12,18 @@ export interface RouteConfig {
   method: RouteMethod,
   path: string
 }
+
+
+export interface ExControllerContext {
+  routerPath?: string
+}
+
+export type ControllerContext = ExControllerContext
+  & Koa.Context
+  & Router.RouterContext
+  & {
+    app: Application
+  }
 
 
 export class Controller {
@@ -26,4 +40,6 @@ export class Controller {
   static prefix?: string;
 
   private [ROUTES_KEY]!: RouteConfig[];
+
+  context!: ControllerContext;
 }

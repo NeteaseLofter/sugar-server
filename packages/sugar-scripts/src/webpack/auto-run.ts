@@ -3,7 +3,7 @@ var app = require(process.env.SUGAR_PROJECT_REAL_ENTRY || '');
 const entries: any = process.env.SUGAR_PROJECT_ENTRIES || {};
 app.default.ENTRIES = entries;
 
-console.log('auto entries', app.default.name)
+console.log('auto run', app.default.name)
 console.table(
   Object.keys(entries).map((entryKey) => ({
     entry: entryKey,
@@ -11,4 +11,4 @@ console.table(
     files: entries[entryKey]
   }))
 )
-export default app.default;
+new app.default();

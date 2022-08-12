@@ -8,12 +8,6 @@ import {
 import {
   SugarScriptsContext
 } from '../core/running-context';
-import {
-  loadCustomConfig
-} from './webpack.common';
-import {
-  SUGAR_BUILD_EXPORT_SERVER
-} from '../constants'
 
 export async function mergeServerEntry (
   context: SugarScriptsContext,
@@ -28,6 +22,14 @@ export async function mergeServerEntry (
         serverConfig.render || '',
         serverConfig.entry,
         path.resolve(__dirname, 'auto-entries.ts')
+      ].filter((path) => !!path) as string[]
+    );
+  chainConfig.entry('main-auto')
+    .merge(
+      [
+        serverConfig.render || '',
+        serverConfig.entry,
+        path.resolve(__dirname, 'auto-run.ts')
       ].filter((path) => !!path) as string[]
     );
 
@@ -54,9 +56,7 @@ export async function mergeServerEntry (
       },
       externalsPresets: { node: true },
       externals: serverConfig.dll ? function ({ context, request }: any, callback: any) {
-        console.log(request, context);
         if (/^[^./]{1}/.test(request)) {
-          console.log('commonjs', request)
           // Externalize to a commonjs module using the request path
           return callback(null, request, 'commonjs');
         }
@@ -92,9 +92,17 @@ export async function mergeServerCustomConfig (
   context: SugarScriptsContext,
   chainConfig: WebpackChainConfig
 ) {
-  await loadCustomConfig(
-    context,
-    chainConfig,
-    SUGAR_BUILD_EXPORT_SERVER
-  )
+  if (context.projectConfigs.serverWebpackConfig) {
+    await context.projectConfigs.serverWebpackConfig(
+      chainConfig,
+      context
+    )
+  }
+
+  if (context.packageConfigs.serverWebpackConfig) {
+    await context.packageConfigs.serverWebpackConfig(
+      chainConfig,
+      context
+    )
+  }
 }

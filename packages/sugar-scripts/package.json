@@ -11,6 +11,10 @@
   "bin": {
     "sugar-scripts": "./bin/cli-ts.js"
   },
+  "files": [
+    "lib",
+    "bin"
+  ],
   "publishConfig": {
     "main": "lib/index.js",
     "bin": {

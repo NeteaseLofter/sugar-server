@@ -1,5 +1,8 @@
 import fs from 'fs';
 import path from 'path';
+import { createHash } from 'crypto';
+
+import * as tsNode from 'ts-node';
 
 import {
   SUGAR_PACKAGE_CONFIG_FILENAME,
@@ -8,6 +11,7 @@ import {
 import {
   SugarScriptsProject
 } from '../custom-config.type';
+
 // nodejs v10 支持
 // nodejs v14 才开始支持require('fs/promises')
 const fsPromises = fs.promises;
@@ -106,7 +110,7 @@ export const writeFileSync = (
 export const findPackage = async (dir: string): Promise<{
   root: string;
   packageJson: any;
-  packageConfig: SugarScriptsProject.PackageConfig | null;
+  packageConfigs: SugarScriptsProject.SugarPackageConfigs | null;
 }> => {
   const packagePath = path.resolve(dir, 'package.json');
 
@@ -117,11 +121,20 @@ export const findPackage = async (dir: string): Promise<{
     existed = false;
   }
 
-  let packageConfig = null;
+  let packageConfigs = null;
   try {
-    packageConfig = require(
-      path.resolve(dir, SUGAR_PACKAGE_CONFIG_FILENAME)
-    ).packageConfig;
+    packageConfigs = require(
+      path.resolve(
+        dir,
+        SUGAR_PACKAGE_CONFIG_FILENAME
+      )
+    );
+    console.log(
+      path.resolve(
+        dir,
+        SUGAR_PACKAGE_CONFIG_FILENAME
+      )
+    )
   } catch (e) {}
 
   if (existed) {
@@ -130,7 +143,7 @@ export const findPackage = async (dir: string): Promise<{
       packageJson: require(
         packagePath
       ),
-      packageConfig
+      packageConfigs
     };
   }
 
@@ -145,29 +158,62 @@ export const findPackage = async (dir: string): Promise<{
 
 export const findProject = async (dir: string): Promise<{
   projectRoot: string,
-  projectConfig: SugarScriptsProject.ProjectConfig
+  projectConfigs: SugarScriptsProject.SugarProjectConfigs
 }> => {
-  const projectPath = path.resolve(dir, SUGAR_PROJECT_CONFIG_FILENAME);
+  const projectPath = path.resolve(
+    dir,
+    SUGAR_PROJECT_CONFIG_FILENAME
+  );
 
-  let projectConfig = null;
+  let projectConfigs = null;
+  let existedFile = '';
   try {
-    projectConfig = require(projectPath).projectConfig;
+    await fsPromises.access(projectPath + '.ts', fs.constants.F_OK);
+    existedFile = projectPath + '.ts';
   } catch (e) {}
+
+  if (!existedFile) {
+    try {
+      await fsPromises.access(projectPath + '.js', fs.constants.F_OK);
+      existedFile = projectPath + '.js';
+    } catch (e) {}
+  }
+
+  if (existedFile) {
+    tsNode.register({
+      cwd: dir,
+      projectSearchDir: dir,
+      project: path.resolve(dir, './tsconfig.json'),
+      transpileOnly: true,
+      require: [
+        existedFile
+      ]
+    });
+
+    console.log(existedFile);
+
+    try {
+      projectConfigs = require(existedFile);
+    } catch (e) {
+      throw e;
+    }
+
+    if (projectConfigs) {
+      return {
+        projectRoot: dir,
+        projectConfigs
+      };
+    }
+  }
 
   if (dir === '/') {
     throw new Error('not found sugar.project');
   }
 
-  if (projectConfig) {
-    return {
-      projectRoot: dir,
-      projectConfig
-    };
-  }
-
   return findProject(
     path.resolve(dir, '../')
   )
+
 }
 
 export const rm = async (filePath: string) => {
@@ -189,4 +235,31 @@ export const rm = async (filePath: string) => {
     await fsPromises.rmdir(filePath);
     return;
   }
+}
+
+export function getHashFromRoot (
+  root: string
+) {
+  const hash = createHash('md5');
+  hash.update(root);
+  return `s_${hash.digest('hex')}`;
+}
+
+export function asyncGetDirHash (
+  dirPath: string
+) {
+  return new Promise((resolve, reject) => {
+    const hash = createHash('sha1');
+
+    const dir = fs.opendirSync(dirPath);
+    console.log(dir);
+    reject()
+    // const readStream = fs.createReadStream(dirPath)
+    // readStream.on('data', (data) => {
+    //   hash.update(data)
+    // })
+    // readStream.on('end', () => {
+    //   resolve(hash.digest('hex'));
+    // })
+  })
 }

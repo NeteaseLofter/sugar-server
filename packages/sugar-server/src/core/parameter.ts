@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import parse from 'co-body';
 
-import { ControllerContext } from './application';
+import type { ControllerContext } from './controller';
 
 const parameterGetterMetadataKey = Symbol('_parameterGetter');
 
