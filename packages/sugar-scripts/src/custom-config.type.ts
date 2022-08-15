@@ -26,6 +26,7 @@ export namespace SugarScriptsProject {
        * controller/index
        */
       input?: string;
+      exposes?: string[] | {[index: string]: string},
       entry?: BuildEntry
     };
 

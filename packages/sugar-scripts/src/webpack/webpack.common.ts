@@ -50,19 +50,19 @@ export async function createCommonChainConfig (
       errorDetails: true
     },
     module: {
-      rule: {
-        script: {
-          test: /\.(ts|tsx|js|jsx)$/,
-          use: {
-            'ts-loader': {
-              loader: 'ts-loader',
-              options: {
-                transpileOnly: true
-              }
-            }
-          }
-        }
-      },
+      // rule: {
+      //   script: {
+      //     test: /\.(ts|tsx|js|jsx)$/,
+      //     use: {
+      //       'ts-loader': {
+      //         loader: 'ts-loader',
+      //         options: {
+      //           transpileOnly: true
+      //         }
+      //       }
+      //     }
+      //   }
+      // },
     },
     plugin: {
       'ProgressPlugin': {

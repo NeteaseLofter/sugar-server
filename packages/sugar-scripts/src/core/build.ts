@@ -57,10 +57,10 @@ const buildBrowser = async (context: SugarScriptsContext) => {
   )
 
   // 合并其他已经构建好的dll
-  await mergeDllReferences(
-    context,
-    chainConfig,
-  )
+  // await mergeDllReferences(
+  //   context,
+  //   chainConfig,
+  // )
 
   // 如果是dll
   await mergeBuildDllConfig(

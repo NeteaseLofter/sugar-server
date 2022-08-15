@@ -1,5 +1,7 @@
 import path from 'path';
-import webpack from 'webpack';
+import webpack, {
+  container
+} from 'webpack';
 import WebpackChainConfig from 'webpack-chain';
 import { glob } from 'glob';
 
@@ -9,6 +11,10 @@ import {
 import {
   getEntriesFromApplicationClass
 } from '../core/entry';
+
+const {
+  ModuleFederationPlugin
+} = container;
 
 function normalEntryPath (
   entryPath: string,
@@ -81,6 +87,7 @@ export async function mergeBrowserEntryFromServer(
         }
       });
   }
+
 }
 
 
@@ -91,35 +98,64 @@ export async function mergeBuildDllConfig (
   if (!context.packageConfig.browser) return;
   const browserConfig = context.packageConfig.browser;
 
-  if (browserConfig.dll) {
-    chainConfig.output
-      .library(`${context.rootHash}_sn_[name]`)
-      .libraryTarget('umd');
+  let exposes: {
+    [index: string]: string
+  } = {};
+  if (Array.isArray(browserConfig.exposes)) {
+    browserConfig.exposes.forEach((newExpose) => {
+      const files =  normalEntryPath(
+        newExpose,
+        context.root,
+      )
 
-    chainConfig.plugin('DllPlugin')
-      .use(
-        webpack.DllPlugin,
-        [{
-          context: context.root,
-          name: `${context.rootHash}_sn_[name]`,
-          path: path.resolve(
-            context.getCacheDir(),
-            context.rootHash,
-            './[name]/dll.modules.manifest.json'
-          ),
-          format: true
-        }]
-      );
-    // chainConfig.externals(
-    //   function ({ context, request }: any, callback: any) {
-    //     if (/^[^./]{1}/.test(request)) {
-    //       // Externalize to a commonjs module using the request path
-    //       return callback(null, request, 'commonjs');
-    //     }
-    //     callback();
-    //   }
-    // )
+      files.forEach((filePath) => {
+        const relativePath = path.relative(context.root, filePath);
+        // exposes[relativePath] = relativePath.startsWith('.') ? relativePath : `./${relativePath}`;
+        exposes[relativePath] = filePath;
+      })
+    })
   }
+
+  chainConfig.plugin('ModuleFederation')
+    .use(
+      ModuleFederationPlugin,
+      [{
+        name: context.packageName,
+        library: { type: 'umd', name: context.packageName },
+        exposes,
+        // remotes: {}, // build module
+        shared: ['react'] // node_modules
+      }]
+    )
+  // if (browserConfig.dll) {
+  //   chainConfig.output
+  //     .library(`${context.rootHash}_sn_[name]`)
+  //     .libraryTarget('umd');
+
+  //   chainConfig.plugin('DllPlugin')
+  //     .use(
+  //       webpack.DllPlugin,
+  //       [{
+  //         context: context.root,
+  //         name: `${context.rootHash}_sn_[name]`,
+  //         path: path.resolve(
+  //           context.getCacheDir(),
+  //           context.rootHash,
+  //           './[name]/dll.modules.manifest.json'
+  //         ),
+  //         format: true
+  //       }]
+  //     );
+  //   // chainConfig.externals(
+  //   //   function ({ context, request }: any, callback: any) {
+  //   //     if (/^[^./]{1}/.test(request)) {
+  //   //       // Externalize to a commonjs module using the request path
+  //   //       return callback(null, request, 'commonjs');
+  //   //     }
+  //   //     callback();
+  //   //   }
+  //   // )
+  // }
 }
 
 export async function mergeBrowserCustomConfig  (
