@@ -1,11 +1,13 @@
 import type {
-  ControllerContext
+  Controller
 } from 'sugar-server';
 import type WebpackChainConfig from 'webpack-chain';
 
 import {
   SugarScriptsContext
 } from './core/running-context'
+
+type ControllerContext = Controller["context"];
 
 export namespace SugarScriptsProject {
   export type BrowserWebpackConfig = CustomWebpackConfig;

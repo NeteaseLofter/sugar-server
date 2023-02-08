@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "esnext",
+    "module": "CommonJS",
     "strict": true,
     "allowJs": false,
     "declaration": true,
@@ -16,6 +16,7 @@
       "ESNext",
       "DOM"
     ],
+    "skipLibCheck": true,
     "sourceMap": true,
     "baseUrl": ".",
     "rootDir": "."

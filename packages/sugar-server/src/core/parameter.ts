@@ -1,11 +1,20 @@
 import 'reflect-metadata';
 import parse from 'co-body';
 
-import type { ControllerContext } from './controller';
+import type {
+  Controller,
+  ControllerContext
+} from './controller';
 
 const parameterGetterMetadataKey = Symbol('_parameterGetter');
 
-export function getter (target: any, propertyName: string, descriptor: TypedPropertyDescriptor<any>) {
+export function getter (
+  target: Controller,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<
+    (this: Controller, ...args: any[]) => any
+  >
+) {
   let method = descriptor.value;
   descriptor.value = async function (...args: any[]) {
     const ctx: any = this.context;

@@ -1,21 +1,8 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "moduleResolution": "node",
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    "sourceMap": true,
     "baseUrl": ".",
-    "skipLibCheck": true,
-    "declaration": true,
-    "lib": [
-      "ESNext",
-      "DOM"
-    ]
+    "rootDir": "."
   },
   "exclude": [
     "lib"

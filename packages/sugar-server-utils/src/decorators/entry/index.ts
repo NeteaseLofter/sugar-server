@@ -1,13 +1,14 @@
 import path from 'path';
 import {
   Application,
-  Controller,
-  ControllerContext
+  Controller
 } from 'sugar-server';
+
+type ControllerContext = Controller["context"];
 
 export type CustomRender<C = any> = (
   this: Controller,
-  entries: string[] | {[key: string]: string[]},
+  entries: string | string[] | {[key: string]: string | string[]},
   custom: C
 ) => string;
 
@@ -95,7 +96,7 @@ export function register (
       }
       console.log('envEntries', envEntries, ENV_ENTRIES )
 
-      let entries: string[] | {[key: string]: string[]} = [];
+      let entries: string | string[] | {[key: string]: string | string[]} = [];
       if (typeof filePath === 'string') {
         entries = envEntries[filePath] || [];
       } else {
@@ -106,7 +107,7 @@ export function register (
             const oneFilePath = filePath[filePathKey];
             currentEntries[filePathKey] = envEntries[oneFilePath];
             return currentEntries;
-          }, {} as {[key: string]: string[]})
+          }, {} as {[key: string]: string | string[]})
       }
 
       console.log(
@@ -126,5 +127,5 @@ export function register (
 }
 
 export const ENV_ENTRIES = (process.env.SUGAR_PROJECT_ENTRIES || {}) as {
-  [entryKey: string]: string[]
+  [entryKey: string]: string[] | string;
 };
