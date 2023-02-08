@@ -6,10 +6,14 @@
     "@clients/client-2": "1.0.0",
     "@features/account": "1.0.0",
     "sugar-scripts": "1.0.0",
-    "sugar-server": "0.1.15"
+    "sugar-server": "0.1.15",
+    "@demo/features-account": "1.1.0-beta.0",
+    "@demo/server": "1.1.0-beta.0",
+    "sugar-server-utils": "0.2.0-beta.0"
   },
   "changesets": [
     "ninety-rocks-think",
-    "tame-elephants-marry"
+    "tame-elephants-marry",
+    "violet-apricots-hide"
   ]
 }
