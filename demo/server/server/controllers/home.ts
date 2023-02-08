@@ -4,20 +4,24 @@ import {
   parameter
 } from 'sugar-server';
 import {
-  entry
-} from 'sugar-scripts';
+  EntryDecorator
+} from 'sugar-server-utils';
+
+import HomePageView from 'sugar-browser-entry/../../browser/home';
+import LoginPageView from 'sugar-browser-entry/../../browser/login';
+
 
 export class HomeController extends Controller {
   @router.GetRoute('/')
-  @entry.register('/browser/home.ts')
   @parameter.getter
+  @EntryDecorator.register(HomePageView)
   home () {
     console.log('render home')
     return {};
   }
 
   @router.GetRoute('/login')
-  @entry.register('/browser/login.ts')
+  @EntryDecorator.register(LoginPageView)
   login () {
     console.log('render login')
     return {};

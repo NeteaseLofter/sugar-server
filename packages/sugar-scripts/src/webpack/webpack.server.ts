@@ -3,11 +3,13 @@ import webpack from 'webpack';
 import WebpackChainConfig from 'webpack-chain';
 
 import {
-  loadBaseManifest
-} from './load-manifest';
-import {
   SugarScriptsContext
 } from '../core/running-context';
+
+import {
+  SugarServerBrowserEntryPlugin,
+  getCacheFilePath
+} from './server-browser-entry';
 
 export async function mergeServerEntry (
   context: SugarScriptsContext,
@@ -20,22 +22,8 @@ export async function mergeServerEntry (
     .merge(
       [
         serverConfig.render || '',
-        serverConfig.entry,
-        path.resolve(__dirname, 'auto-entries.ts')
+        serverConfig.entry
       ].filter((path) => !!path) as string[]
-    );
-  chainConfig.entry('main-auto')
-    .merge(
-      [
-        serverConfig.render || '',
-        serverConfig.entry,
-        path.resolve(__dirname, 'auto-run.ts')
-      ].filter((path) => !!path) as string[]
-    );
-
-    const manifest = await loadBaseManifest(
-      context.getCacheDir(),
-      context.rootHash
     );
 
   chainConfig.merge({
@@ -43,37 +31,37 @@ export async function mergeServerEntry (
       output: {
         filename: '[name].js',
         library: {
-          // name: 'main',
           type: 'commonjs',
-          // export: 'default',
         }
-      },
-      resolve: {
-        mainFields: [
-          'sugar-scripts-main',
-          'main'
-        ]
       },
       externalsPresets: { node: true },
-      externals: serverConfig.dll ? function ({ context, request }: any, callback: any) {
-        if (/^[^./]{1}/.test(request)) {
-          // Externalize to a commonjs module using the request path
-          return callback(null, request, 'commonjs');
-        }
-        callback();
-      }: undefined,
+      module: {
+        rule: {
+          script: {
+            test: /\.(ts|tsx|js|jsx)$/,
+            use: {
+              'ts-loader': {
+                loader: 'ts-loader',
+                options: {
+                  transpileOnly: true
+                }
+              }
+            }
+          }
+        },
+      },
       plugin: {
+        'SugarServerBrowserEntryPlugin': {
+          plugin: SugarServerBrowserEntryPlugin,
+          args: [{
+            root: context.root,
+            output: getCacheFilePath(context)
+          }]
+        },
         'DefinePlugin': {
           plugin: webpack.DefinePlugin,
           args: [{
-            'process.env.SUGAR_PROJECT_REAL_ENTRY': JSON.stringify(
-              path.resolve(
-                context.root,
-                serverConfig.entry
-              )
-            ),
             'process.env.SUGAR_PROJECT_RUN': JSON.stringify(true),
-            'process.env.SUGAR_PROJECT_CONTEXT': JSON.stringify(manifest.context),
             'process.env.SUGAR_PROJECT_RENDER': JSON.stringify(
               serverConfig.render
               && path.resolve(
@@ -81,7 +69,7 @@ export async function mergeServerEntry (
                 serverConfig.render
               )
             ),
-            'process.env.SUGAR_PROJECT_ENTRIES': JSON.stringify(manifest.entries),
+            'process.env.SUGAR_PROJECT_ENTRIES': `require('./browser-manifest.json')`
           }]
         }
       }

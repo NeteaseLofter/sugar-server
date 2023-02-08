@@ -17,21 +17,17 @@ export namespace SugarScriptsProject {
       /**
        * 是否构建dll用的输出
        */
-      dll?: boolean;
+      // dll?: boolean;
       /**
        * 输出目录
        */
       output: string;
-      /**
-       * controller/index
-       */
-      input?: string;
-      exposes?: string[] | {[index: string]: string},
+      // exposes?: string[] | {[index: string]: string},
       entry?: BuildEntry
     };
 
     server?: {
-      dll?: boolean;
+      // dll?: boolean;
       output: string;
       entry: string;
       render?: string;

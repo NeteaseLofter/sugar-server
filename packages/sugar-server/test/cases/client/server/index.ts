@@ -1,40 +1,39 @@
 import {
-  createServer,
-  createApplication
+  Application
 } from '../../../../src';
 
 import * as Controllers from './controllers';
 
-const server: any = createServer(
-  { server: { port: 9527 } },
-  [
-    {
-      application: createTestApplication()
+class TestApp extends Application {
+  static defaultConfig: {
+    a: 1,
+    b: {
+      c: 2
     }
-  ]
-);
+  }
+}
 
-const serverWithPath: any = createServer(
-  { server: { port: 9528 } },
-  [
-    {
-      application: createTestApplication(),
-      path: '/path'
-    },
-    {
-      application: createTestApplication(),
-      path: /^\/reg-path/
-    },
-    {
-      application: createTestApplication(),
-      path: /^(?!:\/router-test)/
-    }
-  ]
-);
+class Server extends Application {
+  static Applications = [
+    TestApp
+  ];
+}
+
+const server = new Server();
+server.listen(9527);
+
+class ServerWithPath extends Application {
+  static Applications = [
+    TestApp
+  ];
+}
+
+const serverWithPath = new ServerWithPath();
+serverWithPath.listen(9528)
 
 const stop = () => {
-  server.server.close();
-  serverWithPath.server.close();
+  server.close();
+  serverWithPath.close();
 }
 
 export { stop, server, serverWithPath };

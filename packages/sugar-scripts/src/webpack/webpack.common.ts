@@ -3,17 +3,11 @@ import webpack from 'webpack';
 import WebpackChainConfig from 'webpack-chain';
 
 import {
-  loadAllDllModulesManifest
-} from './load-manifest';
-import {
   SugarScriptsContext
 } from '../core/running-context';
-import {
-  DllDependenciesManifestPlugin
-} from './dll-dependencies-manifest-plugin'
 
-// const mode = process.env.NODE_ENV === 'development' ? 'development' : 'production';
-const mode = 'development';
+const mode = process.env.WEBPACK_MODE === 'development' ? 'development' : 'production';
+// const mode = 'development';
 
 /**
  * common 是创建基础的webpack配置项，基于webpack-chain
@@ -29,7 +23,12 @@ export async function createCommonChainConfig (
   chainConfig.merge({
     context: context.root,
     resolve: {
-      extensions: ['.ts', '.tsx', '.js', '.jsx', '.css', '.svg', '.png', '.jpg', '.gif'],
+      extensions: [
+        '.ts',
+        '.tsx',
+        '.js',
+        '.jsx'
+      ],
     },
     output: {
       path: path.resolve(
@@ -42,28 +41,16 @@ export async function createCommonChainConfig (
           : '[name].[contenthash].js'
     },
     mode,
+    devtool: process.env.NODE_ENV === 'development' ? 'cheap-module-eval-source-map' : false,
     optimization: {
       moduleIds: 'named',
       chunkIds: 'named'
     },
     stats: {
+      all: true,
       errorDetails: true
     },
-    module: {
-      // rule: {
-      //   script: {
-      //     test: /\.(ts|tsx|js|jsx)$/,
-      //     use: {
-      //       'ts-loader': {
-      //         loader: 'ts-loader',
-      //         options: {
-      //           transpileOnly: true
-      //         }
-      //       }
-      //     }
-      //   }
-      // },
-    },
+    module: {},
     plugin: {
       'ProgressPlugin': {
         plugin: webpack.ProgressPlugin,
@@ -73,53 +60,4 @@ export async function createCommonChainConfig (
   })
 
   return chainConfig;
-}
-
-export async function mergeDllReferences (
-  context: SugarScriptsContext,
-  chainConfig: WebpackChainConfig,
-) {
-  const dllModules = await loadAllDllModulesManifest(
-    context.getCacheDir(),
-    context.rootHash
-  );
-
-  const dllAssets = dllModules.reduce((dllAssets, dllModule) => {
-    dllAssets[dllModule.moduleName] = dllModule.assets;
-    return dllAssets;
-  }, {} as {
-    [dllName: string]: string[];
-  })
-
-  dllModules.forEach((
-    module
-  ) => {
-    chainConfig.plugin(module.moduleName)
-      .use(
-        webpack.DllReferencePlugin,
-        [{
-          context: module.context,
-          manifest: module.manifest
-        }]
-      );
-  })
-
-  chainConfig.plugin('DllDependenciesManifestPlugin')
-    .use(
-      DllDependenciesManifestPlugin,
-      [{
-        dllAssets,
-        fileName: path.resolve(
-          context.getCacheDir(),
-          context.rootHash,
-          './manifest.json'
-        ),
-        generate: (entries: any) => {
-          return {
-            context: context.root,
-            entries
-          };
-        }
-      }]
-    );
 }

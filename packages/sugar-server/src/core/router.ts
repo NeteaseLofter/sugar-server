@@ -185,6 +185,7 @@ export function appendControllerToRouter (
 
   const routes = ControllerClass.prototype[ROUTES_KEY];
   if (routes) {
+    console.log(routes);
     if (prefix) {
       router.prefix(prefix);
     }
@@ -203,9 +204,12 @@ export function appendControllerToRouter (
             next: any
           ) => {
             const controller = new ControllerClass();
+            controller.context = ctx;
             if (typeof (controller as any)[key] === 'function') {
-              controller.context = ctx;
-              const controllerReturn = await (controller as any)[key].call(controller, ctx, next);
+              const controllerReturn = await (controller as any)[key].call(
+                controller,
+                next
+              );
               if (
                 typeof controllerReturn !== 'undefined' &&
                 !ctx.res.writableEnded &&

@@ -6,8 +6,7 @@ import {
 } from './running-context';
 
 import {
-  mergeBrowserEntryFromServer,
-  mergeBuildDllConfig,
+  mergeBrowserEntry,
   mergeBrowserCustomConfig
 } from '../webpack/webpack.browser';
 import {
@@ -15,8 +14,7 @@ import {
   mergeServerCustomConfig
 } from '../webpack/webpack.server';
 import {
-  createCommonChainConfig,
-  mergeDllReferences
+  createCommonChainConfig
 } from '../webpack/webpack.common';
 import {
   runWebpack
@@ -33,11 +31,11 @@ export const build = async (
     transpileOnly: true
   })
 
-  await buildBrowser(
+  await buildServer(
     context
   )
 
-  await buildServer(
+  await buildBrowser(
     context
   )
 }
@@ -51,19 +49,7 @@ const buildBrowser = async (context: SugarScriptsContext) => {
     browserConfig.output
   );
 
-  await mergeBrowserEntryFromServer(
-    context,
-    chainConfig
-  )
-
-  // 合并其他已经构建好的dll
-  // await mergeDllReferences(
-  //   context,
-  //   chainConfig,
-  // )
-
-  // 如果是dll
-  await mergeBuildDllConfig(
+  await mergeBrowserEntry(
     context,
     chainConfig
   )

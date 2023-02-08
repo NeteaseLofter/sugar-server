@@ -5,9 +5,11 @@ import {
   ControllerContext
 } from 'sugar-server';
 
-import {
-  CustomRender
-} from '../custom-config.type';
+export type CustomRender<C = any> = (
+  this: Controller,
+  entries: string[] | {[key: string]: string[]},
+  custom: C
+) => string;
 
 export const ENTRIES_KEY = Symbol('_sugar_entries');
 export const ENTRIES_CONFIG_KEY = Symbol('_sugar_entries_config');
@@ -20,17 +22,15 @@ export interface EntriesController extends Controller {
   [ENTRIES_KEY]: EntryConfig[]
 }
 
-const defaultRender: CustomRender = (
-  ctx,
+const defaultRender: CustomRender = function (
+  this: Controller,
   entries,
   custom
-) => {
+) {
   return entries.toString();
 }
 
-const render: CustomRender = (
-  ...args
-) => {
+const render: CustomRender = (() => {
   let currentRender = defaultRender;
   console.log('SUGAR_PROJECT_RENDER', process.env.SUGAR_PROJECT_RENDER)
   if (process.env.SUGAR_PROJECT_RENDER) {
@@ -39,10 +39,8 @@ const render: CustomRender = (
       console.log('load custom render success');
     } catch (e) {}
   }
-  return currentRender(
-    ...args
-  )
-}
+  return currentRender;
+})()
 
 // discuss：需要string[] 吗？
 export type RegisterFilePath = string | {[key: string]: string}
@@ -79,9 +77,10 @@ export function register (
 
     const oldValue = descriptor.value;
     descriptor.value = async function (
-      ctx: ControllerContext,
+      this: Controller,
       ...args: any
     ) {
+      const ctx: ControllerContext = this.context;
       // ctx.app
       let oldResult;
       if (oldValue) {
@@ -117,8 +116,8 @@ export function register (
         entries
       )
 
-      return render(
-        ctx,
+      return render.call(
+        this,
         entries,
         oldResult
       );
@@ -126,65 +125,6 @@ export function register (
   }
 }
 
-export const ENTRY_WEBPACK_INJECT_KEY = 'ENTRY_WEBPACK_INJECT_KEY';
-
 export const ENV_ENTRIES = (process.env.SUGAR_PROJECT_ENTRIES || {}) as {
   [entryKey: string]: string[]
 };
-
-export function getEntryUrl (
-  filePath: string
-) {
-  return '';
-}
-
-export function getEntries (
-  dirname: string
-) {
- let entries = {};
-
- require(
-   path.resolve(
-     dirname,
-     ''
-   )
- )
-}
-
-export function getEntriesFromController (
-  ControllerClass: typeof Controller
-) {
-  return (ControllerClass.prototype as EntriesController)[ENTRIES_KEY] || [];
-  // return (controller as EntriesController)[ENTRIES_KEY] || [];
-}
-
-export function getEntriesFromControllers (
-  Controllers: (typeof Controller)[],
-  root: string
-) {
-  const entries: {
-    [key: string]: string
-  } = {};
-  Controllers.forEach(
-    (ControllerClass) => {
-      getEntriesFromController(ControllerClass).forEach(({ filePath }) => {
-        entries[filePath] = path.resolve(
-          root,
-          filePath
-        )
-      })
-    }
-  )
-  return entries;
-}
-
-export function getEntriesFromApplicationClass (
-  ApplicationClass: typeof Application,
-  root: string
-) {
-  const app = new ApplicationClass();
-  return getEntriesFromControllers(
-    app.Controllers,
-    root
-  )
-}

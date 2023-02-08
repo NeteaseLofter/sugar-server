@@ -52,19 +52,9 @@ export class Application extends Koa<ControllerContext> {
   _applyRequest: any;
   config: Config;
   Controllers: (typeof Controller)[] = [];
-  parentApp?: Application;
 
-  constructor (
-    {
-      app
-    }: {
-      app?: Application
-    } = {}
-  ) {
+  constructor () {
     super();
-    if (app) {
-      this.parentApp = app;
-    }
 
     const thisConstructor = this.constructor as typeof Application;
 

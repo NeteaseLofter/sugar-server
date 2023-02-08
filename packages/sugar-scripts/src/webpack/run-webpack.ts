@@ -13,6 +13,7 @@ export const runWebpack = (
     compiler.run((err, stats) => {
       if (err || stats && stats.hasErrors()) {
         reject(err || stats?.toString())
+        console.log(stats?.toString())
         return;
       }
       console.log(stats?.toString())

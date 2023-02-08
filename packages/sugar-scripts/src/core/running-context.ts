@@ -59,10 +59,21 @@ export class SugarScriptsContext {
     }
   }
 
-  getCacheDir () {
+  getCacheRootDir () {
     return path.resolve(
       this.projectRoot,
       this.projectConfig.cacheDir
+    )
+  }
+
+  getCacheDir () {
+    return path.resolve(
+      this.projectRoot,
+      this.projectConfig.cacheDir,
+      path.relative(
+        this.projectRoot,
+        this.root
+      )
     )
   }
 

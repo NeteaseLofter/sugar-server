@@ -60,13 +60,11 @@ export async function loadAllDllModulesManifest (
 }
 
 export async function loadBaseManifest (
-  dir: string,
-  rootHash: string
+  dir: string
 ) {
   return loadJSON(
     path.resolve(
       dir,
-      rootHash,
       './manifest.json'
     )
   );

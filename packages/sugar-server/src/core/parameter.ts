@@ -7,7 +7,8 @@ const parameterGetterMetadataKey = Symbol('_parameterGetter');
 
 export function getter (target: any, propertyName: string, descriptor: TypedPropertyDescriptor<any>) {
   let method = descriptor.value;
-  descriptor.value = async function (ctx: any, ...args: any[]) {
+  descriptor.value = async function (...args: any[]) {
+    const ctx: any = this.context;
     let existingParameterGetters: ParameterGetter[] = Reflect.getOwnMetadata(parameterGetterMetadataKey, target, propertyName);
     let gotValues = [];
     if (existingParameterGetters) {

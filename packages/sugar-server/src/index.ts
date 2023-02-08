@@ -6,8 +6,7 @@ import {
   Module
 } from './core/module';
 import {
-  Controller,
-  ControllerContext
+  Controller
 } from './core/controller';
 import {
   Application
@@ -23,6 +22,5 @@ export {
   validator,
   Controller,
   Config,
-  ControllerContext,
   SugarServerError
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@clients/client-1",
+  "name": "@demo/server",
   "private": true,
   "version": "1.1.0-beta.0",
   "description": "",
@@ -11,9 +11,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@features/account": "^1.1.0-beta.0",
+    "@demo/features-account": "^1.1.0-beta.0",
     "sugar-scripts": "0.2.0-beta.0",
     "sugar-server": "^0.2.0-beta.0",
+    "sugar-server-utils": "^0.2.0-beta.0",
     "typescript": "^4.3.5"
   }
 }

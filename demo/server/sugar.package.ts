@@ -5,13 +5,12 @@ import {
 
 export const packageConfig: SugarScriptsProject.PackageConfig = {
   browser: {
-    input: './server/index.ts',
-    output: '../../resources/clients/client-1'
+    output: '../resources/clients/client-1'
   },
   server: {
-    dll: true,
     output: './dist',
-    entry: './server/index.ts'
+    entry: './server/index.ts',
+    render: './server/render.ts',
   }
 }
 

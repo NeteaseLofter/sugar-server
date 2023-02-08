@@ -1,20 +1,15 @@
 import path from 'path';
-import webpack, {
-  container
-} from 'webpack';
 import WebpackChainConfig from 'webpack-chain';
 import { glob } from 'glob';
+import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
 
 import {
   SugarScriptsContext
 } from '../core/running-context';
 import {
-  getEntriesFromApplicationClass
-} from '../core/entry';
+  getCacheFilePath
+} from './server-browser-entry';
 
-const {
-  ModuleFederationPlugin
-} = container;
 
 function normalEntryPath (
   entryPath: string,
@@ -29,25 +24,32 @@ function normalEntryPath (
 }
 
 
-export async function mergeBrowserEntryFromServer(
+export async function mergeBrowserEntry(
   context: SugarScriptsContext,
   chainConfig: WebpackChainConfig
 ) {
   if (!context.packageConfig.browser) return;
   const browserConfig = context.packageConfig.browser;
 
-  if (browserConfig.input) {
-    const App = require(
-      path.resolve(
-        context.root,
-        browserConfig.input
-      )
-    ).default;
+  const autoBrowserEntryFilePath = getCacheFilePath(context);
 
-    const configEntry = getEntriesFromApplicationClass(
-      App,
-      context.root
-    );
+  if (context.packageConfig.server) {
+    chainConfig.plugin('manifest')
+      .use(
+        WebpackManifestPlugin,
+        [{
+          fileName: path.resolve(
+            context.packageConfig.server.output,
+            './browser-manifest.json'
+          ),
+          useEntryKeys: true,
+          writeToFileEmit: true
+        }]
+      )
+  }
+
+  try {
+    const configEntry = require(autoBrowserEntryFilePath);
 
     Object.keys(configEntry)
       .forEach((entryKey) => {
@@ -55,11 +57,14 @@ export async function mergeBrowserEntryFromServer(
         if (typeof entryPath === 'string') {
           chainConfig.entry(entryKey)
             .add(
-              path.join(context.root, entryPath)
+              entryPath
             )
         }
       });
+  } catch (e) {
+    console.log(e);
   }
+
   if (browserConfig.entry) {
     const entry = browserConfig.entry;
     Object.keys(entry)
@@ -87,75 +92,6 @@ export async function mergeBrowserEntryFromServer(
         }
       });
   }
-
-}
-
-
-export async function mergeBuildDllConfig (
-  context: SugarScriptsContext,
-  chainConfig: WebpackChainConfig
-) {
-  if (!context.packageConfig.browser) return;
-  const browserConfig = context.packageConfig.browser;
-
-  let exposes: {
-    [index: string]: string
-  } = {};
-  if (Array.isArray(browserConfig.exposes)) {
-    browserConfig.exposes.forEach((newExpose) => {
-      const files =  normalEntryPath(
-        newExpose,
-        context.root,
-      )
-
-      files.forEach((filePath) => {
-        const relativePath = path.relative(context.root, filePath);
-        // exposes[relativePath] = relativePath.startsWith('.') ? relativePath : `./${relativePath}`;
-        exposes[relativePath] = filePath;
-      })
-    })
-  }
-
-  chainConfig.plugin('ModuleFederation')
-    .use(
-      ModuleFederationPlugin,
-      [{
-        name: context.packageName,
-        library: { type: 'umd', name: context.packageName },
-        exposes,
-        // remotes: {}, // build module
-        shared: ['react'] // node_modules
-      }]
-    )
-  // if (browserConfig.dll) {
-  //   chainConfig.output
-  //     .library(`${context.rootHash}_sn_[name]`)
-  //     .libraryTarget('umd');
-
-  //   chainConfig.plugin('DllPlugin')
-  //     .use(
-  //       webpack.DllPlugin,
-  //       [{
-  //         context: context.root,
-  //         name: `${context.rootHash}_sn_[name]`,
-  //         path: path.resolve(
-  //           context.getCacheDir(),
-  //           context.rootHash,
-  //           './[name]/dll.modules.manifest.json'
-  //         ),
-  //         format: true
-  //       }]
-  //     );
-  //   // chainConfig.externals(
-  //   //   function ({ context, request }: any, callback: any) {
-  //   //     if (/^[^./]{1}/.test(request)) {
-  //   //       // Externalize to a commonjs module using the request path
-  //   //       return callback(null, request, 'commonjs');
-  //   //     }
-  //   //     callback();
-  //   //   }
-  //   // )
-  // }
 }
 
 export async function mergeBrowserCustomConfig  (
