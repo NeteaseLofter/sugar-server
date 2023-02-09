@@ -1,5 +1,11 @@
 # sugar-scripts
 
+## 1.0.0-beta.3
+
+### Patch Changes
+
+- 905a391: 更新 sugar-scripts 依赖项
+
 ## 1.0.0-beta.2
 
 ### Patch Changes

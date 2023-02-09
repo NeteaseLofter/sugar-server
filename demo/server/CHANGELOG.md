@@ -1,5 +1,13 @@
 # @clients/client-1
 
+## 1.1.0-beta.3
+
+### Patch Changes
+
+- Updated dependencies [905a391]
+  - sugar-scripts@1.0.0-beta.3
+  - @demo/features-account@1.1.0-beta.3
+
 ## 1.1.0-beta.2
 
 ### Patch Changes
