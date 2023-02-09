@@ -23,7 +23,7 @@ export function createStaticController ({
     async status (
       @parameter.Context ctx: any
     ) {
-      const routerPath = ctx.routerPath || ctx.path;
+      const routerPath = ctx.routerPath || ctx.path || ctx.originalUrl;
       const filePath = routerPath.substr(prefix.length);
 
       if (filePath) {

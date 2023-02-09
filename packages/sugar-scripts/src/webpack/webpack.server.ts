@@ -34,22 +34,10 @@ export async function mergeServerEntry (
           type: 'commonjs',
         }
       },
-      externalsPresets: { node: true },
-      module: {
-        rule: {
-          script: {
-            test: /\.(ts|tsx|js|jsx)$/,
-            use: {
-              'ts-loader': {
-                loader: 'ts-loader',
-                options: {
-                  transpileOnly: true
-                }
-              }
-            }
-          }
-        },
+      optimization: {
+        minimize: false,
       },
+      externalsPresets: { node: true },
       plugin: {
         'SugarServerBrowserEntryPlugin': {
           plugin: SugarServerBrowserEntryPlugin,

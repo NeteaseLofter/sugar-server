@@ -50,7 +50,21 @@ export async function createCommonChainConfig (
       all: true,
       errorDetails: true
     },
-    module: {},
+    module: {
+      rule: {
+        script: {
+          test: /\.(ts|tsx|js|jsx)$/,
+          use: {
+            'ts-loader': {
+              loader: 'ts-loader',
+              options: {
+                transpileOnly: true
+              }
+            }
+          }
+        }
+      },
+    },
     plugin: {
       'ProgressPlugin': {
         plugin: webpack.ProgressPlugin,
