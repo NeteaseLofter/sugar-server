@@ -1,5 +1,13 @@
 # sugar-scripts
 
+## 1.0.0-beta.2
+
+### Patch Changes
+
+- 默认使用 ts-loader 作为代码编译工具
+- Updated dependencies
+  - sugar-server@1.0.0-beta.2
+
 ## 1.0.0-beta.1
 
 ### Major Changes

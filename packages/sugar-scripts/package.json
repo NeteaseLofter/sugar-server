@@ -1,6 +1,6 @@
 {
   "name": "sugar-scripts",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "",
   "main": "src/index.ts",
   "scripts": {
@@ -28,7 +28,7 @@
     "glob": "^8.0.3",
     "koa-send": "~5.0.1",
     "simple-git": "^3.12.0",
-    "sugar-server": "^1.0.0-beta.1",
+    "sugar-server": "^1.0.0-beta.2",
     "webpack": "^5.74.0",
     "webpack-chain": "~6.5.1",
     "webpack-manifest-plugin": "^5.0.0"

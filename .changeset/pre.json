@@ -12,6 +12,7 @@
     "sugar-server-utils": "0.2.0-beta.0"
   },
   "changesets": [
+    "mighty-needles-marry",
     "ninety-rocks-think",
     "tame-elephants-marry",
     "violet-apricots-hide"
