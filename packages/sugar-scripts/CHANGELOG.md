@@ -1,5 +1,11 @@
 # sugar-scripts
 
+## 1.0.0-beta.4
+
+### Patch Changes
+
+- ff46c94: 修复 sugar.package 找不到的问题
+
 ## 1.0.0-beta.3
 
 ### Patch Changes

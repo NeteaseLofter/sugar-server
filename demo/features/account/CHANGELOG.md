@@ -1,5 +1,12 @@
 # @features/account
 
+## 1.1.0-beta.4
+
+### Patch Changes
+
+- Updated dependencies [ff46c94]
+  - sugar-scripts@1.0.0-beta.4
+
 ## 1.1.0-beta.3
 
 ### Patch Changes
