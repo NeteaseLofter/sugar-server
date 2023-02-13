@@ -1,10 +1,10 @@
 import path from 'path';
 import * as tsNode from 'ts-node';
 
+import * as logger from '../shared/logger';
 import {
   SugarScriptsContext
 } from './running-context';
-
 import {
   mergeBrowserEntry,
   mergeBrowserCustomConfig
@@ -44,6 +44,9 @@ const buildBrowser = async (context: SugarScriptsContext) => {
   if (!context.packageConfig.browser) return;
   const browserConfig = context.packageConfig.browser;
 
+  logger.info('build browser');
+  logger.log(JSON.stringify(browserConfig));
+
   const chainConfig = await createCommonChainConfig(
     context,
     browserConfig.output
@@ -60,12 +63,17 @@ const buildBrowser = async (context: SugarScriptsContext) => {
   )
 
   await runWebpack(chainConfig);
+
+  logger.success('build browser finish');
 }
 
 
 const buildServer = async (context: SugarScriptsContext) => {
   if (!context.packageConfig.server) return;
   const serverConfig = context.packageConfig.server;
+
+  logger.info('build server');
+  logger.log(JSON.stringify(serverConfig));
 
   const chainConfig = await createCommonChainConfig(
     context,
@@ -81,4 +89,6 @@ const buildServer = async (context: SugarScriptsContext) => {
     chainConfig
   );
   await runWebpack(chainConfig);
+
+  logger.success('build server finish');
 }

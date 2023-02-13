@@ -1,6 +1,8 @@
 import webpack from 'webpack';
 import WebpackChainConfig from 'webpack-chain';
 
+import * as logger from '../shared/logger';
+
 
 export const runWebpack = (
   chainConfig: WebpackChainConfig
@@ -12,11 +14,11 @@ export const runWebpack = (
   return new Promise((resolve, reject) => {
     compiler.run((err, stats) => {
       if (err || stats && stats.hasErrors()) {
-        reject(err || stats?.toString())
-        console.log(stats?.toString())
+        reject(err || stats?.toString());
+        logger.error(stats?.toString() || '');
         return;
       }
-      console.log(stats?.toString())
+      logger.log(stats?.toString() || '')
       resolve(stats)
     })
   })

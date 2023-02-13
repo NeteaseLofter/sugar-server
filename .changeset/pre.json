@@ -12,6 +12,7 @@
     "sugar-server-utils": "0.2.0-beta.0"
   },
   "changesets": [
+    "fresh-moles-sit",
     "good-knives-worry",
     "happy-days-think",
     "mighty-needles-marry",

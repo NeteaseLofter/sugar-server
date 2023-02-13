@@ -9,7 +9,7 @@ import {
   ROUTES_KEY,
   RouteMethod
 } from './controller';
-
+import * as logger from '../shared/logger';
 import {
   createThunkAttributeDecorator
 } from '../shared/create-thunk-descriptor';
@@ -185,7 +185,6 @@ export function appendControllerToRouter (
 
   const routes = ControllerClass.prototype[ROUTES_KEY];
   if (routes) {
-    console.log(routes);
     if (prefix) {
       router.prefix(prefix);
     }
@@ -194,7 +193,7 @@ export function appendControllerToRouter (
       method,
       path
     }) => {
-      const methodRegister = router[method] && router[method];
+      const methodRegister = router[method];
       if (methodRegister) {
         (methodRegister as any).call(
           router,
@@ -223,6 +222,10 @@ export function appendControllerToRouter (
         )
       }
     });
+
+    logger.success(
+      `register routes \n Controller: ${ControllerClass.name} \n prefix: ${prefix} \n routes: ${JSON.stringify(routes)}`
+    );
   }
 
   return {

@@ -1,5 +1,11 @@
 # sugar-server
 
+## 1.0.0-beta.3
+
+### Patch Changes
+
+- 更新少量 logger 及更新 browser import 标记内容
+
 ## 1.0.0-beta.2
 
 ### Patch Changes

@@ -17,6 +17,7 @@ export interface SugarServerBrowserEntryPluginOptions {
 
 const PLUGIN_NAME = 'SugarServerEntryPlugin';
 const CACHE_FILE_NAME = 'server-browser-entries.json';
+const WEBPACK_IMPORT_SYNTAX = 'sugar?browser-entry/';
 
 export function getCacheFilePath (context: SugarScriptsContext) {
   return path.resolve(
@@ -42,9 +43,9 @@ export class SugarServerBrowserEntryPlugin {
       (factory) => {
         factory.hooks.beforeResolve
           .tap(PLUGIN_NAME, (result) => {
-            if (result.request.startsWith('sugar-browser-entry/')) {
+            if (result.request.startsWith(WEBPACK_IMPORT_SYNTAX)) {
               const filePath = result.request.slice(
-                'sugar-browser-entry/'.length
+                WEBPACK_IMPORT_SYNTAX.length
               );
               const absoluteFilePath = path.resolve(
                 result.context,
@@ -57,6 +58,7 @@ export class SugarServerBrowserEntryPlugin {
               );
 
               data[entryKey] = absoluteFilePath;
+              logger.log(`find sugar browser import in [${result.context}] use [${absoluteFilePath}]`);
               const base64 = Buffer.from(
                 `export default "${entryKey}"`
               ).toString('base64');

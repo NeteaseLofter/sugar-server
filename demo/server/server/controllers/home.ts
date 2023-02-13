@@ -7,8 +7,8 @@ import {
   EntryDecorator
 } from 'sugar-server-utils';
 
-import HomePageView from 'sugar-browser-entry/../../browser/home';
-import LoginPageView from 'sugar-browser-entry/../../browser/login';
+import HomePageView from 'sugar?browser-entry/../../browser/home';
+import LoginPageView from 'sugar?browser-entry/../../browser/login';
 
 
 export class HomeController extends Controller {

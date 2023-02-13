@@ -4,6 +4,7 @@ import { createHash } from 'crypto';
 
 import * as tsNode from 'ts-node';
 
+import * as logger from '../shared/logger';
 import {
   SUGAR_PACKAGE_CONFIG_FILENAME,
   SUGAR_PROJECT_CONFIG_FILENAME
@@ -150,7 +151,7 @@ export const findPackage = async (dir: string): Promise<{
       ]
     });
 
-    console.log(existedFile);
+    logger.success(`find ${SUGAR_PACKAGE_CONFIG_FILENAME}: ${existedFile}`);
 
     try {
       packageConfigs = require(existedFile);
@@ -215,7 +216,7 @@ export const findProject = async (dir: string): Promise<{
       ]
     });
 
-    console.log(existedFile);
+    logger.success(`find ${SUGAR_PROJECT_CONFIG_FILENAME}: ${existedFile}`);
 
     try {
       projectConfigs = require(existedFile);

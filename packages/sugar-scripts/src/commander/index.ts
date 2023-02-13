@@ -1,7 +1,7 @@
 import path from 'path';
-import chalk from 'chalk';
 import { Command } from 'commander';
 
+import * as logger from '../shared/logger';
 import {
   initRunningContext
 } from '../core/init-running-context';
@@ -44,7 +44,7 @@ program
     await build(
       context
     );
-    console.log(`✅ ${chalk.bold.green('构建成功')}`);
+    logger.success('build success');
   })
 
 
@@ -62,7 +62,7 @@ cacheCommand
     const dir = options.dir ? path.resolve(cwd, options.dir) : cwd;
     const context = await initRunningContext(dir);
     await cacheClean(context);
-    console.log(`✅ ${chalk.bold.green('清理构建缓存成功')}`);
+    logger.success('clean success');
   })
 
 program.addCommand(cacheCommand)
@@ -89,7 +89,7 @@ program
       App,
       port
     );
-    console.log(`✅ ${chalk.bold.green(`启动服务成功，端口:${port}`)}`);
+    logger.success(`启动服务成功，端口:${port}`);
   })
 
 program.parse(process.argv);

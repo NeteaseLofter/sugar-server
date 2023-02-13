@@ -1,5 +1,13 @@
 # sugar-scripts
 
+## 1.0.0-beta.5
+
+### Patch Changes
+
+- 更新少量 logger 及更新 browser import 标记内容
+- Updated dependencies
+  - sugar-server@1.0.0-beta.3
+
 ## 1.0.0-beta.4
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "sugar-scripts",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "description": "",
   "main": "src/index.ts",
   "scripts": {
@@ -26,7 +26,7 @@
     "chalk": "^4",
     "commander": "^9.4.0",
     "glob": "^8.0.3",
-    "sugar-server": "^1.0.0-beta.2",
+    "sugar-server": "^1.0.0-beta.3",
     "ts-node": "^10.9.1",
     "webpack": "^5.74.0",
     "webpack-chain": "~6.5.1",
