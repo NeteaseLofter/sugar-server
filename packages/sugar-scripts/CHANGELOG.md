@@ -1,5 +1,11 @@
 # sugar-scripts
 
+## 1.0.0-beta.6
+
+### Patch Changes
+
+- 2ea1c37: 新增 sugar-scripts dev 本地开发命令，通过 nodemon 实现自动重启
+
 ## 1.0.0-beta.5
 
 ### Patch Changes
