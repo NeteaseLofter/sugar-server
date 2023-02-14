@@ -7,7 +7,14 @@ import {
   SugarScriptsContext
 } from './running-context';
 
-export const initRunningContext = async (dir: string) => {
+export const initRunningContext = async (
+  dir: string,
+  {
+    watch
+  }: {
+    watch?: boolean;
+  } = {}
+) => {
   const {
     root,
     packageJson,
@@ -25,6 +32,7 @@ export const initRunningContext = async (dir: string) => {
     packageName: packageJson.name,
     packageConfigs,
     projectRoot,
-    projectConfigs
+    projectConfigs,
+    watch: !!watch
   })
 }

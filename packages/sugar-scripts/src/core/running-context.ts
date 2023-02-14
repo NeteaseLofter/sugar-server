@@ -15,6 +15,7 @@ export class SugarScriptsContext {
   projectRoot: string;
   packageConfigs: SugarScriptsProject.SugarPackageConfigs;
   projectConfigs: SugarScriptsProject.SugarProjectConfigs;
+  watch: boolean;
 
   constructor (
     {
@@ -22,13 +23,15 @@ export class SugarScriptsContext {
       packageName,
       packageConfigs,
       projectRoot,
-      projectConfigs
+      projectConfigs,
+      watch
     }: {
       root: string;
       packageName: string;
       packageConfigs: SugarScriptsProject.SugarPackageConfigs;
       projectRoot: string;
       projectConfigs: SugarScriptsProject.SugarProjectConfigs;
+      watch: boolean;
     }
   ) {
     this.root = root;
@@ -37,6 +40,7 @@ export class SugarScriptsContext {
     this.packageConfigs = packageConfigs;
     this.projectConfigs = projectConfigs;
     this.rootHash = getHashFromRoot(root);
+    this.watch = watch;
   }
 
   serverEntryName = 'main';

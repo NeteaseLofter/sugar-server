@@ -6,9 +6,6 @@ import {
   SugarScriptsContext
 } from '../core/running-context';
 
-const mode = process.env.WEBPACK_MODE === 'development' ? 'development' : 'production';
-// const mode = 'development';
-
 /**
  * common 是创建基础的webpack配置项，基于webpack-chain
  * 用于被 webpack.dll 、webpack.frontend、webpack.server扩展
@@ -18,6 +15,9 @@ export async function createCommonChainConfig (
   context: SugarScriptsContext,
   output: string
 ): Promise<WebpackChainConfig> {
+  const mode = process.env.WEBPACK_MODE === 'development' ? 'development' : 'production';
+  // const mode = 'development';
+
   let chainConfig = new WebpackChainConfig();
 
   chainConfig.merge({
@@ -41,7 +41,7 @@ export async function createCommonChainConfig (
           : '[name].[contenthash].js'
     },
     mode,
-    devtool: process.env.NODE_ENV === 'development' ? 'cheap-module-eval-source-map' : false,
+    devtool: mode === 'development' ? 'source-map' : false,
     optimization: {
       moduleIds: 'named',
       chunkIds: 'named'

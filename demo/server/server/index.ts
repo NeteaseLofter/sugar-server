@@ -1,3 +1,4 @@
+import path from 'path';
 import {
   Application
 } from 'sugar-server';
@@ -15,7 +16,10 @@ class Client1App extends Application {
 
     this.useController(
       StaticController.createStaticController({
-        staticResourcesPath: '../../resources',
+        staticResourcesPath: path.resolve(
+          process.env.SUGAR_PROJECT_ROOT || '',
+          './resources'
+        ),
         prefix: '/static'
       })
     )
@@ -28,4 +32,9 @@ class Client1App extends Application {
   }
 }
 
-export default Client1App;
+const app = new Client1App();
+app.listen(9000, () => {
+  console.log('start server on 9000')
+});
+
+// export default Client1App;

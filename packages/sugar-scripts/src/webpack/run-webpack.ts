@@ -23,3 +23,23 @@ export const runWebpack = (
     })
   })
 }
+
+export const runWatchWebpack = (
+  chainConfig: WebpackChainConfig
+) => {
+  const compiler = webpack(
+    chainConfig.toConfig()
+  );
+
+  return new Promise((resolve, reject) => {
+    compiler.watch({}, (err, stats) => {
+      if (err || stats && stats.hasErrors()) {
+        reject(err || stats?.toString());
+        logger.error(stats?.toString() || '');
+        return;
+      }
+      logger.log(stats?.toString() || '')
+      resolve(stats)
+    })
+  })
+}

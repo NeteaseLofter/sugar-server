@@ -26,6 +26,7 @@
     "chalk": "^4",
     "commander": "^9.4.0",
     "glob": "^8.0.3",
+    "nodemon": "^2.0.20",
     "sugar-server": "^1.0.0-beta.3",
     "ts-node": "^10.9.1",
     "webpack": "^5.74.0",
@@ -35,8 +36,9 @@
   "devDependencies": {
     "@types/glob": "~7.2.0",
     "@types/node": "^18.0.0",
+    "@types/nodemon": "^1.19.2",
     "@types/webpack": "^5",
-    "typescript": "^4.3.5",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "typescript": "^4.3.5"
   }
 }

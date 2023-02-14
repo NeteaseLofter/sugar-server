@@ -1,5 +1,6 @@
 import path from 'path';
 import { Command } from 'commander';
+import nodemon from 'nodemon';
 
 import * as logger from '../shared/logger';
 import {
@@ -36,15 +37,49 @@ program
   .command('build')
   .description('构建服务')
   .option('--dir <dir>', '自定义运行的目录')
+  .option('--watch', '启用watch监听变更')
   .action(async (options, command) => {
     const cwd = process.cwd();
     const dir = options.dir ? path.resolve(cwd, options.dir) : cwd
 
-    const context = await initRunningContext(dir);
+    const context = await initRunningContext(
+      dir,
+      {
+        watch: !!options.watch
+      }
+    );
     await build(
       context
     );
     logger.success('build success');
+  })
+
+program
+  .command('dev')
+  .description('测试服务启动')
+  .option('--dir <dir>', '自定义运行的目录')
+  .action(async (options, command) => {
+    const cwd = process.cwd();
+    const dir = options.dir ? path.resolve(cwd, options.dir) : cwd
+
+    if (!process.env.WEBPACK_MODE) {
+      process.env.WEBPACK_MODE = 'development';
+    }
+
+    const context = await initRunningContext(
+      dir,
+      {
+        watch: true
+      }
+    );
+    await build(
+      context
+    );
+    logger.success('build success');
+
+    const appFilePath = context.getStartFilePath();
+    if (!appFilePath) return;
+    nodemon(appFilePath);
   })
 
 
@@ -78,18 +113,22 @@ program
     const port = +options.port;
 
     const context = await initRunningContext(dir);
-    const appFilePath = context.getStartFilePath()
+    const appFilePath = context.getStartFilePath();
 
     if (!appFilePath) return;
     const App = require(
       appFilePath
     ).default;
 
-    runApplication(
-      App,
-      port
-    );
-    logger.success(`启动服务成功，端口:${port}`);
+    try {
+      runApplication(
+        App,
+        port
+      );
+      logger.success(`启动服务成功，端口:${port}`);
+    } catch (e) {
+      logger.success(`无自动启动服务`);
+    }
   })
 
 program.parse(process.argv);

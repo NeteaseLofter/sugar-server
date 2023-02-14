@@ -17,7 +17,8 @@ import {
   createCommonChainConfig
 } from '../webpack/webpack.common';
 import {
-  runWebpack
+  runWebpack,
+  runWatchWebpack
 } from '../webpack/run-webpack';
 
 
@@ -62,7 +63,11 @@ const buildBrowser = async (context: SugarScriptsContext) => {
     chainConfig
   )
 
-  await runWebpack(chainConfig);
+  if (context.watch) {
+    await runWatchWebpack(chainConfig);
+  } else {
+    await runWebpack(chainConfig);
+  }
 
   logger.success('build browser finish');
 }
@@ -88,7 +93,12 @@ const buildServer = async (context: SugarScriptsContext) => {
     context,
     chainConfig
   );
-  await runWebpack(chainConfig);
+
+  if (context.watch) {
+    await runWatchWebpack(chainConfig);
+  } else {
+    await runWebpack(chainConfig);
+  }
 
   logger.success('build server finish');
 }

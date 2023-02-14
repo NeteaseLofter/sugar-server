@@ -37,6 +37,7 @@ export async function mergeServerEntry (
       optimization: {
         minimize: false,
       },
+      devtool: 'source-map',
       externalsPresets: { node: true },
       plugin: {
         'SugarServerBrowserEntryPlugin': {
@@ -49,6 +50,12 @@ export async function mergeServerEntry (
         'DefinePlugin': {
           plugin: webpack.DefinePlugin,
           args: [{
+            'process.env.SUGAR_PROJECT_ROOT': JSON.stringify(
+              context.projectRoot
+            ),
+            'process.env.SUGAR_PACKAGE_ROOT': JSON.stringify(
+              context.root
+            ),
             'process.env.SUGAR_PROJECT_RUN': JSON.stringify(true),
             'process.env.SUGAR_PROJECT_RENDER': JSON.stringify(
               serverConfig.render

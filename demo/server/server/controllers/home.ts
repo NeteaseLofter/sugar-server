@@ -16,7 +16,7 @@ export class HomeController extends Controller {
   @parameter.getter
   @EntryDecorator.register(HomePageView)
   home () {
-    console.log('render home')
+    console.log('render home333')
     return {};
   }
 
