@@ -4,6 +4,7 @@ import {
 
 
 export const packageConfig: SugarScriptsProject.PackageConfig = {
+  cacheDir: './.sugar-cache',
   browser: {
     output: '../resources/clients/client-1'
   },

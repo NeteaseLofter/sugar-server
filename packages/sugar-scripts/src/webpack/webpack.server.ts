@@ -51,9 +51,6 @@ export async function mergeServerEntry (
           plugin: webpack.DefinePlugin,
           args: [{
             'process.env.SUGAR_PROJECT_ROOT': JSON.stringify(
-              context.projectRoot
-            ),
-            'process.env.SUGAR_PACKAGE_ROOT': JSON.stringify(
               context.root
             ),
             'process.env.SUGAR_PROJECT_RUN': JSON.stringify(true),
@@ -75,13 +72,6 @@ export async function mergeServerCustomConfig (
   context: SugarScriptsContext,
   chainConfig: WebpackChainConfig
 ) {
-  if (context.projectConfigs.serverWebpackConfig) {
-    await context.projectConfigs.serverWebpackConfig(
-      chainConfig,
-      context
-    )
-  }
-
   if (context.packageConfigs.serverWebpackConfig) {
     await context.packageConfigs.serverWebpackConfig(
       chainConfig,

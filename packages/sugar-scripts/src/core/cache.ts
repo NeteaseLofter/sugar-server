@@ -10,6 +10,6 @@ export const clean = (
   context: SugarScriptsContext
 ) => {
   return rm(
-    context.getCacheRootDir()
+    context.getCacheDir()
   );
 }

@@ -1,16 +1,20 @@
+# sugar-scripts
+
+
 ## 配置文件
-1. `sugar.project.ts`
-2. `sugar.package.ts`
-3. `sugar.build.ts`
+`sugar.config.ts` 项目说明文件，放于项目根目录和一般和package.json同级
+
+
 
 
 #### sugar.project.ts 配置文件
 ```ts
-import type {
-  types
-} from 'sugar-scripts';
-
-// 待定
+export const projectConfig = {
+  /**
+   * 当前项目的缓存目录，建议添加到.gitignore中
+  */
+  cacheDir: './.sugar-cache'
+}
 ```
 
 

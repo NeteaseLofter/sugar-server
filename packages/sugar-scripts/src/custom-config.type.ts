@@ -15,6 +15,7 @@ export namespace SugarScriptsProject {
   export type ServerWebpackConfig = CustomWebpackConfig;
 
   export interface PackageConfig {
+    cacheDir: string;
     browser?: {
       /**
        * 是否构建dll用的输出
@@ -36,18 +37,8 @@ export namespace SugarScriptsProject {
     };
   }
 
-  export interface ProjectConfig {
-    cacheDir: string;
-  }
-
   export type SugarPackageConfigs = {
     packageConfig: PackageConfig;
-    browserWebpackConfig?: BrowserWebpackConfig;
-    serverWebpackConfig?: ServerWebpackConfig;
-  }
-
-  export type SugarProjectConfigs = {
-    projectConfig: ProjectConfig;
     browserWebpackConfig?: BrowserWebpackConfig;
     serverWebpackConfig?: ServerWebpackConfig;
   }

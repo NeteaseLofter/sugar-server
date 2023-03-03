@@ -1,6 +1,5 @@
 import {
-  findProject,
-  findPackage
+  findConfig
 } from '../shared/file-helpers';
 
 import {
@@ -19,20 +18,14 @@ export const initRunningContext = async (
     root,
     packageJson,
     packageConfigs
-  } = await findPackage(dir);
-  const {
-    projectRoot,
-    projectConfigs
-  } = await findProject(root);
-  if (!packageConfigs || !projectConfigs) {
-    throw new Error('')
+  } = await findConfig(dir);
+  if (!packageConfigs) {
+    throw new Error('not found packageConfigs')
   }
   return new SugarScriptsContext({
     root,
     packageName: packageJson.name,
     packageConfigs,
-    projectRoot,
-    projectConfigs,
     watch: !!watch
   })
 }

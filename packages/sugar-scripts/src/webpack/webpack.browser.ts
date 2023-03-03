@@ -98,13 +98,6 @@ export async function mergeBrowserCustomConfig  (
   context: SugarScriptsContext,
   chainConfig: WebpackChainConfig
 ) {
-  if (context.projectConfigs.browserWebpackConfig) {
-    await context.projectConfigs.browserWebpackConfig(
-      chainConfig,
-      context
-    )
-  }
-
   if (context.packageConfigs.browserWebpackConfig) {
     await context.packageConfigs.browserWebpackConfig(
       chainConfig,

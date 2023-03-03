@@ -6,8 +6,7 @@ import * as tsNode from 'ts-node';
 
 import * as logger from '../shared/logger';
 import {
-  SUGAR_PACKAGE_CONFIG_FILENAME,
-  SUGAR_PROJECT_CONFIG_FILENAME
+  SUGAR_CONFIG_FILENAME
 } from '../constants';
 import {
   SugarScriptsProject
@@ -108,7 +107,7 @@ export const writeFileSync = (
   )
 }
 
-export const findPackage = async (dir: string): Promise<{
+export const findConfig = async (dir: string): Promise<{
   root: string;
   packageJson: any;
   packageConfigs: SugarScriptsProject.SugarPackageConfigs | null;
@@ -125,7 +124,7 @@ export const findPackage = async (dir: string): Promise<{
   let packageConfigs = null;
   const sugarPackagePath = path.resolve(
     dir,
-    SUGAR_PACKAGE_CONFIG_FILENAME
+    SUGAR_CONFIG_FILENAME
   );
   let existedFile = '';
   try {
@@ -151,7 +150,7 @@ export const findPackage = async (dir: string): Promise<{
       ]
     });
 
-    logger.success(`find ${SUGAR_PACKAGE_CONFIG_FILENAME}: ${existedFile}`);
+    logger.success(`find ${SUGAR_CONFIG_FILENAME}: ${existedFile}`);
 
     try {
       packageConfigs = require(existedFile);
@@ -162,7 +161,7 @@ export const findPackage = async (dir: string): Promise<{
 
   if (existed) {
     if (!packageConfigs) {
-      throw new Error(`not found ${SUGAR_PACKAGE_CONFIG_FILENAME}`);
+      throw new Error(`not found ${SUGAR_CONFIG_FILENAME}`);
     }
     return {
       root: dir,
@@ -177,69 +176,9 @@ export const findPackage = async (dir: string): Promise<{
     throw new Error('not found package.json');
   }
 
-  return findPackage(
+  return findConfig(
     path.resolve(dir, '../')
   )
-}
-
-export const findProject = async (dir: string): Promise<{
-  projectRoot: string,
-  projectConfigs: SugarScriptsProject.SugarProjectConfigs
-}> => {
-  const projectPath = path.resolve(
-    dir,
-    SUGAR_PROJECT_CONFIG_FILENAME
-  );
-
-  let projectConfigs = null;
-  let existedFile = '';
-  try {
-    await fsPromises.access(projectPath + '.ts', fs.constants.F_OK);
-    existedFile = projectPath + '.ts';
-  } catch (e) {}
-
-  if (!existedFile) {
-    try {
-      await fsPromises.access(projectPath + '.js', fs.constants.F_OK);
-      existedFile = projectPath + '.js';
-    } catch (e) {}
-  }
-
-  if (existedFile) {
-    tsNode.register({
-      cwd: dir,
-      projectSearchDir: dir,
-      project: path.resolve(dir, './tsconfig.json'),
-      transpileOnly: true,
-      require: [
-        existedFile
-      ]
-    });
-
-    logger.success(`find ${SUGAR_PROJECT_CONFIG_FILENAME}: ${existedFile}`);
-
-    try {
-      projectConfigs = require(existedFile);
-    } catch (e) {
-      throw e;
-    }
-
-    if (projectConfigs) {
-      return {
-        projectRoot: dir,
-        projectConfigs
-      };
-    }
-  }
-
-  if (dir === '/') {
-    throw new Error(`not found ${SUGAR_PROJECT_CONFIG_FILENAME}`);
-  }
-
-  return findProject(
-    path.resolve(dir, '../')
-  )
-
 }
 
 export const rm = async (filePath: string) => {

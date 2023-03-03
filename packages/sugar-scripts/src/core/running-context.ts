@@ -12,9 +12,7 @@ export class SugarScriptsContext {
   root: string;
   rootHash: string;
   packageName: string;
-  projectRoot: string;
   packageConfigs: SugarScriptsProject.SugarPackageConfigs;
-  projectConfigs: SugarScriptsProject.SugarProjectConfigs;
   watch: boolean;
 
   constructor (
@@ -22,23 +20,17 @@ export class SugarScriptsContext {
       root,
       packageName,
       packageConfigs,
-      projectRoot,
-      projectConfigs,
       watch
     }: {
       root: string;
       packageName: string;
       packageConfigs: SugarScriptsProject.SugarPackageConfigs;
-      projectRoot: string;
-      projectConfigs: SugarScriptsProject.SugarProjectConfigs;
       watch: boolean;
     }
   ) {
     this.root = root;
     this.packageName = packageName;
-    this.projectRoot = projectRoot;
     this.packageConfigs = packageConfigs;
-    this.projectConfigs = projectConfigs;
     this.rootHash = getHashFromRoot(root);
     this.watch = watch;
   }
@@ -47,10 +39,6 @@ export class SugarScriptsContext {
 
   get packageConfig () {
     return this.packageConfigs.packageConfig;
-  }
-
-  get projectConfig () {
-    return this.projectConfigs.projectConfig;
   }
 
   getStartFilePath () {
@@ -63,21 +51,10 @@ export class SugarScriptsContext {
     }
   }
 
-  getCacheRootDir () {
-    return path.resolve(
-      this.projectRoot,
-      this.projectConfig.cacheDir
-    )
-  }
-
   getCacheDir () {
     return path.resolve(
-      this.projectRoot,
-      this.projectConfig.cacheDir,
-      path.relative(
-        this.projectRoot,
-        this.root
-      )
+      this.root,
+      this.packageConfig.cacheDir
     )
   }
 
