@@ -6,17 +6,16 @@ import {
 export const packageConfig: SugarScriptsProject.PackageConfig = {
   cacheDir: './.sugar-cache',
   browser: {
-    output: '../resources/clients/client-1'
+    output: './build/dist'
   },
   server: {
-    output: './dist',
-    entry: './server/index.ts',
-    render: './server/render.ts',
+    output: './build/server',
+    entry: './server/index.ts'
   }
 }
 
 export const browserWebpackConfig: SugarScriptsProject.BrowserWebpackConfig = (
   webpackChainConfig
 ) => {
-  webpackChainConfig.output.publicPath('/static/clients/client-1')
+  webpackChainConfig.output.publicPath('/static')
 }

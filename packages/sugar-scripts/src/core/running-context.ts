@@ -7,6 +7,9 @@ import {
   getHashFromRoot,
   asyncGetDirHash
 } from '../shared/file-helpers';
+import {
+  DEFAULT_CACHED_DIR
+} from '../constants'
 
 export class SugarScriptsContext {
   root: string;
@@ -54,7 +57,7 @@ export class SugarScriptsContext {
   getCacheDir () {
     return path.resolve(
       this.root,
-      this.packageConfig.cacheDir
+      this.packageConfig.cacheDir || DEFAULT_CACHED_DIR
     )
   }
 

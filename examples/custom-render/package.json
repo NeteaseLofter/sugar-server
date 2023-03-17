@@ -1,5 +1,5 @@
 {
-  "name": "@demo/server",
+  "name": "@examples/server",
   "private": true,
   "version": "1.1.0-beta.6",
   "description": "",
@@ -12,7 +12,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@demo/features-account": "^1.1.0-beta.6",
     "cross-env": "^7.0.3",
     "sugar-scripts": "1.0.0-beta.6",
     "sugar-server": "^1.0.0-beta.3",

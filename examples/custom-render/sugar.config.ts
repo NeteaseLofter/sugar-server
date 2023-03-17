@@ -2,19 +2,21 @@ import {
   SugarScriptsProject
 } from 'sugar-scripts';
 
+
 export const packageConfig: SugarScriptsProject.PackageConfig = {
+  cacheDir: './.sugar-cache',
   browser: {
-    dll: true,
-    entry: {
-      "a": ["./browser/a"],
-      "b": ["./browser/b"]
-    },
-    output: '../../resources/features/account'
+    output: './build/dist'
+  },
+  server: {
+    output: './build/server',
+    entry: './server/index.ts',
+    render: './server/render.ts',
   }
 }
 
 export const browserWebpackConfig: SugarScriptsProject.BrowserWebpackConfig = (
   webpackChainConfig
 ) => {
-  webpackChainConfig.output.publicPath('/static/features/account')
+  webpackChainConfig.output.publicPath('/static')
 }

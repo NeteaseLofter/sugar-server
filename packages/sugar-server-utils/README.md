@@ -1,64 +1,61 @@
-## 配置文件
-1. `sugar.project.ts`
-2. `sugar.package.ts`
-3. `sugar.build.ts`
 
+# sugar-server-utils
+为sugar-server提供一些辅助工具
 
-#### sugar.project.ts 配置文件
+## 辅助Controllers
+### StaticController 静态资源
+快速搭建静态资源服务的配件
+
+使用方法
 ```ts
-import type {
-  types
-} from 'sugar-scripts';
+import path from 'path';
+import {
+  StaticController
+} from 'sugar-server-utils';
+import {
+  Application
+} from 'sugar-server';
 
-// 待定
+
+class App extends Application {
+  static Controllers = [
+    StaticController.createStaticController({
+        staticResourcesPath: path.resolve(
+          __dirname,
+          './resources'
+        ),
+        prefix: '/static'
+      })
+  ]
+}
+const app = new App();
+app.listen(9000, () => {
+  console.log('start server on 9000')
+})
 ```
 
+## 自定义render
+### render 渲染
+配合sugar-scripts使用，自动关联浏览器js的装饰器
 
-#### sugar.package.js 配置文件
+使用方法
 ```ts
-import type {
-  types
-} from 'sugar-scripts';
+import {
+  Controller,
+  router,
+} from 'sugar-server';
+import {
+  render
+} from 'sugar-server-utils';
 
-export const packageConfig: types.PackageConfig;
+import HomePageView from 'sugar?browser-entry/../../browser/home';
+
+export class HomeController extends Controller {
+  @router.GetRoute('/')
+  @parameter.getter
+  @render.register(HomePageView)
+  home () {
+    return {};
+  }
+}
 ```
-
-
-
-
-#### sugar.build.js 配置文件
-```ts
-import type {
-  types
-} from 'sugar-scripts';
-
-export const browserWebpackConfig: types.CustomWebpackConfig;
-
-export const serverWebpackConfig: types.CustomWebpackConfig;
-```
-
-
-## sugar-scripts cli
-
-### start
-```bash
-sugar-scripts start xxx.ts --port 9000
-```
-
-### info
-```bash
-sugar-scripts info
-```
-
-### build
-```bash
-sugar-scripts build
-```
-
-
-### cache
-```bash
-sugar-scripts cache
-```
-
-

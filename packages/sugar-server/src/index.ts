@@ -11,6 +11,7 @@ import {
 import {
   Application
 } from './core/application'
+import * as logger from './shared/logger'
 
 import { Config } from './core/config';
 
@@ -22,5 +23,6 @@ export {
   validator,
   Controller,
   Config,
-  SugarServerError
+  SugarServerError,
+  logger
 }

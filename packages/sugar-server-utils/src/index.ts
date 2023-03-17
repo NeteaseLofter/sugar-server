@@ -1,2 +1,2 @@
 export * from './controllers';
-export * from './decorators';
+export * as render from './render';

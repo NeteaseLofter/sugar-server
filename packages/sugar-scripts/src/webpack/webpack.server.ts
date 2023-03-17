@@ -53,6 +53,18 @@ export async function mergeServerEntry (
             'process.env.SUGAR_PROJECT_ROOT': JSON.stringify(
               context.root
             ),
+            'process.env.SUGAR_SERVER_DIR': JSON.stringify(
+              path.resolve(
+                context.root,
+                serverConfig.output
+              ),
+            ),
+            'process.env.SUGAR_BROWSER_DIR': context.packageConfig.browser?.output && JSON.stringify(
+              path.resolve(
+                context.root,
+                context.packageConfig.browser?.output
+              ),
+            ),
             'process.env.SUGAR_PROJECT_RUN': JSON.stringify(true),
             'process.env.SUGAR_PROJECT_RENDER': JSON.stringify(
               serverConfig.render

@@ -1,0 +1,21 @@
+{
+  "name": "@examples/server",
+  "private": true,
+  "version": "1.1.0-beta.6",
+  "description": "",
+  "main": "server/index.ts",
+  "scripts": {
+    "dev": "sugar-scripts dev",
+    "build": "sugar-scripts build",
+    "start": "sugar-scripts start"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cross-env": "^7.0.3",
+    "sugar-scripts": "1.0.0-beta.6",
+    "sugar-server": "^1.0.0-beta.3",
+    "sugar-server-utils": "^1.0.0-beta.2",
+    "typescript": "^4.3.5"
+  }
+}
