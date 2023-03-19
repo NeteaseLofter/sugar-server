@@ -10,7 +10,8 @@ export const packageConfig: SugarScriptsProject.PackageConfig = {
   },
   server: {
     output: './build/server',
-    entry: './server/index.ts'
+    entry: './server/index.ts',
+    render: './server/render.ts',
   }
 }
 

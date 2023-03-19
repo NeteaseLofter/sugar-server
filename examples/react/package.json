@@ -1,5 +1,5 @@
 {
-  "name": "@examples/server",
+  "name": "@examples/react",
   "private": true,
   "version": "1.1.0-beta.6",
   "description": "",
@@ -12,7 +12,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
     "cross-env": "^7.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "sugar-scripts": "1.0.0-beta.6",
     "sugar-server": "^1.0.0-beta.3",
     "sugar-server-utils": "^1.0.0-beta.2",

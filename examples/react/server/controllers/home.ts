@@ -16,8 +16,7 @@ export class HomeController extends Controller {
   @render.register(HomePageView)
   home () {
     return {
-      title: 'hello',
-      body: '<div>hello!!</div><button id="btn">点这里试试</button>'
+      title: 'welcome',
     };
   }
 }

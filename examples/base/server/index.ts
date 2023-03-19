@@ -27,8 +27,8 @@ class App extends Application {
 }
 
 const app = new App();
-app.listen(9001, () => {
-  console.log('start server on 9001')
+app.listen(9000, () => {
+  console.log('start server on 9000')
 });
 
 // export default Client1App;
