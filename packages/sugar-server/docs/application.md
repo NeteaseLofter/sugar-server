@@ -5,14 +5,15 @@
 ### 创建方法
 ```typescript
 import {
-  createApplication
+  Application
 } from 'sugar-server';
 
-const myApplication = createApplication(
-  [], // 中间件数组
-  {}, // controller 集合
-  {} // config 配置
-);
+class App extends Application {
+  static Controller = []
+}
+
+const app = new App();
+app.listen(9000);
 ```
 
 #### 参数说明
@@ -26,10 +27,15 @@ onError是自动捕获**controller**中的错误，并返回错误信息的钩�
 ```typescript
 import {
   SugarServerError,
-  ControllerContext
+  Application
 } from 'sugar-server';
 
-myApplication.onError = function (e: SugarServerError, ctx: ControllerContext) {
+
+class App extends Application {
+  onError = function (
+    e: SugarServerError,
+    ctx: ControllerContext
+  ) {
   if (
     !ctx.res.writableEnded &&
     !ctx.res.writableFinished
@@ -42,6 +48,7 @@ myApplication.onError = function (e: SugarServerError, ctx: ControllerContext) {
       message: e.message
     }
   }
+}
 }
 ```
 

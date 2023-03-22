@@ -23,38 +23,38 @@ npm i --save sugar-server
 
 #### 创建服务
 1. 写一个**Controllers**
-  ```typescript
-  import {
-    Controller,
-    router
-  } from 'sugar-server';
+```typescript
+import {
+  Controller,
+  router
+} from 'sugar-server';
 
-  export class HelloWorldController extends Controller {
-    @router.GetRoute('/')
-    home () {
-      return 'hello World!';
-    }
+export class HelloWorldController extends Controller {
+  @router.GetRoute('/')
+  home () {
+    return 'hello World!';
   }
-  ```
+}
+```
 
 2. 写一个启动服务
-  ```typescript
-  import {
-    createApplication
-  } from 'sugar-server';
+```typescript
+import {
+  Application
+} from 'sugar-server';
 
-  import { HelloWorldController } from './hello-world-controller';
+import { HelloWorldController } from './hello-world-controller';
 
-  const myApplication = createApplication(
-    [],
-    {
-      HelloWorldController
-    },
-    {}
-  );
+class App extends Application {
+  static Controllers = [
+    HelloWorldController
+  ]
+}
 
-  myApplication.listen(9527)
-  ```
+const app = new App();
 
-3. 访问 `http://127.0.0.1:9527`
+app.listen(9000)
+```
+
+3. 访问 `http://127.0.0.1:9000`
 就可以看到一个 hello world!了

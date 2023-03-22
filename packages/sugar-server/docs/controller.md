@@ -1,7 +1,11 @@
 ## Controller配置指南
+sugar-server中的Controller比较特殊。每次请求，都会实例化一个新的Controller对象。即，method中访问的this每次请求都不一样。
+
+这种设计方式，有利于用每次新的Controller实例对象来追踪请求的完整链路。
 
 ### 属性
 1. `app` - **Controller** 实例化时挂载的 **application**
+2. `context` - 对应当前请求的koa context
 
 ### 添加路由
 **SugarServer**中路由都是通过装饰的方式配置的。
@@ -50,7 +54,6 @@ home () {
 这样不管你访问 `/hello-word` 还是 `/hello-word-2`都能看到 `hello World!`
 
 #### 使用 SugarServerError 抛出错误，自动处理
-装饰器的良好特性，可以支持一个函数上同时使用多个装饰
 ```typescript
 import {
   ...
@@ -70,3 +73,20 @@ home () {
 }
 ```
 你可以直接抛出错误，阻止继续执行代码，错误也会被自动捕获，然后返回一个自定义的错误信息[**参考Application**](./application.md)
+
+#### 通过this.context 访问当前请求的上下文
+```typescript
+import {
+  ...
+  SugarServerError
+} from 'sugar-server'
+
+@router.GetRoute('/hello-word')
+home () {
+  this.context.res;
+  this.context.req;
+
+  return 'hello World!';
+}
+```
+this.context是koa ctx的扩展，拥有koa ctx同样的属性和能力
