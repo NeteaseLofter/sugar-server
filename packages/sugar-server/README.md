@@ -22,5 +22,5 @@ node服务端框架，基于`koa`但是略有不同。
 * [自带参数校验](./docs/validator.md)
 * [应用创建指南](./docs/application.md)
 * [config配置指南](./docs/config.md)
-
+* [如何使用sugar-script和sugar-server-utils搭建前端应用](./docs/create-frontend-app.md)
 
