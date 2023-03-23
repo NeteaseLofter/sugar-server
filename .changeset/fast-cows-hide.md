@@ -1,5 +1,4 @@
 ---
-"@examples/server": patch
 "sugar-scripts": patch
 "sugar-server": patch
 "sugar-server-utils": patch

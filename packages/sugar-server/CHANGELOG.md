@@ -1,5 +1,12 @@
 # sugar-server
 
+## 1.0.0-beta.4
+
+### Patch Changes
+
+- dce3422: 整合 sugar-scripts 配置，整理为单一 sugar.config 文件。修改自动注册用函数名字。修改相关文档
+- 5ab761a: 整合 sugar.project 和 sugar.package 为同一个配置文件,即 sugar.config
+
 ## 1.0.0-beta.3
 
 ### Patch Changes

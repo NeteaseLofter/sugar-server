@@ -1,7 +1,4 @@
 ---
-"@clients/client-1": minor
-"@clients/client-2": minor
-"@features/account": minor
 "sugar-scripts": minor
 "sugar-server": minor
 ---

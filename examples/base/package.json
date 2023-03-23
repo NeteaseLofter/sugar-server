@@ -1,7 +1,7 @@
 {
   "name": "@examples/base",
   "private": true,
-  "version": "1.1.0-beta.6",
+  "version": "1.1.0-beta.7",
   "description": "",
   "main": "server/index.ts",
   "scripts": {
@@ -13,9 +13,9 @@
   "license": "ISC",
   "dependencies": {
     "cross-env": "^7.0.3",
-    "sugar-scripts": "1.0.0-beta.6",
-    "sugar-server": "^1.0.0-beta.3",
-    "sugar-server-utils": "^1.0.0-beta.2",
+    "sugar-scripts": "1.0.0-beta.7",
+    "sugar-server": "^1.0.0-beta.4",
+    "sugar-server-utils": "^1.0.0-beta.3",
     "typescript": "^4.3.5"
   }
 }
