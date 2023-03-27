@@ -16,7 +16,7 @@ node服务端框架，基于`koa`但是略有不同。
 
 ## 快速搭建项目
 ```bash
-npx create-server-app my-app
+npx create-sugar-app my-app
 cd my-app
 npm run dev
 ```

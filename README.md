@@ -10,7 +10,7 @@ sugar-server以`koa`为基础，实现的基于装饰器风格的服务端框架
 
 ## 快速搭建项目
 ```bash
-npx create-server-app my-app
+npx create-sugar-app my-app
 cd my-app
 npm run dev
 ```
