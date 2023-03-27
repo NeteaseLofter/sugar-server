@@ -2,6 +2,7 @@ import path from 'path';
 import { Command } from 'commander';
 import nodemon from 'nodemon';
 
+// @ts-ignore
 import packageJson from '../../package.json';
 import * as logger from '../shared/logger';
 import {
