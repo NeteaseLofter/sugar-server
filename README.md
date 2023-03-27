@@ -8,10 +8,17 @@ sugar-server以`koa`为基础，实现的基于装饰器风格的服务端框架
 
 > 由于sugar-server基于TypeScript开发，所以装饰器目前还是较早版本，后续会持续关注TypeScript5的进度。[TypeScript5](https://devblogs.microsoft.com/typescript/announcing-typescript-5-0-beta/)支持最新的ES标准下的[装饰器](https://github.com/tc39/proposal-decorators)。我们会在TypeScript5 release后尽快进行升级，到时候可能不再向下兼容。
 
+## 快速搭建项目
+```bash
+npx create-server-app my-app
+cd my-app
+npm run dev
+```
+
 
 ## 使用例子
-- [基础模版](../examples/base);
-- [使用react模版](../examples/react);
+- [基础模版](../templates/base);
+- [使用react模版](../templates/react);
 
 ## 更多详细使用文档
 - [sugar-server使用文档](./packages/sugar-server/)

@@ -28,6 +28,11 @@ export async function mergeServerEntry (
 
   chainConfig.merge({
       target: 'node',
+      node: {
+        global: false,
+        __filename: false,
+        __dirname: false,
+      },
       output: {
         filename: '[name].js',
         library: {

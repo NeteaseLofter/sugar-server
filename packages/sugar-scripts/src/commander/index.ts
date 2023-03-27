@@ -2,6 +2,7 @@ import path from 'path';
 import { Command } from 'commander';
 import nodemon from 'nodemon';
 
+import packageJson from '../../package.json';
 import * as logger from '../shared/logger';
 import {
   initRunningContext
@@ -21,7 +22,7 @@ import {
 
 const program = new Command();
 program
-  .version('1.0.0');
+  .version(packageJson.version);
 
 program
   .command('info')

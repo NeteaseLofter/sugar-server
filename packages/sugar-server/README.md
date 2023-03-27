@@ -12,7 +12,15 @@ node服务端框架，基于`koa`但是略有不同。
 2. 简单易用的config配置，支持多环境分离配置内容；
 3. 支持 **async/await**；
 4. 允许无**ctx**创建**Controller**，函数处理更纯粹；
-5. **createServer** 下支持的多应用分离模式，monorepo的好伙伴；
+
+
+## 快速搭建项目
+```bash
+npx create-server-app my-app
+cd my-app
+npm run dev
+```
+
 
 ## 更多文档
 * [SugarServer介绍](README.md)
