@@ -11,7 +11,8 @@
     "@demo/server": "1.1.0-beta.0",
     "sugar-server-utils": "0.2.0-beta.0",
     "@examples/base": "1.1.0-beta.6",
-    "@examples/react": "1.1.0-beta.6"
+    "@examples/react": "1.1.0-beta.6",
+    "create-sugar-app": "1.0.0-beta.0"
   },
   "changesets": [
     "fast-cows-hide",
@@ -23,6 +24,7 @@
     "ninety-rocks-think",
     "tame-elephants-marry",
     "violet-apricots-hide",
-    "wise-points-reply"
+    "wise-points-reply",
+    "young-cooks-march"
   ]
 }
