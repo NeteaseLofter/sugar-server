@@ -15,6 +15,9 @@
     "sugar.config.ts",
     "tsconfig.json"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
