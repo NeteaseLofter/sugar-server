@@ -25,6 +25,7 @@
     "sugar-scripts": "1.0.0-beta.7",
     "sugar-server": "^1.0.0-beta.4",
     "sugar-server-utils": "^1.0.0-beta.3",
+    "ts-loader": "^9.3.0",
     "typescript": "^4.3.5"
   }
 }
