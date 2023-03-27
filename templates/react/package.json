@@ -8,6 +8,13 @@
     "build": "sugar-scripts build",
     "start": "sugar-scripts start"
   },
+  "files": [
+    "browser",
+    "server",
+    ".gitignore",
+    "sugar.config.ts",
+    "tsconfig.json"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {

@@ -1,7 +1,7 @@
-import path from 'path';
 import { Command } from 'commander';
 import chalk from 'chalk';
 
+// @ts-ignore
 import packageJson from '../../package.json';
 import {
   generateApp
