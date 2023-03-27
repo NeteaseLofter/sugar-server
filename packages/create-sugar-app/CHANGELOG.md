@@ -1,5 +1,11 @@
 # create-sugar-app
 
+## 1.0.0-beta.2
+
+### Patch Changes
+
+- b9988a3: 调试完成线上 npm 包的模版
+
 ## 1.0.0-beta.1
 
 ### Patch Changes
