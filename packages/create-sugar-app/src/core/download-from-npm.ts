@@ -1,9 +1,6 @@
-import http from 'http';
 import https from 'https';
 import packageJson from 'package-json';
 import tar from 'tar';
-
-import * as logger from '../shared/logger';
 
 
 export async function getPackageZipUrl (packageName: string) {
@@ -19,7 +16,6 @@ export async function downloadFromNpm (
   const url = await getPackageZipUrl(packageName)
 
   const urlObj = new URL(url);
-  logger.log(`will download ${url}`);
   return new Promise<void>((resolve, reject) => {
     const req = https.request(
       {
@@ -34,19 +30,11 @@ export async function downloadFromNpm (
             {
               strip: 1,
               C: targetDir,
-            },
-            [],
-            (error) => {
-              if (error) {
-                logger.error(error);
-                reject(error)
-              } else {
-                logger.log('download success');
-                resolve();
-              }
             }
           )
-        );
+        ).on('close', () => {
+          resolve();
+        })
       }
     );
 

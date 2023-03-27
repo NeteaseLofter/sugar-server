@@ -27,12 +27,21 @@ export async function generateApp (
     process.cwd(),
     params.targetDir
   );
+
   try {
-    await fsPromises.access(targetDir, constants.W_OK);
-    console.log('can access');
-  } catch {
-    console.error('cannot access');
-  }
+    const stat = await fsPromises.stat(targetDir)
+    if (
+      stat.isDirectory()
+      || stat.isFile()
+    ) {
+      logger.error(`${targetDir} already exists.`);
+      return;
+    }
+  } catch (e) {}
+  logger.log(`creating dir: ${targetDir}`);
+  await fsPromises.mkdir(targetDir, { recursive: true });
+
+  logger.log(`downloading ${packageName}`);
   await downloadFromNpm(targetDir, packageName);
 
   logger.log('installing dependencies');
@@ -81,12 +90,6 @@ function installDependencies (
 
   return new Promise<void>((resolve, reject) => {
     child.on('close', (code) => {
-      if (code !== 0) {
-        reject({
-          command: `${command} ${args.join(' ')}`,
-        });
-        return;
-      }
       resolve();
     });
   })
