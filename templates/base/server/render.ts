@@ -13,7 +13,7 @@ const htmlRender: render.CustomRender = function (
   <body>
     <h1>${custom.prefix || 'Welcome'}, <span id="name">${custom.name}</span></h1>
     <button id="btn">换个名字</button>
-    ${data.scriptHTML.main}
+    ${data.entriesHTML.main.scriptHTML}
   </body>
   </html>`;
 }

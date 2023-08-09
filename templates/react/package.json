@@ -26,7 +26,7 @@
     "cross-env": "^7.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "sugar-scripts": "1.0.0-beta.7",
+    "sugar-scripts": "1.0.0-beta.8",
     "sugar-server": "^1.0.0-beta.4",
     "sugar-server-utils": "^1.0.0-beta.3",
     "ts-loader": "^9.3.0",

@@ -43,7 +43,27 @@ export async function mergeBrowserEntry(
             './browser-manifest.json'
           ),
           useEntryKeys: true,
-          writeToFileEmit: true
+          writeToFileEmit: true,
+          generate: (seed, fileDescriptors, entries) => {
+            const entriesManifest: {
+              [entryKey: string]: string[]
+            } = {};
+
+            fileDescriptors.forEach((fileDescriptor) => {
+              const {
+                name,
+                path
+              } = fileDescriptor;
+              if (fileDescriptor.isChunk) {
+                if (!entriesManifest[name]) {
+                  entriesManifest[name] = [];
+                }
+                entriesManifest[name].push(path);
+              }
+            })
+
+            return entriesManifest;
+          }
         }]
       )
   }

@@ -4,20 +4,27 @@ import {
 } from 'sugar-server';
 
 export type RenderEntries = string | string[] | {[key: string]: string | string[]};
-export type ScriptHTML = {
-  [key: string]: string;
-  main: string;
-};
+
 type FilePath = string;
 
 // discuss：需要string[] 吗？
 export type RegisterFilePath = FilePath | {[key: string]: FilePath}
 
+
+export type EntryHTML = {
+  [htmlType: string]: string;
+};
+
+export type EntriesHTML = {
+  [key: string]: EntryHTML;
+  main: EntryHTML;
+};
+
 export type CustomRender<C = any> = (
   this: Controller,
   data: {
     entries: RenderEntries,
-    scriptHTML: ScriptHTML
+    entriesHTML: EntriesHTML,
   },
   custom: C
 ) => string;
@@ -32,7 +39,7 @@ const defaultRender: CustomRender = function (
   data,
   custom
 ) {
-  return `<!DOCTYPE html><head><title>${custom?.title || ''}</title>${custom?.head || ''}</head><body>${custom?.body || ''}${data.scriptHTML.main}</body></html>`;
+  return `<!DOCTYPE html><head><title>${custom?.title || ''}</title>${custom?.head || ''}${data.entriesHTML.main.styleHTML}</head><body>${custom?.body || ''}${data.entriesHTML.main.scriptHTML}</body></html>`;
 }
 
 const render: CustomRender = (() => {
@@ -52,41 +59,65 @@ const render: CustomRender = (() => {
   return currentRender;
 })()
 
+const SCRIPT_TEMPLATE = '<script src={url}></script>';
+const STYLE_TEMPLATE = '<link rel="stylesheet" type="text/css" href="{url}" />';
 
-export function transformEntryToScriptHTML (
-  entries: string | string[]
+
+export function transformEntryToHTML (
+  entries: string | string[],
 ) {
-  let scriptHTML = '';
+  let styleHTML: string[] = [];
+  let scriptHTML: string[] = [];
   if (typeof entries === 'string') {
-    scriptHTML = `<script src=${entries}></script>`;
+    if (entries.endsWith('.css')) {
+      styleHTML.push(STYLE_TEMPLATE.replace('{url}', entries));
+    }
+
+    if (entries.endsWith('.js')) {
+      scriptHTML.push(SCRIPT_TEMPLATE.replace('{url}', entries));
+    }
   } else {
-    scriptHTML = entries.map((url) => `<script src=${url}></script>`).join('')
+    entries
+      .forEach((url) => {
+        if (url.endsWith('.css')) {
+          styleHTML.push(STYLE_TEMPLATE.replace('{url}', url));
+        }
+
+        if (url.endsWith('.js')) {
+          scriptHTML.push(SCRIPT_TEMPLATE.replace('{url}', url));
+        }
+      });
   }
 
-  return scriptHTML;
+  return {
+    styleHTML: styleHTML.join(''),
+    scriptHTML: scriptHTML.join('')
+  };
 }
 
-export function resolveScriptHTML (
+
+export function resolveHTML (
   entries: RenderEntries
 ) {
-  let scripts: {
-    main: string,
-    [key: string]: string
-  } = {
-    main: ''
+  let entriesHTML: EntriesHTML = {
+    main: {}
   };
   if (
     typeof entries === 'string'
     || Array.isArray(entries)
   ) {
-    scripts.main = transformEntryToScriptHTML(entries);
+      entriesHTML.main = transformEntryToHTML(
+        entries
+      );
   } else {
     Object.keys(entries).forEach((entry) => {
-      scripts[entry] = transformEntryToScriptHTML(entries[entry]);
+      entriesHTML[entry] = transformEntryToHTML(
+        entries[entry]
+      );
     })
   }
 
-  return scripts;
+  return entriesHTML;
 }
 
 export function register (
@@ -131,7 +162,9 @@ export function register (
         this,
         {
           entries,
-          scriptHTML: resolveScriptHTML(entries)
+          entriesHTML: resolveHTML(
+            entries
+          ),
         },
         oldResult
       );
