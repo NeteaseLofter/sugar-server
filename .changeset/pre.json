@@ -12,10 +12,14 @@
     "sugar-server-utils": "0.2.0-beta.0",
     "@examples/base": "1.1.0-beta.6",
     "@examples/react": "1.1.0-beta.6",
-    "create-sugar-app": "1.0.0-beta.0"
+    "create-sugar-app": "1.0.0-beta.0",
+    "@sugar-templates/base": "1.1.0-beta.7",
+    "@sugar-templates/react": "1.1.0-beta.7",
+    "@sugar-templates/react-less": "1.1.0-beta.7"
   },
   "changesets": [
     "calm-melons-camp",
+    "early-singers-rule",
     "fast-cows-hide",
     "fresh-moles-sit",
     "good-knives-worry",
@@ -23,6 +27,7 @@
     "many-comics-buy",
     "mighty-needles-marry",
     "ninety-rocks-think",
+    "sour-timers-watch",
     "tame-elephants-marry",
     "violet-apricots-hide",
     "wise-points-reply",
