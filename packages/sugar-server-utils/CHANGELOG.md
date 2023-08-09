@@ -1,5 +1,11 @@
 # sugar-server-utils
 
+## 1.0.0-beta.5
+
+### Patch Changes
+
+- c1f47fc: 支持生成 css 文件到 html
+
 ## 1.0.0-beta.4
 
 ### Patch Changes
