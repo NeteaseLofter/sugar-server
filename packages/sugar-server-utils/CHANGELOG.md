@@ -1,5 +1,27 @@
 # sugar-server-utils
 
+## 1.0.0
+
+### Major Changes
+
+- 3acbd3b: 重构 sugar-server 的 application 和 controller，sugar-scripts 项目脚手架，sugar-server-utils 提供额外的工具
+
+### Patch Changes
+
+- c1f47fc: 支持生成 css 文件到 html
+- dce3422: 整合 sugar-scripts 配置，整理为单一 sugar.config 文件。修改自动注册用函数名字。修改相关文档
+- 997c524: 默认使用 ts-loader 作为代码编译工具
+- 0665b6d: create-sugar-app 脚手架初步完成，提交 2 个基础的模版
+- Updated dependencies [dce3422]
+- Updated dependencies [410b540]
+- Updated dependencies [5ab761a]
+- Updated dependencies [997c524]
+- Updated dependencies [17469dc]
+- Updated dependencies [5101c4b]
+- Updated dependencies [3acbd3b]
+- Updated dependencies [0665b6d]
+  - sugar-server@1.0.0
+
 ## 1.0.0-beta.5
 
 ### Patch Changes
