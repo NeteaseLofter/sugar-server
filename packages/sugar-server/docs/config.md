@@ -1,20 +1,31 @@
 ## 应用config配置
 扁平化配置工具，会自动配置在 **application** 上
 
-#### 基本用法
-```typescript
-config.add({
-  a: 1,
-  b: {
-    c: 2
-  }
-})
+config，需要考虑使用方式，是注册到application上还是使用全局的单例管理
 
-config.get('a') // 输出 1
-config.get('b.c') // 输出 2
+### 初始化application时，注入配置
+```typescript
+import {
+  Application
+} from 'sugar-server';
+
+class App extends Application {
+  static Controller = [
+    MyController
+  ]
+  static defaultConfig = {
+    a: 1,
+    b: {
+      c: 2
+    }
+  }
+}
+
+const app = new App();
+app.listen(9000);
 ```
 
-#### 通过参数装饰器获取 app上的config
+### 通过参数装饰器获取 app上的config
 ``` typescript
 import {
     Controller,
@@ -36,7 +47,7 @@ class MyController extends Controller {
 }
 ```
 
-#### 进阶 - 根据环境变量变化
+### 进阶 - 根据环境变量变化
 1. 书写 **configs/config.dev.ts**
   ```typescript
   export const test = 'dev';
@@ -50,20 +61,12 @@ class MyController extends Controller {
 3. 启动服务时根据环境变量配置
   ```typescript
   import {
-    createApplication
+    Application
   } from 'sugar-server';
   import * as devConfig from './configs/config.dev.ts';
   import * as proConfig from './configs/config.pro.ts';
 
-  import { HelloWorldController } from './hello-world-controller';
-
-  const myApplication = createApplication(
-    [],
-    {
-      HelloWorldController
-    },
-    process.env.SERVER_ENV === 'production' ? proConfig : devConfig
+  class App extends Application {
+    static defaultConfig = process.env.SERVER_ENV === 'production' ? proConfig : devConfig
   );
-
-  myApplication.listen(9527)
   ```

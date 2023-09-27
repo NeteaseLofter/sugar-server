@@ -21,8 +21,8 @@ export class HelloWorldController extends Controller {
 #### 加上参数装饰
 使用有2步。
 
-1. 在 controller 中已经绑定 router装饰的函数下面增加 `@parameter.getter` 的装饰，开始自动获取功能；
-2. 在函数参数 前加 `@parameter.query('name')` 等装饰，将会自动给参数赋值，而且顺序不限；
+1. 在 controller 中已经绑定 router装饰的函数下面增加 `@parameter.getter` 的装饰，开启请求数据获取功能；
+2. 在函数参数前加 `@parameter.query('name')` 等参数装饰，将会自动给参数赋值；
 
 ##### 代码如下
 ```typescript
@@ -48,7 +48,7 @@ home (
 
 ### 已经支持的参数获取装饰
 1. `query(key)` 获取url上的 query 参数，**?key=value**
-2. `header(key)` 获取请求header里的内容，注意：http头是不区分大小写，请用小写来获取
+2. `header(key)` 获取请求header里的内容，**注意：http头是不区分大小写，请用小写来获取**
 3. `params(key)` 获取url路径上的参数，需要配合路由使用
     ```typescript
     @router.GetRoute('/:name')

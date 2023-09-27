@@ -19,6 +19,12 @@ npm run dev
 ## 使用例子
 - [基础模版](../templates/base);
 - [使用react模版](../templates/react);
+- [使用react和less模版](../templates/react-less);
+
+以上例子都可以运行，安装到本地
+```bash
+npx create-sugar-app my-app
+```
 
 ## 更多详细使用文档
 - [sugar-server使用文档](./packages/sugar-server/)

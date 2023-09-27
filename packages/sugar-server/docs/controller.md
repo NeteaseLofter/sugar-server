@@ -3,6 +3,8 @@ sugar-server中的Controller比较特殊。每次请求，都会实例化一个�
 
 这种设计方式，有利于用每次新的Controller实例对象来追踪请求的完整链路。
 
+如果需要维护共享数据，可以通过 `this.app` 在application实例上管理，或者通过全局的单例子管理。
+
 ### 属性
 1. `app` - **Controller** 实例化时挂载的 **application**
 2. `context` - 对应当前请求的koa context
