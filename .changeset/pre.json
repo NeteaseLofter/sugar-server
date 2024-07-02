@@ -11,6 +11,7 @@
     "@sugar-templates/react-less": "1.1.0"
   },
   "changesets": [
+    "real-socks-march",
     "two-planets-collect"
   ]
 }

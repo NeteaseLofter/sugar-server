@@ -1,5 +1,13 @@
 # @examples/base
 
+## 1.1.1-beta.1
+
+### Patch Changes
+
+- b35af9df16797fed8bef567e09a851ca9cc05779: 支持 windows 下路径“\”替换为“/”&browserEntryKey 支持以文字模式配置路径的 hash 和 basename
+- Updated dependencies [b35af9df16797fed8bef567e09a851ca9cc05779]
+  - sugar-scripts@1.0.1-beta.1
+
 ## 1.1.1-beta.0
 
 ### Patch Changes
