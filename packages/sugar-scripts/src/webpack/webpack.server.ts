@@ -49,6 +49,7 @@ export async function mergeServerEntry (
           plugin: SugarServerBrowserEntryPlugin,
           args: [{
             root: context.root,
+            browserEntryKey: serverConfig.browserEntryKey,
             output: getCacheFilePath(context)
           }]
         },

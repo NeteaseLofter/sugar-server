@@ -52,6 +52,13 @@ export namespace SugarScriptsProject {
        * 为sugar-server-utils 提供的自动render
        */
       render?: string;
+
+      /**
+       * 自动生成browserEntry事entryKey的转化方式
+       */
+      browserEntryKey?: (
+        originEntryKey: string
+      ) => string;
     };
   }
 

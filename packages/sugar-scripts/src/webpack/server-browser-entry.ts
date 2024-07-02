@@ -13,6 +13,9 @@ import {
 export interface SugarServerBrowserEntryPluginOptions {
   root: string;
   output: string;
+  browserEntryKey?: (
+    originEntryKey: string
+  ) => string
 }
 
 const PLUGIN_NAME = 'SugarServerEntryPlugin';
@@ -52,10 +55,14 @@ export class SugarServerBrowserEntryPlugin {
                 filePath
               )
 
-              const entryKey = path.relative(
+              let entryKey = path.relative(
                 this.options.root,
                 absoluteFilePath
-              );
+              ).replaceAll(path.sep, '/');
+
+              if (this.options.browserEntryKey) {
+                entryKey = this.options.browserEntryKey(entryKey)
+              }
 
               data[entryKey] = absoluteFilePath;
               logger.log(`find sugar browser import in [${result.context}] use [${absoluteFilePath}]`);
