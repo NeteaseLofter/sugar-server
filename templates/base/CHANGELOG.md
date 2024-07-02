@@ -1,5 +1,12 @@
 # @examples/base
 
+## 1.1.1-beta.0
+
+### Patch Changes
+
+- Updated dependencies [d230dc55fe4e1b473346db5daf3c1edcf4a2ca76]
+  - sugar-scripts@1.0.1-beta.0
+
 ## 1.1.0
 
 ### Patch Changes

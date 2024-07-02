@@ -1,5 +1,11 @@
 # sugar-scripts
 
+## 1.0.1-beta.0
+
+### Patch Changes
+
+- d230dc55fe4e1b473346db5daf3c1edcf4a2ca76: 支持 windows 下 entryKey 的生成规则
+
 ## 1.0.0
 
 ### Major Changes

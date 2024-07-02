@@ -1,0 +1,16 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "create-sugar-app": "1.0.0",
+    "sugar-scripts": "1.0.0",
+    "sugar-server": "1.0.0",
+    "sugar-server-utils": "1.0.0",
+    "@sugar-templates/base": "1.1.0",
+    "@sugar-templates/react": "1.1.0",
+    "@sugar-templates/react-less": "1.1.0"
+  },
+  "changesets": [
+    "two-planets-collect"
+  ]
+}
