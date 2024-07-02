@@ -44,6 +44,7 @@ export async function mergeBrowserEntry(
           ),
           useEntryKeys: true,
           writeToFileEmit: true,
+          removeKeyHash: false,
           generate: (seed, fileDescriptors, entries) => {
             const entriesManifest: {
               [entryKey: string]: string[]
@@ -60,7 +61,7 @@ export async function mergeBrowserEntry(
                 }
                 entriesManifest[name].push(path);
               }
-            })
+            });
 
             return entriesManifest;
           }

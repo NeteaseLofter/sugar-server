@@ -1,4 +1,5 @@
 import path from 'path';
+import crypto from 'crypto';
 
 import webpack from 'webpack';
 
@@ -13,9 +14,9 @@ import {
 export interface SugarServerBrowserEntryPluginOptions {
   root: string;
   output: string;
-  browserEntryKey?: (
+  browserEntryKey?: string | ((
     originEntryKey: string
-  ) => string
+  ) => string)
 }
 
 const PLUGIN_NAME = 'SugarServerEntryPlugin';
@@ -58,10 +59,40 @@ export class SugarServerBrowserEntryPlugin {
               let entryKey = path.relative(
                 this.options.root,
                 absoluteFilePath
-              ).replaceAll(path.sep, '/');
+              ).replace(/\\/g, '/');
 
-              if (this.options.browserEntryKey) {
-                entryKey = this.options.browserEntryKey(entryKey)
+              if (
+                this.options.browserEntryKey
+              ) {
+                if (
+                  typeof this.options.browserEntryKey === 'string'
+                ) {
+                  const browserEntryKey = this.options.browserEntryKey;
+                  const hash = crypto.createHash('sha256');
+                  hash.update(entryKey);
+                  const hashText = hash.digest('hex');
+                  const replaceMap = {
+                    hash: hashText,
+                    basename: path.basename(entryKey)
+                  };
+                  entryKey = browserEntryKey.replace(/{(hash|basename)(\:([0-9]+))?}/g, (
+                    match,
+                    p1,
+                    p2,
+                    p3
+                  ) => {
+                    const text = (replaceMap as any)[p1] || '';
+                    if (p3) {
+                      const len = +p3;
+                      return text.slice(0, len);
+                    }
+                    return text;
+                  });
+                } else if (
+                  typeof this.options.browserEntryKey === 'function'
+                ) {
+                  entryKey = this.options.browserEntryKey(entryKey);
+                }
               }
 
               data[entryKey] = absoluteFilePath;

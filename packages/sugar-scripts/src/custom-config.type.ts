@@ -55,10 +55,13 @@ export namespace SugarScriptsProject {
 
       /**
        * 自动生成browserEntry事entryKey的转化方式
+       * 支持以下方式，
+       * 1. string, 支持 {hash:16} 和 {basename}的占位符
+       * 2. 回调函数
        */
-      browserEntryKey?: (
+      browserEntryKey?: string | ((
         originEntryKey: string
-      ) => string;
+      ) => string)
     };
   }
 

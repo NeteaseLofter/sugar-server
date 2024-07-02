@@ -4,7 +4,7 @@
   "description": "",
   "main": "server/index.ts",
   "scripts": {
-    "dev": "sugar-scripts dev",
+    "dev": "cross-env BUILD_ENV=development sugar-scripts dev",
     "build": "sugar-scripts build",
     "start": "sugar-scripts start"
   },

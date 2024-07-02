@@ -12,6 +12,9 @@ export const packageConfig: SugarScriptsProject.PackageConfig = {
     output: './build/server',
     entry: './server/index.ts',
     render: './server/render.ts',
+    browserEntryKey: process.env.BUILD_ENV !== 'development'
+      ? 'browser_{basename}_{hash:16}'
+      : undefined
   }
 }
 
