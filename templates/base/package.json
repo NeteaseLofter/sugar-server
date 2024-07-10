@@ -1,6 +1,6 @@
 {
   "name": "@sugar-templates/base",
-  "version": "1.1.1-beta.1",
+  "version": "1.1.1",
   "description": "",
   "main": "server/index.ts",
   "scripts": {
@@ -22,7 +22,7 @@
   "license": "ISC",
   "dependencies": {
     "cross-env": "^7.0.3",
-    "sugar-scripts": "1.0.1-beta.1",
+    "sugar-scripts": "1.0.1",
     "sugar-server": "^1.0.0",
     "sugar-server-utils": "^1.0.0",
     "ts-loader": "^9.3.0",
