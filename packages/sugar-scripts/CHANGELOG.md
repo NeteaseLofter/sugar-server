@@ -1,5 +1,13 @@
 # sugar-scripts
 
+## 1.0.2
+
+### Patch Changes
+
+- 724cc503d1e14ccf22e84bf0a9a7074c9395875a: sugar.config 的 browser 增加 includes 配置项，可以代替 sugar?browser-entry 标记
+- Updated dependencies [b6b7f2c159e5d0353c8b80db1714d9afa792f39c]
+  - sugar-server@1.0.1
+
 ## 1.0.1
 
 ### Patch Changes

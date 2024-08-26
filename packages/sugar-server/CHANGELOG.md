@@ -1,5 +1,11 @@
 # sugar-server
 
+## 1.0.1
+
+### Patch Changes
+
+- b6b7f2c159e5d0353c8b80db1714d9afa792f39c: sugar-server 的 router path ts 声明优化
+
 ## 1.0.0
 
 ### Major Changes
