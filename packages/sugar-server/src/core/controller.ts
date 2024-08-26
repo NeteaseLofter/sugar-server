@@ -7,10 +7,12 @@ export const ROUTES_KEY = Symbol('_sugar_routes');
 
 export type RouteMethod = 'get'|'post'|'put'|'del'|'all';
 
+export type RouterPath = string | RegExp;
+
 export interface RouteConfig {
   key: string,
   method: RouteMethod,
-  path: string
+  path: RouterPath
 }
 
 

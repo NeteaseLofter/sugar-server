@@ -7,7 +7,8 @@ import type { ControllerContext} from './controller';
 import {
   Controller,
   ROUTES_KEY,
-  RouteMethod
+  RouteMethod,
+  RouterPath
 } from './controller';
 import * as logger from '../shared/logger';
 import {
@@ -19,7 +20,7 @@ import {
  */
 export const create = createThunkAttributeDecorator<{
   method: RouteMethod,
-  path: string
+  path: RouterPath
 }>((
   options,
   target,
@@ -44,25 +45,26 @@ export const create = createThunkAttributeDecorator<{
   }
 });
 
-export function GetRoute (path: string) {
+export function GetRoute (path: RouterPath) {
   return create({ method: 'get', path })
 }
 
-export function PostRoute (path: string) {
+export function PostRoute (path: RouterPath) {
   return create({ method: 'post', path })
 }
 
-export function PutRoute (path: string) {
+export function PutRoute (path: RouterPath) {
   return create({ method: 'put', path })
 }
 
-export function DelRoute (path: string) {
+export function DelRoute (path: RouterPath) {
   return create({ method: 'del', path })
 }
 
-export function AllRoute (path: string) {
+export function AllRoute (path: RouterPath) {
   return create({ method: 'all', path })
 }
+
 
 export function getRoutesFromController (
   controller: Controller
