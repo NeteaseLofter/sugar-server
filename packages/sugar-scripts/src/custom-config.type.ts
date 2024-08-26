@@ -25,6 +25,7 @@ export namespace SugarScriptsProject {
      * 浏览器端js输出目录，不配置就不会进行相关打包
      */
     browser?: {
+      includes?: string[];
       /**
        * 输出目录，必填
        */

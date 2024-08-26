@@ -16,7 +16,8 @@ export interface SugarServerBrowserEntryPluginOptions {
   output: string;
   browserEntryKey?: string | ((
     originEntryKey: string
-  ) => string)
+  ) => string);
+  browserIncludes?: string[];
 }
 
 const PLUGIN_NAME = 'SugarServerEntryPlugin';
@@ -47,6 +48,7 @@ export class SugarServerBrowserEntryPlugin {
       (factory) => {
         factory.hooks.beforeResolve
           .tap(PLUGIN_NAME, (result) => {
+            let entryFilePath;
             if (result.request.startsWith(WEBPACK_IMPORT_SYNTAX)) {
               const filePath = result.request.slice(
                 WEBPACK_IMPORT_SYNTAX.length
@@ -56,11 +58,40 @@ export class SugarServerBrowserEntryPlugin {
                 filePath
               )
 
+              entryFilePath = absoluteFilePath;
+            }
+
+            if (
+              this.options.browserIncludes
+              && this.options.browserIncludes.length > 0
+            ) {
+              const absoluteFilePath = path.resolve(
+                result.context,
+                result.request
+              );
+
+              if (
+                this.options.browserIncludes.some((
+                  includePath
+                ) => {
+                  return !path.relative(
+                    path.resolve(
+                      this.options.root,
+                      includePath
+                    ),
+                    absoluteFilePath
+                  ).startsWith('..');
+                })
+              ) {
+                entryFilePath = absoluteFilePath;
+              }
+            }
+
+            if (entryFilePath) {
               let entryKey = path.relative(
                 this.options.root,
-                absoluteFilePath
+                entryFilePath
               ).replace(/\\/g, '/');
-
               if (
                 this.options.browserEntryKey
               ) {
@@ -95,8 +126,8 @@ export class SugarServerBrowserEntryPlugin {
                 }
               }
 
-              data[entryKey] = absoluteFilePath;
-              logger.log(`find sugar browser import in [${result.context}] use [${absoluteFilePath}]`);
+              data[entryKey] = entryFilePath;
+              logger.log(`find sugar browser import in [${result.context}] use [${entryFilePath}]`);
               const base64 = Buffer.from(
                 `export default "${entryKey}"`
               ).toString('base64');

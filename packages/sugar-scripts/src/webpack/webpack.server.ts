@@ -17,6 +17,7 @@ export async function mergeServerEntry (
 ) {
   if (!context.packageConfig.server) return;
   const serverConfig = context.packageConfig.server;
+  const browserConfig = context.packageConfig.browser;
 
   chainConfig.entry('main')
     .merge(
@@ -49,6 +50,7 @@ export async function mergeServerEntry (
           plugin: SugarServerBrowserEntryPlugin,
           args: [{
             root: context.root,
+            browserIncludes: browserConfig?.includes,
             browserEntryKey: serverConfig.browserEntryKey,
             output: getCacheFilePath(context)
           }]

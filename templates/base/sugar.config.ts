@@ -6,7 +6,10 @@ import {
 export const packageConfig: SugarScriptsProject.PackageConfig = {
   cacheDir: './.sugar-cache',
   browser: {
-    output: './build/dist'
+    output: './build/dist',
+    includes: [
+      './browser'
+    ]
   },
   server: {
     output: './build/server',

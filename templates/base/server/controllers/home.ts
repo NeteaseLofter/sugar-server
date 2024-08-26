@@ -7,7 +7,7 @@ import {
   render
 } from 'sugar-server-utils';
 
-import HomePageView from 'sugar?browser-entry/../../browser/home';
+import HomePageView from '../../browser/home';
 
 
 export class HomeController extends Controller {
