@@ -79,22 +79,7 @@ export class Application extends Koa<ControllerContext> {
   }
 
   onError (err: SugarServerError, ctx: ControllerContext) {
-    if (
-      !ctx.res.writableEnded &&
-      !ctx.res.writableFinished
-    ) {
-      let statusCode = 500;
-      if (typeof err.statusCode === 'number') {
-        statusCode = err.statusCode;
-      }
-
-      this.emit('appError', err, ctx);
-      ctx.status = statusCode;
-      ctx.body = {
-        code: err.code || 0,
-        message: err.message
-      }
-    }
+    throw err;
   }
 
   useApplication (

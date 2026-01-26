@@ -83,8 +83,10 @@ export async function mergeBrowserEntry(
         }
       });
   } catch (e) {
-    console.log(e);
+    console.log('load autoBrowserEntryFilePath fail', autoBrowserEntryFilePath);
+    console.log('skip autoBrowserEntryFilePath');
   }
+
 
   if (browserConfig.entry) {
     const entry = browserConfig.entry;

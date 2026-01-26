@@ -10,27 +10,27 @@ export class RouterTestController extends Controller {
   static prefix = '/router-test';
 
   @router.GetRoute('/get')
-  testGetRoute (ctx: ControllerContext) {
+  testGetRoute () {
     return 'get';
   }
 
   @router.PostRoute('/post')
-  testPostRoute (ctx: ControllerContext) {
+  testPostRoute () {
     return 'post';
   }
 
   @router.PutRoute('/put')
-  testPutRoute (ctx: ControllerContext) {
+  testPutRoute () {
     return 'put';
   }
 
   @router.DelRoute('/del')
-  testDelRoute (ctx: ControllerContext) {
+  testDelRoute () {
     return 'del';
   }
 
   @router.AllRoute('/all')
-  testAllRoute (ctx: ControllerContext) {
-    return 'all:' + ctx.method;
+  testAllRoute () {
+    return 'all:' + this.context.method;
   }
 }

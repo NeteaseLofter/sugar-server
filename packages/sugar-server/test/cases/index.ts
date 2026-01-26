@@ -3,7 +3,7 @@ import { runServerCases } from './server';
 
 export function run () {
   describe('sugar-server', function () {
-    let stop;
+    let stop: any;
     after(function () {
       if (stop) {
         stop();

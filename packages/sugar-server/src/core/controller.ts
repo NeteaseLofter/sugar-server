@@ -43,5 +43,9 @@ export class Controller {
 
   private [ROUTES_KEY]!: RouteConfig[];
 
-  context!: ControllerContext;
+  context: ControllerContext;
+
+  constructor (context: ControllerContext) {
+    this.context = context;
+  }
 }

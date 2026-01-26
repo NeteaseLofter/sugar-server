@@ -10,13 +10,14 @@ import {
 const asyncValidator = validator.createParameterValidate((value, index, ctx) => {
   return new Promise((resolve, reject) => {
     if (value !== 'success') {
-      throw new SugarServerError(
+      reject(new SugarServerError(
         400,
         `name must be success`,
         {
           statusCode: 400
         }
-      );
+      ));
+      return;
     };
     ctx.name = value;
     return resolve(true);

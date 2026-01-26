@@ -4,6 +4,8 @@ import Router from 'koa-router';
 
 import type { Application } from './application';
 import type { ControllerContext} from './controller';
+import type { SugarServerError } from './error';
+
 import {
   Controller,
   ROUTES_KEY,
@@ -204,19 +206,26 @@ export function appendControllerToRouter (
             ctx: ControllerContext,
             next: any
           ) => {
-            const controller = new ControllerClass();
-            controller.context = ctx;
+            const controller = new ControllerClass(ctx);
             if (typeof (controller as any)[key] === 'function') {
-              const controllerReturn = await (controller as any)[key].call(
-                controller,
-                next
-              );
-              if (
-                typeof controllerReturn !== 'undefined' &&
-                !ctx.res.writableEnded &&
-                !ctx.res.writableFinished
-              ) {
-                ctx.body = controllerReturn;
+              try {
+                const controllerReturn = await (controller as any)[key].call(
+                  controller,
+                  next
+                );
+                if (
+                  typeof controllerReturn !== 'undefined' &&
+                  !ctx.res.writableEnded &&
+                  !ctx.res.writableFinished
+                ) {
+                  ctx.body = controllerReturn;
+                }
+              } catch (error) {
+                if (ctx.app.onError) {
+                  ctx.app.onError(error as SugarServerError, ctx);
+                } else {
+                  throw error;
+                }
               }
             }
             await next();

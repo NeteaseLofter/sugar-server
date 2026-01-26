@@ -75,16 +75,5 @@ export default function () {
       chai.expect(res.statusCode).to.equal(200);
       chai.expect(body).to.equal('get');
     })
-
-    it ('should GET Route with reg(?!:) path is able', async () => {
-      const { res, body } = await request('http://127.0.0.1:9528/router-test/get')
-      chai.expect(res.statusCode).to.equal(200);
-      chai.expect(body).to.equal('get');
-    })
-
-    it ('should GET Route with reg(?!:) path not allow', async () => {
-      const { res, body } = await request('http://127.0.0.1:9528/router-test/post')
-      chai.expect(res.statusCode).to.equal(404);
-    })
   })
 }

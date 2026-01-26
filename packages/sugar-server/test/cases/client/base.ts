@@ -13,8 +13,8 @@ export default function () {
     })
 
     it ('should catch server-error', async () => {
-      let serverCatchErr;
-      const errorListener = (err, ctx, app) => {
+      let serverCatchErr: any;
+      const errorListener = (err: any, ctx: any, app: any) => {
         serverCatchErr = err;
       };
       server.on('appError', errorListener)
@@ -33,7 +33,9 @@ export default function () {
     it ('should custom-controller-middleware', async () => {
       const { res, body } = await request('http://127.0.0.1:9527/custom-controller-middleware')
       chai.expect(res.statusCode).to.equal(200);
-      chai.expect(body).to.equal('from custom message');
+      chai.expect(body).to.equal(JSON.stringify({
+        custom: 'from custom message'
+      }));
     })
   })
 }
