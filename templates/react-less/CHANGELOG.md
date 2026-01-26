@@ -1,5 +1,13 @@
 # @sugar-templates/react-less
 
+## 1.1.3
+
+### Patch Changes
+
+- Updated dependencies [46f3824]
+  - sugar-scripts@1.1.0
+  - sugar-server@1.1.0
+
 ## 1.1.2
 
 ### Patch Changes

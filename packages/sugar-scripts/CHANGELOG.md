@@ -1,5 +1,16 @@
 # sugar-scripts
 
+## 1.1.0
+
+### Minor Changes
+
+- 46f3824: 初始化 Controller 时，context 作为构造函数的参数传入；完善更新的测试用例
+
+### Patch Changes
+
+- Updated dependencies [46f3824]
+  - sugar-server@1.1.0
+
 ## 1.0.2
 
 ### Patch Changes
