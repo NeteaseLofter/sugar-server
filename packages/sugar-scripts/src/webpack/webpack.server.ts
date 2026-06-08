@@ -11,6 +11,14 @@ import {
   getCacheFilePath
 } from './server-browser-entry';
 
+function getDefinePlugin(context: SugarScriptsContext) {
+  if (context.packageConfig.bundler === 'rspack') {
+    const { rspack } = require('@rspack/core');
+    return rspack.DefinePlugin;
+  }
+  return webpack.DefinePlugin;
+}
+
 export async function mergeServerEntry (
   context: SugarScriptsContext,
   chainConfig: WebpackChainConfig
@@ -56,7 +64,7 @@ export async function mergeServerEntry (
           }]
         },
         'DefinePlugin': {
-          plugin: webpack.DefinePlugin,
+          plugin: getDefinePlugin(context),
           args: [{
             'process.env.SUGAR_PROJECT_ROOT': JSON.stringify(
               context.root

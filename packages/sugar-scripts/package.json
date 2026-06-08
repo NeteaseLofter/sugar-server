@@ -2,14 +2,14 @@
   "name": "sugar-scripts",
   "version": "1.2.0",
   "description": "",
-  "main": "src/index.ts",
+  "main": "lib/index.js",
   "scripts": {
     "clean": "rimraf lib",
     "build": "npm run clean && tsc -p tsconfig.build.json",
     "prepublishOnly": "npm run build"
   },
   "bin": {
-    "sugar-scripts": "./src/bin/cli-ts.ts"
+    "sugar-scripts": "./lib/bin/cli.js"
   },
   "files": [
     "lib"
@@ -23,6 +23,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "2": "^3.0.0",
     "chalk": "^4",
     "commander": "^9.4.0",
     "glob": "^8.0.3",

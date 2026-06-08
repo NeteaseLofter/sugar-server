@@ -63,7 +63,7 @@ export async function createCommonRspackChainConfig(
                       runtime: 'classic',
                     },
                   },
-                  externalHelpers: true,
+                  externalHelpers: false,
                 },
               }
             }
