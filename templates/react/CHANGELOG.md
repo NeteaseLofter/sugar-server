@@ -1,5 +1,13 @@
 # @examples/react
 
+## 1.1.5
+
+### Patch Changes
+
+- Updated dependencies [3f6c1f1]
+- Updated dependencies [fe9f8cd]
+  - sugar-scripts@1.2.1
+
 ## 1.1.4
 
 ### Patch Changes
