@@ -1,5 +1,11 @@
 # sugar-scripts
 
+## 1.2.0
+
+### Minor Changes
+
+- 8478af2: 支持 Rspack 作为可选构建工具
+
 ## 1.1.0
 
 ### Minor Changes
