@@ -44,14 +44,19 @@ export const build = async (
 const buildBrowser = async (context: SugarScriptsContext) => {
   if (!context.packageConfig.browser) return;
   const browserConfig = context.packageConfig.browser;
+  const bundler = context.packageConfig.bundler || 'webpack';
 
-  logger.info('build browser');
+  logger.info(`build browser [${bundler}]`);
   logger.log(JSON.stringify(browserConfig));
 
-  const chainConfig = await createCommonChainConfig(
-    context,
-    browserConfig.output
-  );
+  let chainConfig: any;
+
+  if (bundler === 'rspack') {
+    const { createCommonRspackChainConfig } = await import('../webpack/rspack.common');
+    chainConfig = await createCommonRspackChainConfig(context, browserConfig.output);
+  } else {
+    chainConfig = await createCommonChainConfig(context, browserConfig.output);
+  }
 
   await mergeBrowserEntry(
     context,
@@ -63,10 +68,19 @@ const buildBrowser = async (context: SugarScriptsContext) => {
     chainConfig
   )
 
-  if (context.watch) {
-    await runWatchWebpack(chainConfig);
+  if (bundler === 'rspack') {
+    const { runRspack, runWatchRspack } = await import('../webpack/run-rspack');
+    if (context.watch) {
+      await runWatchRspack(chainConfig.toConfig());
+    } else {
+      await runRspack(chainConfig.toConfig());
+    }
   } else {
-    await runWebpack(chainConfig);
+    if (context.watch) {
+      await runWatchWebpack(chainConfig);
+    } else {
+      await runWebpack(chainConfig);
+    }
   }
 
   logger.success('build browser finish');
@@ -76,14 +90,19 @@ const buildBrowser = async (context: SugarScriptsContext) => {
 const buildServer = async (context: SugarScriptsContext) => {
   if (!context.packageConfig.server) return;
   const serverConfig = context.packageConfig.server;
+  const bundler = context.packageConfig.bundler || 'webpack';
 
-  logger.info('build server');
+  logger.info(`build server [${bundler}]`);
   logger.log(JSON.stringify(serverConfig));
 
-  const chainConfig = await createCommonChainConfig(
-    context,
-    serverConfig.output
-  );
+  let chainConfig: any;
+
+  if (bundler === 'rspack') {
+    const { createCommonRspackChainConfig } = await import('../webpack/rspack.common');
+    chainConfig = await createCommonRspackChainConfig(context, serverConfig.output);
+  } else {
+    chainConfig = await createCommonChainConfig(context, serverConfig.output);
+  }
 
   await mergeServerEntry(
     context,
@@ -94,10 +113,19 @@ const buildServer = async (context: SugarScriptsContext) => {
     chainConfig
   );
 
-  if (context.watch) {
-    await runWatchWebpack(chainConfig);
+  if (bundler === 'rspack') {
+    const { runRspack, runWatchRspack } = await import('../webpack/run-rspack');
+    if (context.watch) {
+      await runWatchRspack(chainConfig.toConfig());
+    } else {
+      await runRspack(chainConfig.toConfig());
+    }
   } else {
-    await runWebpack(chainConfig);
+    if (context.watch) {
+      await runWatchWebpack(chainConfig);
+    } else {
+      await runWebpack(chainConfig);
+    }
   }
 
   logger.success('build server finish');

@@ -22,6 +22,11 @@ export namespace SugarScriptsProject {
      */
     cacheDir?: string;
     /**
+     * 构建工具选择
+     * @default 'webpack'
+     */
+    bundler?: 'webpack' | 'rspack';
+    /**
      * 浏览器端js输出目录，不配置就不会进行相关打包
      */
     browser?: {

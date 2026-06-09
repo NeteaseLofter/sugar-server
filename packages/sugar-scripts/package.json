@@ -34,11 +34,25 @@
     "webpack-manifest-plugin": "^5.0.0"
   },
   "devDependencies": {
+    "@rspack/core": "^1.0.0",
     "@types/glob": "~7.2.0",
     "@types/node": "^18.0.0",
     "@types/nodemon": "^1.19.2",
     "@types/webpack": "^5",
     "rimraf": "^3.0.2",
+    "rspack-chain": "^1.0.0",
     "typescript": "^4.3.5"
+  },
+  "peerDependencies": {
+    "@rspack/core": "^1.0.0",
+    "rspack-chain": "^1.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@rspack/core": {
+      "optional": true
+    },
+    "rspack-chain": {
+      "optional": true
+    }
   }
 }
